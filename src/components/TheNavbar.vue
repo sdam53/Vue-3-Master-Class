@@ -1,68 +1,68 @@
 <template>
-    <header class="header" id="header">
-        <router-link :to="{ name: 'Home' }" class="logo">
-            <img src="../assets/svg/vueschool-logo.svg" />
-        </router-link>
+    <v-app>
+        <v-navigation-drawer v-model="sidebar" app>
+            <v-list>
+                <v-list-tile v-for="item in menuItems" :key="item.title" :to="item.path">
+                    <v-list-tile-action>
+                        <v-icon>{{ item.icon }}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>{{ item.title }}</v-list-tile-content>
+                </v-list-tile>
+            </v-list>
+        </v-navigation-drawer>
 
-        <div class="btn-hamburger">
-            <!-- use .btn-humburger-active to open the menu -->
-            <div class="top bar"></div>
-            <div class="middle bar"></div>
-            <div class="bottom bar"></div>
-        </div>
+        <v-toolbar app>
+            <span class="hidden-sm-and-up">
+                <v-toolbar-side-icon @click="sidebar = !sidebar"> </v-toolbar-side-icon>
+            </span>
+            <v-toolbar-title>
+                <router-link to="/" tag="span" style="cursor: pointer">
+                    {{ appTitle }}
+                </router-link>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items class="hidden-xs-only">
+                <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">
+                    <v-icon left dark>{{ item.icon }}</v-icon>
+                    {{ item.title }}
+                </v-btn>
+            </v-toolbar-items>
+        </v-toolbar>
 
-        <!-- use .navbar-open to open nav -->
-        <nav class="navbar">
-            <ul>
-                <li class="navbar-user">
-                    <a href="#">
-                        <img class="avatar-small" :src="currentUser.authUser?.avatar" alt="" />
-                        <span>
-                            Alex Kyriakidis
-                            <img class="icon-profile" src="@/assets/svg/arrow-profile.svg" alt="" />
-                        </span>
-                    </a>
-
-                    <!-- dropdown menu -->
-                    <!-- add class "active-drop" to show the dropdown -->
-                    <div id="user-dropdown">
-                        <div class="triangle-drop"></div>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-menu-item">
-                                <a href="profile.html">View profile</a>
-                            </li>
-                            <li class="dropdown-menu-item"><a href="#">Log out</a></li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-
-            <ul>
-                <router-link :to="{ name: 'Home' }" class="navbar-item">Home</router-link>
-
-                <li class="navbar-item">
-                    <a href="category.html">Category</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="forum.html">Forum</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="thread.html">Thread</a>
-                </li>
-                &lt;!&ndash; Show these option only on mobile&ndash;&gt;
-                <li class="navbar-item mobile-only">
-                    <a href="profile.html">My Profile</a>
-                </li>
-                <li class="navbar-item mobile-only">
-                    <a href="#">Logout</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+        <v-content>
+            <router-view></router-view>
+        </v-content>
+    </v-app>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
-
 const currentUser = useCurrentUserStore();
+
+const appTitle = ref("FORUMS BOI");
+const sidebar = ref(false);
+const menuItems = ref([
+    {
+        title: "Home",
+        path: "/",
+        icon: "home"
+    },
+    {
+        title: "Category",
+        path: "/",
+        icon: "home"
+    },
+    {
+        title: "Forum",
+        path: "/",
+        icon: "home"
+    }
+]);
 </script>
+
+<style scoped>
+v-app {
+    width: 100% !important;
+}
+</style>

@@ -37,8 +37,8 @@ const routes = [
         component: Thread,
         props: true
         //this basically will check if this endpoint is right, and if not we get sent to notFound
-        //TODO figure out to, from, next types
-        //TODO pinia isnt created at this point so have to remove this for now
+        //TODO: figure out to, from, next types
+        //TODO: pinia isnt created at this point so have to remove this for now. figure it out
         /*
         beforeEnter(to: any, from: any, next: any) {
             const threadExist = sourceData.threads.find((thread) => thread.id === to.params.id);
