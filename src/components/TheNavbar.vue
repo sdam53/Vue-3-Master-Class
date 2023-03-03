@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-navigation-drawer v-model="sidebar" app>
-            <v-list>
+            <v-list v-if="sidebar">
                 <v-list-tile v-for="item in menuItems" :key="item.title" :to="item.path">
                     <v-list-tile-action>
                         <v-icon>{{ item.icon }}</v-icon>
@@ -28,10 +28,10 @@
                 </v-btn>
 
                 <v-btn v-if="currentUser.isSignedIn" flat :to="`/`">
-                    <v-img left dark src="currentUser.authUser?.avatar"></v-img>
-                    {{ currentUser.authUser?.name }}
+                    <router-link to="/me" tag="span" style="cursor: pointer">
+                        {{ currentUser.authUser?.name }}
+                    </router-link>
                 </v-btn>
-
                 <v-btn v-else flat :to="`/`">
                     <v-icon left dark>{{ "mdi-login" }}</v-icon>
                     Sign In

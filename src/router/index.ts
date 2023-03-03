@@ -8,6 +8,7 @@ import NotFound from "@/views/NotFoundView.vue";
 import Thread from "@/views/ThreadShowView.vue";
 import Forum from "@/views/ForumView.vue";
 import Category from "@/views/CategoryView.vue";
+import Profile from "@/views/ProfileView.vue";
 import { useSourceDataStore } from "@/stores/SourceDataStore";
 
 //const sourceData = useSourceDataStore();
@@ -55,6 +56,11 @@ const routes = [
             else next();
         }
         */
+    },
+    {
+        path: "/me",
+        name: "Profile",
+        component: Profile
     },
     {
         path: "/:pathMatch(.*)*",
