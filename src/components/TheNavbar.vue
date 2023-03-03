@@ -26,6 +26,16 @@
                     <v-icon left dark>{{ item.icon }}</v-icon>
                     {{ item.title }}
                 </v-btn>
+
+                <v-btn v-if="currentUser.isSignedIn" flat :to="`/`">
+                    <v-img left dark src="currentUser.authUser?.avatar"></v-img>
+                    {{ currentUser.authUser?.name }}
+                </v-btn>
+
+                <v-btn v-else flat :to="`/`">
+                    <v-icon left dark>{{ "mdi-login" }}</v-icon>
+                    Sign In
+                </v-btn>
             </v-toolbar-items>
         </v-toolbar>
 
@@ -59,11 +69,6 @@ const menuItems = ref([
         title: "Forum",
         path: "/",
         icon: "mdi-forum"
-    },
-    {
-        title: "Sign In",
-        path: "/",
-        icon: "mdi-login"
     }
 ]);
 </script>
