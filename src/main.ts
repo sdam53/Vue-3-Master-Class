@@ -11,7 +11,10 @@ import * as directives from "vuetify/directives";
 
 const vuetify = createVuetify({
     components,
-    directives
+    directives,
+    theme: {
+        //defaultTheme: "dark" //requires changing alot of things due to using external css and stuff
+    }
 });
 
 const pinia = createPinia();
