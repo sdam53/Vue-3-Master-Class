@@ -48,22 +48,22 @@ const menuItems = ref([
     {
         title: "Home",
         path: "/",
-        icon: "mdi-home-account"
+        icon: "mdi-home"
     },
     {
         title: "Category",
         path: "/",
-        icon: "home"
+        icon: "mdi-shape"
     },
     {
         title: "Forum",
         path: "/",
-        icon: "home"
+        icon: "mdi-forum"
     },
     {
         title: "Sign In",
         path: "/",
-        icon: "mdi-home-account"
+        icon: "mdi-login"
     }
 ]);
 </script>
