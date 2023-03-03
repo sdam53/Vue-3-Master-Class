@@ -5,9 +5,7 @@ import TheNavbar from "./components/TheNavbar.vue";
 </script>
 
 <template>
-    <div class="container">
-        <TheNavbar />
-    </div>
+    <TheNavbar />
 </template>
 
 <style>

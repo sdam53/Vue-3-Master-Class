@@ -29,7 +29,7 @@
             </v-toolbar-items>
         </v-toolbar>
 
-        <v-content>
+        <v-content class="container">
             <router-view></router-view>
         </v-content>
     </v-app>
@@ -42,11 +42,13 @@ const currentUser = useCurrentUserStore();
 
 const appTitle = ref("FORUMS BOI");
 const sidebar = ref(false);
+//https://pictogrammers.com/library/mdi/
+//places icon names icon: "mdi-{icon_name}
 const menuItems = ref([
     {
         title: "Home",
         path: "/",
-        icon: "home"
+        icon: "mdi-home-account"
     },
     {
         title: "Category",
@@ -57,12 +59,13 @@ const menuItems = ref([
         title: "Forum",
         path: "/",
         icon: "home"
+    },
+    {
+        title: "Sign In",
+        path: "/",
+        icon: "mdi-home-account"
     }
 ]);
 </script>
 
-<style scoped>
-v-app {
-    width: 100% !important;
-}
-</style>
+<style scoped></style>
