@@ -27,11 +27,11 @@
                     {{ item.title }}
                 </v-btn>
 
-                <v-btn v-if="currentUser.isSignedIn" flat :to="`/`">
-                    <router-link to="/me" tag="span" style="cursor: pointer">
-                        {{ currentUser.authUser?.name }}
-                    </router-link>
+                <v-btn v-if="currentUser.isSignedIn" flat :to="`/me`">
+                    <v-img left dark src="currentUser.authUser?.avatar"></v-img>
+                    {{ currentUser.authUser?.name }}
                 </v-btn>
+
                 <v-btn v-else flat :to="`/`">
                     <v-icon left dark>{{ "mdi-login" }}</v-icon>
                     Sign In
