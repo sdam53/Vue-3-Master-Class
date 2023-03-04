@@ -1,3 +1,31 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
+const currentUser = useCurrentUserStore();
+
+const appTitle = ref("FORUMS BOI");
+const sidebar = ref(false);
+//https://pictogrammers.com/library/mdi/
+//places icon names icon: "mdi-{icon_name}
+const menuItems = ref([
+    {
+        title: "Home",
+        path: "/",
+        icon: "mdi-home"
+    },
+    {
+        title: "Category",
+        path: "/",
+        icon: "mdi-shape"
+    },
+    {
+        title: "Forum",
+        path: "/",
+        icon: "mdi-forum"
+    }
+]);
+</script>
+
 <template>
     <v-app>
         <v-navigation-drawer v-model="sidebar" app>
@@ -44,33 +72,5 @@
         </v-content>
     </v-app>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
-const currentUser = useCurrentUserStore();
-
-const appTitle = ref("FORUMS BOI");
-const sidebar = ref(false);
-//https://pictogrammers.com/library/mdi/
-//places icon names icon: "mdi-{icon_name}
-const menuItems = ref([
-    {
-        title: "Home",
-        path: "/",
-        icon: "mdi-home"
-    },
-    {
-        title: "Category",
-        path: "/",
-        icon: "mdi-shape"
-    },
-    {
-        title: "Forum",
-        path: "/",
-        icon: "mdi-forum"
-    }
-]);
-</script>
 
 <style scoped></style>
