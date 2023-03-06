@@ -5,11 +5,13 @@ import PostEditorComponent from "@/components/PostEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { ref, computed, defineProps } from "vue";
+import type Post from "@/types/Post";
 
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
 const threads = ref(threadsStore.threads);
 const posts = ref(postsStore.posts);
+//TODO: it requires a slug but it actually isnt being used
 const props = defineProps(["id", "slug"]);
 const thread = computed(() => {
     //console.log(threads.value.find((thread) => thread.id === props.id));
@@ -21,10 +23,14 @@ const threadPosts = computed(() => {
 
 //TODO look into eventData type. It is Event but .post doesnt exist in that type
 const addPost = (eventData: any) => {
-    const post = {
+    console.log(eventData.post);
+
+    const post: Post = {
         ...eventData.post,
         threadId: props.id
     };
+    console.log(post);
+
     //posts.value.push(post);
     //thread.value.posts.push(post.id);
     postsStore.createPost(post);

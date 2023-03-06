@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
 import PostList from "@/components/PostListComponent.vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import { usePostsStore } from "@/stores/PostsStore";
-import { useThreadsStore } from "@/stores/ThreadsStore";
-import type Post from "@/types/Post";
 import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
 

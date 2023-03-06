@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/HomeView.vue";
 import NotFound from "@/views/NotFoundView.vue";
 import Thread from "@/views/ThreadShowView.vue";
+import ThreadCreate from "@/views/ThreadCreateView.vue";
 import Forum from "@/views/ForumView.vue";
 import Category from "@/views/CategoryView.vue";
 import Profile from "@/views/ProfileView.vue";
@@ -58,6 +59,13 @@ const routes = [
         */
     },
     {
+        //https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
+        path: "/form/:forumId/thread/create",
+        name: "ThreadCreate",
+        component: ThreadCreate,
+        props: true
+    },
+    {
         path: "/me",
         name: "Profile",
         component: Profile,
@@ -82,7 +90,7 @@ export default createRouter({
     routes: routes,
     scrollBehavior(to) {
         const scroll = {};
-        //TODO: Figure out how to deal with these errors
+        //TODO: Figure out how to deal with these errors. Prob define scroll
         if (to.meta.toTop) scroll.top = 0;
         if (to.meta.smoothScroll) scroll.behavior = "smooth";
         return scroll;

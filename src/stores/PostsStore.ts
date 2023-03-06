@@ -16,7 +16,6 @@ export const usePostsStore = defineStore("PostsStore", () => {
         post.userId = currentUser.authId;
         post.publishedAt = Math.floor(Date.now() / 1000);
         posts.value.push(post);
-
         const thread = useThreadsStore().threads.find((thread) => thread.id === post.threadId);
         thread?.posts.push(post.id);
     };

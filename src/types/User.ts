@@ -11,4 +11,5 @@ export default interface User {
     usernameLower: string;
     website?: string;
     id: string;
+    threads?: string[];
 }
