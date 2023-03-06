@@ -29,7 +29,6 @@ const addPost = (eventData: any) => {
         ...eventData.post,
         threadId: props.id
     };
-    console.log(post);
 
     //posts.value.push(post);
     //thread.value.posts.push(post.id);

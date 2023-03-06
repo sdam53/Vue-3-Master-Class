@@ -6,15 +6,18 @@ import { useThreadsStore } from "@/stores/ThreadsStore";
 const props = defineProps(["forumId"]);
 const title = ref("");
 const text = ref("");
+const forum = computed(() => {
+    let forumStore = useForumsStore();
+    return forumStore.forums.find((forum) => forum.id === props.forumId);
+});
 async function save() {
     let threadStore = useThreadsStore();
     let thread = await threadStore.createThread(title.value, text.value, props.forumId);
     router.push({ name: "ThreadShow", params: { id: thread?.id, slug: thread?.slug } });
 }
-const forum = computed(() => {
-    let forumStore = useForumsStore();
-    return forumStore.forums.find((forum) => forum.id === props.forumId);
-});
+const cancel = () => {
+    router.push({ name: "Forum", params: { id: forum.value?.id, slug: forum.value?.slug } });
+};
 </script>
 
 <template>
@@ -48,7 +51,7 @@ const forum = computed(() => {
             </div>
 
             <div class="btn-group">
-                <button class="btn btn-ghost">Cancel</button>
+                <button class="btn btn-ghost" @click.prevent="cancel">Cancel</button>
                 <button class="btn btn-blue" type="submit" name="Publish">Publish</button>
             </div>
         </form>
