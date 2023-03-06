@@ -8,7 +8,7 @@ console.log(links);
 <template>
     <!--TODO: v-app is making it long af for some reason-->
     <v-app>
-        <v-footer class="footer" color="red" height="auto">
+        <v-footer color="blue" height="auto">
             <v-row justify="center" no-gutters>
                 <v-btn
                     v-for="link in links"

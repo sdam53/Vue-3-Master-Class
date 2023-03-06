@@ -4,22 +4,11 @@ import PostList from "@/components/PostListComponent.vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
+import type Post from "@/types/Post";
+import UserProfileCard from "@/components/UserProfileCardComponent.vue";
+import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
 
 const currentUserStore = useCurrentUserStore();
-const postStore = usePostsStore();
-const threadStore = useThreadsStore();
-
-const userPosts = computed(() => {
-    return postStore.posts.filter((post) => post.userId === currentUserStore.authId);
-});
-const userPostsCount = computed(() => {
-    return userPosts.value.length;
-});
-
-const userThreads = computed(() => {
-    return threadStore.threads.filter((thread) => thread.userId === currentUserStore.authId);
-});
-const userThreadsCount = computed(() => userThreads.value.length);
 </script>
 
 <template>
@@ -27,35 +16,9 @@ const userThreadsCount = computed(() => userThreads.value.length);
         <!--TODO: When not signed in, redirect to the login screen-->
         <div class="flex-grid">
             <div class="col-3 push-top">
-                <div class="profile-card">
-                    <p class="text-center">
-                        <img
-                            :src="currentUserStore.avatar"
-                            :alt="`${currentUserStore.name} profile picture`"
-                            class="avatar-xlarge"
-                        />
-                    </p>
-
-                    <h1 class="title">{{ currentUserStore.username }}</h1>
-
-                    <p class="text-lead">{{ currentUserStore.name }}</p>
-
-                    <p class="text-justify">{{ currentUserStore.bio || "No bio specified." }}</p>
-
-                    <span class="online">{{ currentUserStore.username }} is online</span>
-
-                    <div class="stats">
-                        <span>{{ userPostsCount }} posts</span>
-                        <span>{{ userThreadsCount }} threads</span>
-                    </div>
-
-                    <hr />
-
-                    <p v-if="currentUserStore.website" class="text-large text-center">
-                        <i class="fa fa-globe"></i>
-                        <a :href="currentUserStore.website">{{ currentUserStore.website }}</a>
-                    </p>
-                </div>
+                <!--TODO: Deal with this error-->
+                <UserProfileCard :user="currentUserStore.authUser" />
+                <UserProfileCardEditor :user="currentUserStore.authUser" />
 
                 <p class="text-xsmall text-faded text-center">
                     Member since june 2003, last visited 4 hours ago
@@ -73,7 +36,7 @@ const userThreadsCount = computed(() => userThreads.value.length);
                     <a href="#">See only started threads?</a>
                 </div>
                 <hr />
-                <PostList :posts="userPosts" />
+                <PostList :posts="currentUserStore.posts" />
             </div>
         </div>
     </div>

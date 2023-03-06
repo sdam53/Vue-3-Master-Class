@@ -19,7 +19,7 @@ const threadPosts = computed(() => {
     return posts.value.filter((post) => post.threadId === props.id);
 });
 
-//TODO look into eventData type
+//TODO look into eventData type. It is Event but .post doesnt exist in that type
 const addPost = (eventData: any) => {
     const post = {
         ...eventData.post,
