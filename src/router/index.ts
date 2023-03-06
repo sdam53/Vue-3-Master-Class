@@ -60,7 +60,8 @@ const routes = [
     {
         path: "/me",
         name: "Profile",
-        component: Profile
+        component: Profile,
+        meta: { toTop: true, smoothScroll: true }
     },
     {
         path: "/me/edit",
@@ -78,5 +79,12 @@ const routes = [
 //exporting it
 export default createRouter({
     history: createWebHistory(),
-    routes: routes
+    routes: routes,
+    scrollBehavior(to) {
+        const scroll = {};
+        //TODO: Figure out how to deal with these errors
+        if (to.meta.toTop) scroll.top = 0;
+        if (to.meta.smoothScroll) scroll.behavior = "smooth";
+        return scroll;
+    }
 });
