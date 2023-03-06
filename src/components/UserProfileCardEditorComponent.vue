@@ -2,14 +2,16 @@
 import { ref } from "vue";
 import type User from "@/types/User";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import router from "@/router";
 const currentUserStore = useCurrentUserStore();
 const props = defineProps(["user"]);
 const activeUser = ref({ ...props.user });
 const save = () => {
-    console.log("Saving...");
-    console.log(activeUser.value);
-
-    currentUserStore.updateUser(activeUser.value); //this is passing the reference so once you submit it gets all reactive
+    currentUserStore.updateUser(activeUser.value);
+    cancel();
+};
+const cancel = () => {
+    router.push({ name: "Profile" });
 };
 </script>
 
@@ -52,11 +54,6 @@ const save = () => {
                 ></textarea>
             </div>
 
-            <div class="stats">
-                <span>{{ user.postsCount }} posts</span>
-                <span>{{ user.threadsCount }} threads</span>
-            </div>
-
             <hr />
 
             <div class="form-group">
@@ -90,7 +87,7 @@ const save = () => {
             </div>
 
             <div class="btn-group space-between">
-                <button class="btn-ghost">Cancel</button>
+                <button class="btn-ghost" @click.prevent="cancel">Cancel</button>
                 <button type="submit" class="btn-blue">Save</button>
             </div>
         </form>

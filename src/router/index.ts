@@ -63,6 +63,12 @@ const routes = [
         component: Profile
     },
     {
+        path: "/me/edit",
+        name: "ProfileEdit",
+        component: Profile,
+        props: { edit: true }
+    },
+    {
         path: "/:pathMatch(.*)*",
         name: "NotFound",
         component: NotFound

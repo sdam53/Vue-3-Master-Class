@@ -9,6 +9,10 @@ import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
 
 const currentUserStore = useCurrentUserStore();
+
+const props = defineProps({
+    edit: { type: Boolean, default: false }
+});
 </script>
 
 <template>
@@ -17,17 +21,8 @@ const currentUserStore = useCurrentUserStore();
         <div class="flex-grid">
             <div class="col-3 push-top">
                 <!--TODO: Deal with this error-->
-                <UserProfileCard :user="currentUserStore.authUser" />
-                <UserProfileCardEditor :user="currentUserStore.authUser" />
-
-                <p class="text-xsmall text-faded text-center">
-                    Member since june 2003, last visited 4 hours ago
-                </p>
-
-                <div class="text-center">
-                    <hr />
-                    <a href="edit-profile.html" class="btn-green btn-small">Edit Profile</a>
-                </div>
+                <UserProfileCard v-if="!props.edit" :user="currentUserStore.authUser" />
+                <UserProfileCardEditor v-else :user="currentUserStore.authUser" />
             </div>
 
             <div class="col-7 push-top">

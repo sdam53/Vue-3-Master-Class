@@ -3,9 +3,13 @@ import type User from "@/types/User";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 const currentUserStore = useCurrentUserStore();
 
+/*
+//TODO: Figure out how to get this way working without errors
 const props = defineProps<{
     user: { type: User; required: true };
 }>();
+*/
+const props = defineProps(["user"]);
 </script>
 
 <template>
@@ -37,5 +41,16 @@ const props = defineProps<{
             <i class="fa fa-globe"></i>
             <a :href="currentUserStore.website">{{ currentUserStore.website }}</a>
         </p>
+
+        <p class="text-xsmall text-faded text-center">
+            Member since june 2003, last visited 4 hours ago
+        </p>
+
+        <div class="text-center">
+            <hr />
+            <router-link :to="{ name: 'ProfileEdit' }" class="btn-green btn-small"
+                >Edit Profile</router-link
+            >
+        </div>
     </div>
 </template>
