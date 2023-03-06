@@ -91,7 +91,7 @@ export default createRouter({
     scrollBehavior(to) {
         const scroll = {};
         //TODO: Figure out how to deal with these errors. Prob define scroll
-        if (to.meta.toTop) scroll.top = 0;
+        scroll.top = 0;
         if (to.meta.smoothScroll) scroll.behavior = "smooth";
         return scroll;
     }
