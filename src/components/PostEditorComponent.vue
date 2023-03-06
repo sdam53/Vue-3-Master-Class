@@ -6,12 +6,8 @@ const currentUser = useCurrentUserStore();
 const text = ref("");
 const emit = defineEmits(["addPost"]);
 const addPost = () => {
-    const postId = "ggqq" + Math.random();
     const post = {
-        id: postId,
-        text: text.value,
-        publishedAt: Math.floor(Date.now() / 1000),
-        userId: currentUser.authId
+        text: text.value
     };
     //TODO: Figure out this error with save post
     emit("savePost", { post }); // access under eventData.post
