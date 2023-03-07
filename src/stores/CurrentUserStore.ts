@@ -14,7 +14,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const userStore = useUsersStore();
 
     const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");
-    const authUser = computed(() => sourceData.users.find((user) => user.id === authId.value));
+    const authUser = computed(() => userStore.users.find((user) => user.id === authId.value));
 
     const name = computed(() => authUser.value?.name);
     const avatar = computed(() => authUser.value?.avatar);
