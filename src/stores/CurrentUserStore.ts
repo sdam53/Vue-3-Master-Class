@@ -1,29 +1,34 @@
+//pinia store to keep track of the current user
+
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { computed, ref } from "vue";
-import sourceData from "@/data.json";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
+import type User from "@/types/User";
 import { usePostsStore } from "./PostsStore";
 import { useThreadsStore } from "./ThreadsStore";
 import { useUsersStore } from "./UsersStore";
-import type User from "@/types/User";
 
+/**
+ * current user store
+ */
 export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
+    //stores
     const postStore = usePostsStore();
     const threadStore = useThreadsStore();
     const userStore = useUsersStore();
 
+    //ref
     const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");
-    const authUser = computed(() => userStore.users.find((user) => user.id === authId.value));
 
+    //computed data
+    const authUser = computed(() => userStore.users.find((user) => user.id === authId.value));
     const name = computed(() => authUser.value?.name);
     const avatar = computed(() => authUser.value?.avatar);
     const username = computed(() => authUser.value?.username);
     const bio = computed(() => authUser.value?.bio);
     const website = computed(() => authUser.value?.website);
-
     const isSignedIn = computed(() => authUser.value != null);
-
     const posts = computed(() => {
         return postStore.posts.filter((post: Post) => post.userId === authId.value);
     });
@@ -35,11 +40,13 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     });
     const threadsCount = computed(() => threads.value.length);
 
+    //function to set the user
     const setUser = (user: User, userId: string) => {
         const userIndex = userStore.users.findIndex((user: User) => user.id === userId);
         userStore.users[userIndex] = { ...user };
     };
 
+    //function to update the current user
     const updateUser = (user: User) => {
         setUser(user, authId.value);
     };

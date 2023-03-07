@@ -1,5 +1,5 @@
 /**
- * Page router
+ * Router to handle page routing
  */
 
 import { createRouter, createWebHistory } from "vue-router";
@@ -12,11 +12,11 @@ import ThreadEdit from "@/views/ThreadEditView.vue";
 import Forum from "@/views/ForumView.vue";
 import Category from "@/views/CategoryView.vue";
 import Profile from "@/views/ProfileView.vue";
-import { useSourceDataStore } from "@/stores/SourceDataStore";
 
+//import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
 
-//list of out routes
+//list of the routes
 const routes = [
     {
         path: "/",
@@ -92,12 +92,11 @@ const routes = [
     }
 ];
 
-//exporting it
+//exporting it and adding options
 export default createRouter({
     history: createWebHistory(),
     routes: routes,
     scrollBehavior(to) {
-        const scroll = {};
         //TODO: Figure out how to deal with these errors. Prob define scroll
         scroll.top = 0;
         if (to.meta.smoothScroll) scroll.behavior = "smooth";

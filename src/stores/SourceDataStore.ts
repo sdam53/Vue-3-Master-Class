@@ -1,7 +1,9 @@
+//pinia store to contain all data
+//every other store will retrieve from this store to initialize
+
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { reactive } from "vue";
 import sourceData from "@/data.json";
-import type SourceData from "@/types/SourceData";
 import type Category from "@/types/Category";
 import type Forum from "@/types/Forum";
 import type Post from "@/types/Post";
@@ -9,6 +11,9 @@ import type Stats from "@/types/Stats";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 
+/**
+ * source data store
+ */
 export const useSourceDataStore = defineStore("SourceDataStore", () => {
     const data: any = reactive(sourceData); //would prefer type SourceData but get some errors TODO
     const categories: Category[] = reactive(data.categories);

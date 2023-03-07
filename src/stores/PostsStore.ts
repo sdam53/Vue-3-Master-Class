@@ -1,16 +1,24 @@
-import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+//pinia store to keep track of posts
+
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { ref } from "vue";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useCurrentUserStore } from "./CurrentUserStore";
 import type Post from "@/types/Post";
 
+/**
+ * post store
+ */
 export const usePostsStore = defineStore("PostsStore", () => {
+    //stores
     const sourceDataStore = useSourceDataStore();
     const currentUser = useCurrentUserStore();
 
+    //ref
     const posts = ref(sourceDataStore.posts);
 
+    //function to create a new post to a thread
     const createPost = (post: Post) => {
         post.id = "qqqgg" + Math.random();
         post.userId = currentUser.authId;
@@ -20,6 +28,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
         thread?.posts.push(post.id);
     };
 
+    //function to set a post
     const setPost = (post: Post) => {
         const index = posts.value.findIndex((p) => p.id === post.id);
         if (post.id && index !== -1) {
@@ -31,3 +40,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
 
     return { posts, createPost, setPost };
 });
+
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(usePostsStore, import.meta.hot));
+}
