@@ -1,3 +1,6 @@
+/**
+ * forum type
+ */
 export default interface Forum {
     categoryId: string;
     description: string;

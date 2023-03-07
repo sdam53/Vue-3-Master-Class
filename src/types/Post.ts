@@ -1,3 +1,6 @@
+/**
+ * post type
+ */
 export default interface Post {
     edited?: {
         at: number;

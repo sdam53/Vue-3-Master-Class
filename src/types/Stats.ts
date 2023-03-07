@@ -1,3 +1,6 @@
+/**
+ * stats type
+ */
 export default interface Stats {
     postsCount: number;
     threadsCount: number;

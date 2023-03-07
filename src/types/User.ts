@@ -1,3 +1,6 @@
+/**
+ * user type
+ */
 export default interface User {
     avatar: string;
     bio?: string;

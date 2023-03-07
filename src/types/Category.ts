@@ -1,3 +1,6 @@
+/**
+ * category type
+ */
 export default interface Category {
     forums: string[];
     name: string;

@@ -1,3 +1,6 @@
+/**
+ * thread type
+ */
 export default interface Thread {
     contributors: string[];
     firstPostId: string;
