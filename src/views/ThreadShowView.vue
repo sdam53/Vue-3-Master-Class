@@ -40,7 +40,14 @@ const addPost = (eventData: any) => {
 
 <template>
     <div class="col-large push-top">
-        <h1>{{ thread?.title }}</h1>
+        <h1>
+            {{ thread?.title }}
+
+            <!--Somehow this doesnt take params and just knows where to send you-->
+            <router-link :to="{ name: 'ThreadEdit' }" class="btn-green btn-small" tag="button"
+                >Edit Thread</router-link
+            >
+        </h1>
         <PostListComponent :posts="threadPosts" />
         <PostEditorComponent @savePost="addPost" />
     </div>

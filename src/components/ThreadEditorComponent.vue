@@ -1,7 +1,7 @@
 <script setup lang="ts">
 //component for thread editing
 
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 //props
 const props = defineProps({
@@ -23,6 +23,9 @@ const form = ref({
     title: props.title,
     text: props.text
 });
+
+//computed data
+const existing = computed(() => !!props.title); //cast to boolean
 
 /**
  * sends an event to the ThreadEditView page to save the edit
@@ -66,7 +69,9 @@ const cancel = () => {
 
         <div class="btn-group">
             <button class="btn btn-ghost" @click.prevent="cancel">Cancel</button>
-            <button class="btn btn-blue" type="submit" name="Publish">Publish</button>
+            <button class="btn btn-blue" type="submit" name="Publish">
+                {{ existing ? "Update" : "Publish" }}
+            </button>
         </div>
     </form>
 </template>
