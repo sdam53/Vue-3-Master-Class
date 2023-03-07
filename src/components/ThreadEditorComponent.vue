@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const title = ref("");
-const text = ref("");
+const props = defineProps(["title", "text"]);
 const emit = defineEmits(["save", "cancel"]);
 
+const form = ref({
+    title: props.title,
+    text: props.text
+});
+
 const save = () => {
-    emit("save", title.value, text.value);
+    emit("save", form.value.title, form.value.text);
 };
 const cancel = () => {
     emit("cancel", {});
@@ -17,13 +21,19 @@ const cancel = () => {
     <form @submit.prevent="save">
         <div class="form-group">
             <label for="thread_title">Title:</label>
-            <input v-model="title" type="text" id="thread_title" class="form-input" name="title" />
+            <input
+                v-model="form.title"
+                type="text"
+                id="thread_title"
+                class="form-input"
+                name="title"
+            />
         </div>
 
         <div class="form-group">
             <label for="thread_content">Content:</label>
             <textarea
-                v-model="text"
+                v-model="form.text"
                 id="thread_content"
                 class="form-input"
                 name="content"

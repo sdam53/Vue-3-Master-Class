@@ -11,13 +11,12 @@ import { useUsersStore } from "./UsersStore";
 
 export const useThreadsStore = defineStore("ThreadsStore", () => {
     const sourceDataStore = useSourceDataStore();
-    const currentUserStore = useCurrentUserStore();
-    const forumStore = useForumsStore();
-    const usersStore = useUsersStore();
-    const postStore = usePostsStore();
+
     const threads = ref(sourceDataStore.threads);
 
     async function createThread(title: string, text: string, forumId: string) {
+        const currentUserStore = useCurrentUserStore();
+        const postStore = usePostsStore();
         let id: string = "qqqgg" + Math.random();
         let userId: string = currentUserStore.authId;
         let publishedAt: number = Math.floor(Date.now() / 1000);
@@ -50,20 +49,41 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     }
 
     const setThread = (thread: Thread) => {
-        threads.value.push(thread);
+        const index = threads.value.findIndex((t) => t.id === thread.id);
+        if (thread.id && index !== -1) {
+            threads.value[index] = thread;
+        } else {
+            threads.value.push(thread);
+        }
     };
 
     const appendThreadToForum = (forumId: string, threadId: string) => {
+        const forumStore = useForumsStore();
         const forum = forumStore.forums.find((forum) => forum.id === forumId);
         forum?.threads.push(threadId);
     };
 
     const appendThreadToUser = (userId: string, threadId: string) => {
-        //TODO: Figure out user
+        const usersStore = useUsersStore();
+
+        //TODO: Figure out user and thread and post
         const user: User = usersStore.users.find((user) => user.id === userId);
         user.threads = user.threads || [];
         user.threads.push(threadId);
     };
 
-    return { threads, createThread };
+    async function updateThread(title: string, text: string, id: string) {
+        const postStore = usePostsStore();
+
+        const thread: Thread = threads.value.find((thread) => thread.id === id);
+        const post: Post = postStore.posts.find((post) => post.id === thread.posts[0]);
+        const newThread: Thread = { ...thread, title }; //using spread operator and overriding title
+        const newPost: Post = { ...post, text }; //same but for post
+
+        setThread(newThread);
+        postStore.setPost(newPost);
+        return newThread;
+    }
+
+    return { threads, createThread, updateThread };
 });

@@ -9,22 +9,18 @@ import type Post from "@/types/Post";
 
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
-const threads = ref(threadsStore.threads);
-const posts = ref(postsStore.posts);
 //TODO: it requires a slug but it actually isnt being used
 const props = defineProps(["id", "slug"]);
 const thread = computed(() => {
     //console.log(threads.value.find((thread) => thread.id === props.id));
-    return threads.value.find((thread) => thread.id === props.id);
+    return threadsStore.threads.find((thread) => thread.id === props.id);
 });
 const threadPosts = computed(() => {
-    return posts.value.filter((post) => post.threadId === props.id);
+    return postsStore.posts.filter((post) => post.threadId === props.id);
 });
 
 //TODO look into eventData type. It is Event but .post doesnt exist in that type
 const addPost = (eventData: any) => {
-    console.log(eventData.post);
-
     const post: Post = {
         ...eventData.post,
         threadId: props.id

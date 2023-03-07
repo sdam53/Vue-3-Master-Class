@@ -20,5 +20,14 @@ export const usePostsStore = defineStore("PostsStore", () => {
         thread?.posts.push(post.id);
     };
 
-    return { posts, createPost };
+    const setPost = (post: Post) => {
+        const index = posts.value.findIndex((p) => p.id === post.id);
+        if (post.id && index !== -1) {
+            posts.value[index] = post;
+        } else {
+            posts.value.push(post);
+        }
+    };
+
+    return { posts, createPost, setPost };
 });

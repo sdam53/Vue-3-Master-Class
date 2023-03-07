@@ -7,6 +7,8 @@ import Home from "@/views/HomeView.vue";
 import NotFound from "@/views/NotFoundView.vue";
 import Thread from "@/views/ThreadShowView.vue";
 import ThreadCreate from "@/views/ThreadCreateView.vue";
+import ThreadEdit from "@/views/ThreadEditView.vue";
+
 import Forum from "@/views/ForumView.vue";
 import Category from "@/views/CategoryView.vue";
 import Profile from "@/views/ProfileView.vue";
@@ -34,6 +36,19 @@ const routes = [
         props: true
     },
     {
+        //https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
+        path: "/forum/:forumId/thread/create",
+        name: "ThreadCreate",
+        component: ThreadCreate,
+        props: true
+    },
+    {
+        path: "/thread/:id/edit",
+        name: "ThreadEdit",
+        component: ThreadEdit,
+        props: true
+    },
+    {
         path: "/thread/:id/:slug",
         name: "ThreadShow",
         component: Thread,
@@ -57,13 +72,6 @@ const routes = [
             else next();
         }
         */
-    },
-    {
-        //https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
-        path: "/form/:forumId/thread/create",
-        name: "ThreadCreate",
-        component: ThreadCreate,
-        props: true
     },
     {
         path: "/me",

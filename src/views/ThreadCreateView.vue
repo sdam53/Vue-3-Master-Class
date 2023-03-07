@@ -4,10 +4,11 @@ import { useForumsStore } from "@/stores/ForumsStore";
 import router from "@/router";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import ThreadEditor from "@/components/ThreadEditorComponent.vue";
+import type Forum from "@/types/Forum";
 const props = defineProps(["forumId"]);
 const forum = computed(() => {
     let forumStore = useForumsStore();
-    return forumStore.forums.find((forum) => forum.id === props.forumId);
+    return forumStore.forums.find((forum: Forum) => forum.id === props.forumId);
 });
 async function save(title: string, text: string) {
     let threadStore = useThreadsStore();
