@@ -5,11 +5,23 @@ import { defineProps, computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 
+//stores
 const threadsStore = useThreadsStore();
 const forumsStore = useForumsStore();
 
-const props = defineProps(["id", "slug"]);
+//props
+const props = defineProps({
+    id: {
+        type: String,
+        required: true
+    },
+    slug: {
+        type: String,
+        required: false
+    }
+});
 
+//computed data
 const threads = computed(() => {
     return threadsStore.threads.filter((thread) => thread.forumId === props.id);
 });

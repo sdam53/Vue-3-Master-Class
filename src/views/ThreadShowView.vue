@@ -1,33 +1,39 @@
 <script setup lang="ts">
-//page that shows individual threads
+//page that shows a individual thread and its posts
+
+import { computed } from "vue";
 import PostListComponent from "@/components/PostListComponent.vue";
 import PostEditorComponent from "@/components/PostEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
-import { ref, computed, defineProps } from "vue";
 import type Post from "@/types/Post";
 
+//stores
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
+
+//prop
 //TODO: it requires a slug but it actually isnt being used
 const props = defineProps(["id", "slug"]);
+
+//computed data
 const thread = computed(() => {
-    //console.log(threads.value.find((thread) => thread.id === props.id));
     return threadsStore.threads.find((thread) => thread.id === props.id);
 });
 const threadPosts = computed(() => {
     return postsStore.posts.filter((post) => post.threadId === props.id);
 });
 
+/**
+ * function to add a post to a thread
+ * @param eventData the event
+ */
 //TODO look into eventData type. It is Event but .post doesnt exist in that type
 const addPost = (eventData: any) => {
     const post: Post = {
         ...eventData.post,
         threadId: props.id
     };
-
-    //posts.value.push(post);
-    //thread.value.posts.push(post.id);
     postsStore.createPost(post);
 };
 </script>

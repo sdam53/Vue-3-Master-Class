@@ -1,11 +1,15 @@
 <script setup lang="ts">
+//page to view user profile
+
 import PostList from "@/components/PostListComponent.vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
 
+//store
 const currentUserStore = useCurrentUserStore();
 
+//prop
 const props = defineProps({
     edit: { type: Boolean, default: false }
 });

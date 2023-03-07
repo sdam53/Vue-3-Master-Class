@@ -9,14 +9,28 @@ import { useCategoriesStore } from "@/stores/CategoriesStore.js";
 import { useForumsStore } from "@/stores/ForumsStore.js";
 import type Category from "@/types/Category";
 
+//stores
 const categoriesStore = useCategoriesStore();
 const ForumsStore = useForumsStore();
 
-const props = defineProps(["id", "slug"]);
+//props
+const props = defineProps({
+    id: {
+        type: String,
+        required: true
+    },
+    slug: {
+        type: String,
+        required: true
+    }
+});
 
+//computed data
 const category = computed(() => {
     return categoriesStore.categories.find((category) => category.id === props.id);
 });
+
+//function to get forums for a certain category
 const getForumsForCategory = (category: Category) => {
     return ForumsStore.forums.filter((forum) => forum.categoryId === category.id);
 };
