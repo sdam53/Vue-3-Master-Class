@@ -1,14 +1,38 @@
 <script setup lang="ts">
+//editor component to update user info
+
 import { ref } from "vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import type { PropType } from "vue";
 import router from "@/router";
-const currentUserStore = useCurrentUserStore();
-const props = defineProps(["user"]);
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import type User from "@/types/User";
+
+//prop
+//const props = defineProps(["user"]);
+const props = defineProps({
+    user: {
+        type: Object as PropType<User>,
+        required: true
+    }
+});
+
+//ref
 const activeUser = ref({ ...props.user });
+
+//store
+const currentUserStore = useCurrentUserStore();
+
+/**
+ * saves the edited information
+ */
 const save = () => {
     currentUserStore.updateUser(activeUser.value);
     cancel();
 };
+
+/**
+ * cancels the edited information
+ */
 const cancel = () => {
     router.push({ name: "Profile" });
 };

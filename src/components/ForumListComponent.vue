@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import type Forum from "@/types/Forum";
-import { defineProps } from "vue";
+//component to display forums and their respected threads
 
+import type Forum from "@/types/Forum";
+
+//props
 const props = defineProps(["forums", "title", "categoryId", "slug"]);
 
+/**
+ * returns the string to use depending on how much threads a forum has
+ * @param forum the forum
+ */
 const forumThreadsWord = (forum: Forum) => {
     if (forum.threads?.length) {
         return forum.threads.length > 1 ? "threads" : "thread";
@@ -11,6 +17,11 @@ const forumThreadsWord = (forum: Forum) => {
         return "threads";
     }
 };
+
+/**
+ * returns the amount of threads a forum has
+ * @param forum the forum
+ */
 const forumThreadsCount = (forum: Forum) => {
     if (forum.threads?.length) {
         return forum.threads.length;

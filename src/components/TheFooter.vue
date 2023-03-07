@@ -1,8 +1,10 @@
 <script setup lang="ts">
+//component that is the footer
+
 import { ref } from "vue";
 
+//refs
 const links = ref(["Home", "About Us", "Team", "Services", "Blog", "Contact Us"]);
-console.log(links);
 </script>
 
 <template>

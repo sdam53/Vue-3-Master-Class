@@ -1,17 +1,39 @@
 <script setup lang="ts">
+//component for thread editing
+
 import { ref } from "vue";
 
-const props = defineProps(["title", "text"]);
+//props
+const props = defineProps({
+    title: {
+        type: String,
+        required: true
+    },
+    text: {
+        type: String,
+        required: true
+    }
+});
+
+//emits
 const emit = defineEmits(["save", "cancel"]);
 
+//refs
 const form = ref({
     title: props.title,
     text: props.text
 });
 
+/**
+ * sends an event to the ThreadEditView page to save the edit
+ */
 const save = () => {
     emit("save", form.value.title, form.value.text);
 };
+
+/**
+ * sends an event to cancel the edit
+ */
 const cancel = () => {
     emit("cancel", {});
 };

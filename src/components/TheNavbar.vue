@@ -1,8 +1,13 @@
 <script setup lang="ts">
+//component for the navigation bar
+
 import { ref } from "vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
+
+//store
 const currentUser = useCurrentUserStore();
 
+//refs
 const appTitle = ref("FORUMS BOI");
 const sidebar = ref(false);
 //https://pictogrammers.com/library/mdi/

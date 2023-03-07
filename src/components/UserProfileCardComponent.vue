@@ -1,15 +1,20 @@
 <script setup lang="ts">
+//profile card component for user info
+
+import type { PropType } from "vue";
 import type User from "@/types/User";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+
+//store
 const currentUserStore = useCurrentUserStore();
 
-/*
-//TODO: Figure out how to get this way working without errors
-const props = defineProps<{
-    user: { type: User; required: true };
-}>();
-*/
-const props = defineProps(["user"]);
+//props
+const props = defineProps({
+    user: {
+        type: Object as PropType<User>,
+        required: false
+    }
+});
 </script>
 
 <template>

@@ -12,4 +12,5 @@ export default interface User {
     website?: string;
     id: string;
     threads?: string[];
+    location?: string;
 }

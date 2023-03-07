@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { ref, defineEmits } from "vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+//Component for editing posts ie creating
 
-const currentUser = useCurrentUserStore();
+import { ref } from "vue";
+
+//emits
+const emit = defineEmits(["savePost"]);
+
+//refs
 const text = ref("");
-const emit = defineEmits(["addPost"]);
+
+/**
+ * sends a event to the post to add a post to a thread
+ */
 const addPost = () => {
     const post = {
         text: text.value
     };
-    //TODO: Figure out this error with save post
     emit("savePost", { post }); // access under eventData.post
     text.value = "";
 };

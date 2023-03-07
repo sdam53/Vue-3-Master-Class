@@ -1,13 +1,20 @@
 <script setup lang="ts">
-//shows up in the home page
+//component to display a list of categories and their respective forums
+
 import ForumList from "@/components/ForumListComponent.vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import type Category from "@/types/Category";
-import { defineProps } from "vue";
 
-const forumsStore = useForumsStore();
+//props
 const props = defineProps(["categories"]); //list of categories and their respected forums
 
+//store
+const forumsStore = useForumsStore();
+
+/**
+ * returns the forums in a specific category
+ * @param category specific category
+ */
 const getForumsForCategory = (category: Category) => {
     return forumsStore.forums.filter((forum) => forum.categoryId === category.id);
 };

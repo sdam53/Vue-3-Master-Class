@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, defineProps } from "vue";
+//component to display a list of posts in a thread
+
 import { useUsersStore } from "@/stores/UsersStore.js";
+
+//props
+const props = defineProps(["posts"]);
+
+//store
 const userStore = useUsersStore();
 
-const users = ref(userStore.users);
-const props = defineProps(["posts"]);
+/**
+ * returns users based on their id
+ * @param userId
+ */
 const userById = (userId: string) => {
-    return users.value.find((p) => p.id === userId);
+    return userStore.users.find((p) => p.id === userId);
 };
 </script>
 
