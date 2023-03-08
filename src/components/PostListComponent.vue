@@ -27,7 +27,9 @@ const userById = (userId: string) => {
                 <a href="#">
                     <img class="avatar-large" :src="userById(post.userId)!.avatar" alt="" />
                 </a>
-                <p class="desktop-only text-small">107 posts</p>
+                <p class="desktop-only text-small">
+                    {{ userStore.getUserPostCount(post.userId) }} posts
+                </p>
             </div>
             <div class="post-content">
                 <div>
