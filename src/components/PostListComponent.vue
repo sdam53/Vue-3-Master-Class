@@ -2,7 +2,7 @@
 //component to display a list of posts in a thread
 
 import { findById } from "@/middleware/HelperFunctions";
-import { useUsersStore } from "@/stores/UsersStore.js";
+import { useUsersStore } from "@/stores/UsersStore";
 import { usePostsStore } from "@/stores/PostsStore";
 
 //props
