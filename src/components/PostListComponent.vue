@@ -1,6 +1,7 @@
 <script setup lang="ts">
 //component to display a list of posts in a thread
 
+import { findById } from "@/middleware/HelperFunctions";
 import { useUsersStore } from "@/stores/UsersStore.js";
 
 //props
@@ -14,7 +15,7 @@ const userStore = useUsersStore();
  * @param userId
  */
 const userById = (userId: string) => {
-    return userStore.users.find((p) => p.id === userId);
+    return findById(userStore.users, userId);
 };
 </script>
 

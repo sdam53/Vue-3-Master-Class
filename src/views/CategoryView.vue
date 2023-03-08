@@ -8,6 +8,7 @@ import ForumListComponent from "@/components/ForumListComponent.vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore.js";
 import { useForumsStore } from "@/stores/ForumsStore.js";
 import type Category from "@/types/Category";
+import { findById } from "@/middleware/HelperFunctions";
 
 //stores
 const categoriesStore = useCategoriesStore();
@@ -27,7 +28,7 @@ const props = defineProps({
 
 //computed data
 const category = computed(() => {
-    return categoriesStore.categories.find((category) => category.id === props.id);
+    return findById(categoriesStore.categories, props.id);
 });
 
 //function to get forums for a certain category

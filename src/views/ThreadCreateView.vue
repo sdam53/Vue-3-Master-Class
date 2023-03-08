@@ -7,6 +7,7 @@ import ThreadEditor from "@/components/ThreadEditorComponent.vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import type Forum from "@/types/Forum";
+import { findById } from "@/middleware/HelperFunctions";
 
 //prop
 const props = defineProps({
@@ -19,7 +20,7 @@ const props = defineProps({
 //computed data
 const forum = computed(() => {
     let forumStore = useForumsStore();
-    return forumStore.forums.find((forum: Forum) => forum.id === props.forumId);
+    return findById(forumStore.forums, props.forumId);
 });
 
 //function to save and create a new thread

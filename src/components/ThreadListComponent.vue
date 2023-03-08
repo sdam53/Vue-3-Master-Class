@@ -6,6 +6,7 @@ import { useUsersStore } from "@/stores/UsersStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type { PropType } from "vue"; //used to set props with objects
 import type Thread from "@/types/Thread";
+import { findById } from "@/middleware/HelperFunctions";
 
 //props
 //being used regardless of it saying no
@@ -29,7 +30,7 @@ const users = reactive(usersStore.users);
  * @param postId the postid
  */
 function postById(postId: string) {
-    return posts.find((p) => p.id === postId);
+    return findById(posts, postId);
 }
 
 /**
@@ -37,7 +38,7 @@ function postById(postId: string) {
  * @param userId userid
  */
 function userById(userId: string) {
-    return users.find((p) => p.id === userId);
+    return findById(users, userId);
 }
 </script>
 

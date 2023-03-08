@@ -7,6 +7,7 @@ import ThreadEditor from "@/components/ThreadEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Thread from "@/types/Thread";
+import { findById } from "@/middleware/HelperFunctions";
 
 //props
 const props = defineProps({
@@ -19,11 +20,11 @@ const props = defineProps({
 //computed data
 const thread = computed(() => {
     let threadStore = useThreadsStore();
-    return threadStore.threads.find((thread: Thread) => thread.id === props.id);
+    return findById(threadStore.threads, props.id);
 });
 const text = computed(() => {
     let postStore = usePostsStore();
-    return postStore.posts.find((post) => post.id === thread.value?.posts[0])?.text || "";
+    return findById(postStore.posts, thread.value?.posts[0])?.text || "";
 });
 
 //function to save changes
@@ -48,6 +49,3 @@ const cancel = () => {
         </ThreadEditor>
     </div>
 </template>
-
-const currentUserStore = useCurrentUserStore(); const forumStore = useForumsStore(); const
-usersStore = useUsersStore(); const postStore = usePostsStore();

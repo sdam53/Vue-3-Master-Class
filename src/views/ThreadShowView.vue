@@ -7,6 +7,7 @@ import PostEditorComponent from "@/components/PostEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Post from "@/types/Post";
+import { findById } from "@/middleware/HelperFunctions";
 
 //stores
 const threadsStore = useThreadsStore();
@@ -18,7 +19,7 @@ const props = defineProps(["id", "slug"]);
 
 //computed data
 const thread = computed(() => {
-    return threadsStore.threads.find((thread) => thread.id === props.id);
+    return findById(threadsStore.threads, props.id);
 });
 const threadPosts = computed(() => {
     return postsStore.posts.filter((post) => post.threadId === props.id);
