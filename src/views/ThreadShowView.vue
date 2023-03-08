@@ -7,11 +7,13 @@ import PostEditorComponent from "@/components/PostEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Post from "@/types/Post";
-import { findById } from "@/middleware/HelperFunctions";
+import { findById, diffForHumans } from "@/middleware/HelperFunctions";
+import { useUsersStore } from "@/stores/UsersStore";
 
 //stores
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
+const usersStore = useUsersStore();
 
 //prop
 //TODO: it requires a slug but it actually isnt being used
@@ -49,6 +51,15 @@ const addPost = (eventData: any) => {
                 >Edit Thread</router-link
             >
         </h1>
+        <p>
+            By <b>{{ usersStore.getUser(thread.userId)?.name }}</b
+            ><a href="#" class="link-unstyled">{{}}</a>,
+            <i>{{ diffForHumans(thread.publishedAt) }}.</i>
+            <span style="float: right; margin-top: 2px" class="hide-mobile text-faded text-small"
+                >{{ thread.posts.length }} replies by
+                {{ thread.contributors.length }} contributor/s</span
+            >
+        </p>
         <PostListComponent :posts="threadPosts" />
         <PostEditorComponent @savePost="addPost" />
     </div>
