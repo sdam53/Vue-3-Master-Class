@@ -7,6 +7,7 @@ import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useCurrentUserStore } from "./CurrentUserStore";
 import { findById } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
+import type Thread from "@/types/Thread";
 
 /**
  * post store
@@ -26,8 +27,9 @@ export const usePostsStore = defineStore("PostsStore", () => {
         post.userId = currentUser.authId;
         post.publishedAt = Math.floor(Date.now() / 1000);
         posts.value.push(post);
-        const thread = findById(threadsStore.threads, post.threadId);
+        const thread: Thread = findById(threadsStore.threads, post.threadId);
         thread?.posts.push(post.id);
+        threadsStore.appendUserToThread(post.userId, post.threadId);
     };
 
     //function to set a post

@@ -27,6 +27,17 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     //ref
     const threads = ref(sourceDataStore.threads);
 
+    //computed data
+    const threadInfo = (threadId: string) => {
+        const thread: Thread = findById(threads.value, threadId);
+        return {
+            ...thread,
+            author: findById(usersStore.users, thread.userId),
+            repliesCount: thread.posts.length,
+            contributorsCount: thread.contributors.length
+        };
+    };
+
     //function to create a new thread
     async function createThread(title: string, text: string, forumId: string) {
         let id: string = "qqqgg" + Math.random();
@@ -46,8 +57,9 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
             id: id
         };
         setThread(thread);
-        appendThreadToUser(userId, id);
-        appendThreadToForum(forumId, id);
+        appendThreadToUser(userId, id); //user.threads
+        appendUserToThread(userId, id); //thread.contributors
+        appendThreadToForum(forumId, id); //forum.threads
         let post: Post = {
             text: text,
             threadId: thread.id,
@@ -76,11 +88,27 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         forum?.threads.push(threadId);
     };
 
-    //adds a user to a thread
+    //adds a thread to a user
+    //should this be used only when a user creates a thread? i think so
     const appendThreadToUser = (userId: string, threadId: string) => {
         const user: User = findById(usersStore.users, userId);
+        if (user.threads != null && user.threads.includes(threadId)) {
+            return;
+        }
         user.threads = user.threads || [];
         user.threads.push(threadId);
+    };
+
+    //adds a user to a thread
+    const appendUserToThread = (userId: string, threadId: string) => {
+        const thread: Thread = findById(threads.value, threadId);
+        if (thread.contributors.includes(userId)) {
+            console.log("NOOOOO");
+            return;
+        }
+        console.log("yes");
+
+        thread.contributors.push(userId);
     };
 
     //updates a thread's title and text
@@ -94,7 +122,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         return newThread;
     }
 
-    return { threads, createThread, updateThread };
+    return { threads, createThread, updateThread, appendThreadToUser, appendUserToThread };
 });
 
 if (import.meta.hot) {
