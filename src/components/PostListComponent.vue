@@ -3,12 +3,14 @@
 
 import { findById } from "@/middleware/HelperFunctions";
 import { useUsersStore } from "@/stores/UsersStore.js";
+import { usePostsStore } from "@/stores/PostsStore";
 
 //props
 const props = defineProps(["posts"]);
 
 //store
 const userStore = useUsersStore();
+const postStore = usePostsStore();
 
 /**
  * returns users based on their id
@@ -28,7 +30,7 @@ const userById = (userId: string) => {
                     <img class="avatar-large" :src="userById(post.userId)!.avatar" alt="" />
                 </a>
                 <p class="desktop-only text-small">
-                    {{ userStore.getUserPostCount(post.userId) }} posts
+                    {{ postStore.getUserPostCount(post.userId) }} posts
                 </p>
             </div>
             <div class="post-content">

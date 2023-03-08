@@ -24,17 +24,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
         return findById(users.value, userId);
     };
 
-    //function to get a specific user's posts count
-    const getUserPosts = (userId: string): Post[] => {
-        return postStore.posts.filter((post) => post.userId === userId);
-    };
-
-    //function to get a specific user's posts count
-    const getUserPostCount = (userId: string): number => {
-        return postStore.posts.filter((post) => post.userId === userId).length;
-    };
-
-    return { users, getUser, getUserPosts, getUserPostCount };
+    return { users, getUser };
 });
 
 if (import.meta.hot) {
