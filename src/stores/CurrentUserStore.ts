@@ -8,6 +8,7 @@ import type User from "@/types/User";
 import { usePostsStore } from "./PostsStore";
 import { useThreadsStore } from "./ThreadsStore";
 import { useUsersStore } from "./UsersStore";
+import { findById } from "@/middleware/HelperFunctions";
 
 /**
  * current user store
@@ -22,7 +23,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");
 
     //computed data
-    const authUser = computed(() => userStore.users.find((user) => user.id === authId.value));
+    const authUser = computed(() => findById(userStore.users, authId.value));
     const name = computed(() => authUser.value?.name);
     const avatar = computed(() => authUser.value?.avatar);
     const username = computed(() => authUser.value?.username);

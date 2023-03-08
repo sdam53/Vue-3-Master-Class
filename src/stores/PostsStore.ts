@@ -5,6 +5,7 @@ import { ref } from "vue";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useCurrentUserStore } from "./CurrentUserStore";
+import { findById } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 
 /**
@@ -14,6 +15,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
     //stores
     const sourceDataStore = useSourceDataStore();
     const currentUser = useCurrentUserStore();
+    const threadsStore = useThreadsStore();
 
     //ref
     const posts = ref(sourceDataStore.posts);
@@ -24,7 +26,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
         post.userId = currentUser.authId;
         post.publishedAt = Math.floor(Date.now() / 1000);
         posts.value.push(post);
-        const thread = useThreadsStore().threads.find((thread) => thread.id === post.threadId);
+        const thread = findById(threadsStore.threads, post.threadId);
         thread?.posts.push(post.id);
     };
 

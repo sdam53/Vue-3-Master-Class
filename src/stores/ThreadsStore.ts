@@ -10,7 +10,8 @@ import { useForumsStore } from "./ForumsStore";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useUsersStore } from "./UsersStore";
-import { stringToSlug } from "@/middleware/HelperFunctions";
+import { findById, stringToSlug } from "@/middleware/HelperFunctions";
+import type Forum from "@/types/Forum";
 
 /**
  * threads store
@@ -56,7 +57,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
             id: "0"
         };
         postStore.createPost(post);
-        return threads.value.find((thread) => thread.id === id);
+        return findById(threads.value, id);
     }
 
     //sets a thread
@@ -71,22 +72,21 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
 
     //adds a thread to a forum
     const appendThreadToForum = (forumId: string, threadId: string) => {
-        const forum = forumStore.forums.find((forum) => forum.id === forumId);
+        const forum: Forum = findById(forumStore.forums, forumId);
         forum?.threads.push(threadId);
     };
 
     //adds a user to a thread
     const appendThreadToUser = (userId: string, threadId: string) => {
-        //TODO: Figure out user and thread and post
-        const user: User = usersStore.users.find((user) => user.id === userId);
+        const user: User = findById(usersStore.users, userId);
         user.threads = user.threads || [];
         user.threads.push(threadId);
     };
 
     //updates a thread's title and text
     async function updateThread(title: string, text: string, id: string) {
-        const thread: Thread = threads.value.find((thread) => thread.id === id);
-        const post: Post = postStore.posts.find((post) => post.id === thread.posts[0]);
+        const thread: Thread = findById(threads.value, id);
+        const post: Post = findById(postStore.posts, thread.posts[0]);
         const newThread: Thread = { ...thread, title }; //using spread operator and overriding title
         const newPost: Post = { ...post, text }; //same but for post
         setThread(newThread);
