@@ -13,8 +13,8 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
     const sourceDataStore = useSourceDataStore();
 
     //ref
-    //const categories = ref(sourceDataStore.categories);
-    const categories = ref<Category[]>([]);
+    const categories = ref(sourceDataStore.categories);
+    //const categories = ref<Category[]>([]);
 
     return { categories };
 });

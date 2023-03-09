@@ -1,16 +1,18 @@
 //pinia store to keep track of threads
 
-import type Post from "@/types/Post";
-import type Thread from "@/types/Thread";
-import type User from "@/types/User";
-import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
+import { acceptHMRUpdate, defineStore } from "pinia";
 import { useCurrentUserStore } from "./CurrentUserStore";
 import { useForumsStore } from "./ForumsStore";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useUsersStore } from "./UsersStore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
+import type Post from "@/types/Post";
+import type Thread from "@/types/Thread";
+import type User from "@/types/User";
 import type Forum from "@/types/Forum";
 
 /**
@@ -118,7 +120,42 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         return newThread;
     }
 
-    return { threads, createThread, updateThread, appendThreadToUser, appendUserToThread };
+    //fetches a thread
+    async function fetchThread(threadId: string): Promise<Thread> {
+        console.log("Fetching Thread");
+        let db = getFirestore();
+        return new Promise((resolve) => {
+            let docRef = doc(db, "threads", threadId);
+            onSnapshot(docRef, (doc) => {
+                let docItem = doc.data();
+                let thread: Thread = {
+                    contributors: docItem?.contributors,
+                    firstPostId: docItem?.firstPostId,
+                    forumId: docItem?.forumId,
+                    lastPostAt: docItem?.lastPostAt,
+                    lastPostId: docItem?.lastPostId,
+                    posts: docItem?.posts,
+                    publishedAt: docItem?.publishedAt,
+                    slug: docItem?.slug,
+                    title: docItem?.title,
+                    userId: docItem?.userId,
+                    id: doc.id
+                };
+                //let thread: Thread = { ...doc.data(), id: doc.id }; //would be ideal but error
+                setThread(thread);
+                resolve(thread);
+            });
+        });
+    }
+
+    return {
+        threads,
+        createThread,
+        updateThread,
+        appendThreadToUser,
+        appendUserToThread,
+        fetchThread
+    };
 });
 
 if (import.meta.hot) {

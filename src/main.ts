@@ -3,8 +3,9 @@ import App from "./App.vue";
 import { createPinia } from "pinia";
 import router from "./router/index";
 import AppDate from "@/components/AppDate.vue";
+
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "@/config/firebase";
+import { firebaseConfig } from "./config/firebase";
 
 //vuetify stuff
 import "vuetify/styles";
@@ -20,7 +21,6 @@ const vuetify = createVuetify({
     }
 });
 
-// Initialize Firebase
 const firebase = initializeApp(firebaseConfig);
 
 const pinia = createPinia();

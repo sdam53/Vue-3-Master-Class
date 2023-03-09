@@ -19,8 +19,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
     const threadsStore = useThreadsStore();
 
     //ref
-    //const posts = ref(sourceDataStore.posts);
-    const posts = ref<Post[]>([]);
+    const posts = ref(sourceDataStore.posts);
+    //const posts = ref<Post[]>([]);
 
     //function to create a new post to a thread
     const createPost = (post: Post) => {

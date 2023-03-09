@@ -61,8 +61,8 @@ const menuItems = ref([
                 </v-btn>
 
                 <v-btn v-if="currentUser.isSignedIn" flat :to="`/me`">
-                    <v-img left dark src="currentUser.authUser?.avatar"></v-img>
-                    {{ currentUser.authUser?.name }}
+                    <!--<v-img left dark src="currentUser.authUser?.avatar"></v-img>
+                    -->{{ currentUser.authUser?.name }}
                 </v-btn>
 
                 <v-btn v-else flat :to="`/`">
@@ -72,9 +72,11 @@ const menuItems = ref([
             </v-toolbar-items>
         </v-toolbar>
 
-        <v-content class="container">
-            <router-view></router-view>
-        </v-content>
+        <suspense>
+            <v-content class="container">
+                <router-view></router-view>
+            </v-content>
+        </suspense>
     </v-app>
 </template>
 
