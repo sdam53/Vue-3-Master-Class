@@ -8,7 +8,7 @@ import type User from "@/types/User";
 import { usePostsStore } from "./PostsStore";
 import { useThreadsStore } from "./ThreadsStore";
 import { useUsersStore } from "./UsersStore";
-import { findById } from "@/middleware/HelperFunctions";
+import { findById, upsert } from "@/middleware/HelperFunctions";
 
 /**
  * current user store
@@ -43,8 +43,10 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
 
     //function to set the user
     const setUser = (user: User, userId: string) => {
-        const userIndex = userStore.users.findIndex((user: User) => user.id === userId);
-        userStore.users[userIndex] = { ...user };
+        //const userIndex = userStore.users.findIndex((user: User) => user.id === userId);
+        //userStore.users[userIndex] = { ...user };
+        user.id = userId;
+        upsert(userStore.users, user);
     };
 
     //function to update the current user
@@ -65,7 +67,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         postsCount,
         threads,
         threadsCount,
-        setUser,
+        //setUser,
         updateUser
     };
 });

@@ -5,7 +5,7 @@ import { ref } from "vue";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useCurrentUserStore } from "./CurrentUserStore";
-import { findById } from "@/middleware/HelperFunctions";
+import { findById, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 
@@ -19,7 +19,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
     const threadsStore = useThreadsStore();
 
     //ref
-    const posts = ref(sourceDataStore.posts);
+    //const posts = ref(sourceDataStore.posts);
+    const posts = ref<Post[]>([]);
 
     //function to create a new post to a thread
     const createPost = (post: Post) => {
@@ -34,12 +35,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
 
     //function to set a post
     const setPost = (post: Post) => {
-        const index = posts.value.findIndex((p) => p.id === post.id);
-        if (post.id && index !== -1) {
-            posts.value[index] = post;
-        } else {
-            posts.value.push(post);
-        }
+        upsert(posts.value, post);
     };
 
     //function to get a specific user's posts count

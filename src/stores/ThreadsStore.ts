@@ -10,7 +10,7 @@ import { useForumsStore } from "./ForumsStore";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useUsersStore } from "./UsersStore";
-import { findById, stringToSlug } from "@/middleware/HelperFunctions";
+import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
 import type Forum from "@/types/Forum";
 
 /**
@@ -25,7 +25,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     const usersStore = useUsersStore();
 
     //ref
-    const threads = ref(sourceDataStore.threads);
+    //const threads = ref(sourceDataStore.threads);
+    const threads = ref<Thread[]>([]);
 
     //computed data
     const threadInfo = (threadId: string) => {
@@ -74,12 +75,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
 
     //sets a thread
     const setThread = (thread: Thread) => {
-        const index = threads.value.findIndex((t) => t.id === thread.id);
-        if (thread.id && index !== -1) {
-            threads.value[index] = thread;
-        } else {
-            threads.value.push(thread);
-        }
+        upsert(threads.value, thread);
     };
 
     //adds a thread to a forum

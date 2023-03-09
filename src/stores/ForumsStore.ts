@@ -1,5 +1,6 @@
 //pinia store to keep track of the forums
 
+import type Forum from "@/types/Forum";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 import { useSourceDataStore } from "./SourceDataStore";
@@ -12,7 +13,8 @@ export const useForumsStore = defineStore("ForumsStore", () => {
     const sourceDataStore = useSourceDataStore();
 
     //ref
-    const forums = ref(sourceDataStore.forums);
+    //const forums = ref(sourceDataStore.forums);
+    const forums = ref<Forum[]>([]);
 
     return { forums };
 });

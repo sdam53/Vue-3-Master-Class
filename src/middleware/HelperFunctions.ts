@@ -54,4 +54,18 @@ const humanFriendlyDate = (timestamp: number) => {
     return dayjs.unix(timestamp).format("llll");
 };
 
-export { findById, stringToSlug, diffForHumans, humanFriendlyDate };
+/**
+ * inserts or updates a list
+ * @param resources list of resource
+ * @param resource json object that contains a id value
+ */
+const upsert = (resources: any[], resource: any) => {
+    let index = resources.findIndex((e) => e.id === resource.id);
+    if (resource.id && index !== -1) {
+        resources[index] = resource;
+    } else {
+        resources.push(resource);
+    }
+};
+
+export { findById, stringToSlug, diffForHumans, humanFriendlyDate, upsert };

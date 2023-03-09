@@ -1,5 +1,6 @@
 //pinia store to keep track of categories
 
+import type Category from "@/types/Category";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 import { useSourceDataStore } from "./SourceDataStore";
@@ -12,7 +13,8 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
     const sourceDataStore = useSourceDataStore();
 
     //ref
-    const categories = ref(sourceDataStore.categories);
+    //const categories = ref(sourceDataStore.categories);
+    const categories = ref<Category[]>([]);
 
     return { categories };
 });
