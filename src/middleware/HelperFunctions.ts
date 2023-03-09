@@ -19,7 +19,7 @@ dayjs.extend(localizedDate);
  * @param id the id to search for
  */
 const findById = (resources: Array<User | Thread | Forum | Category | any>, id: string): any => {
-    if (resources === null || id === null) return null;
+    if (!resources || !id) return null;
     return resources.find((item) => item.id === id);
 };
 

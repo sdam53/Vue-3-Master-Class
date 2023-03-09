@@ -41,17 +41,10 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     });
     const threadsCount = computed(() => threads.value.length);
 
-    //function to set the user
-    const setUser = (user: User, userId: string) => {
-        //const userIndex = userStore.users.findIndex((user: User) => user.id === userId);
-        //userStore.users[userIndex] = { ...user };
-        user.id = userId;
-        upsert(userStore.users, user);
-    };
-
     //function to update the current user
     const updateUser = (user: User) => {
-        setUser(user, authId.value);
+        //setUser(user);
+        //authUser.value = user;
     };
 
     return {

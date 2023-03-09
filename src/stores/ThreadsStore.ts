@@ -75,9 +75,9 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         return findById(threads.value, id);
     }
 
-    //sets a thread
+    //sets a thread into memory
     const setThread = (thread: Thread) => {
-        upsert(threads.value, thread);
+        upsert(threads.value, { ...thread });
     };
 
     //adds a thread to a forum
@@ -142,8 +142,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
                     id: doc.id
                 };
                 //let thread: Thread = { ...doc.data(), id: doc.id }; //would be ideal but error
-                setThread(thread);
-                resolve(thread);
+                setThread({ ...thread });
+                resolve({ ...thread });
             });
         });
     }

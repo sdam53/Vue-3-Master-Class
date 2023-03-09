@@ -22,8 +22,8 @@ const usersStore = useUsersStore();
 const props = defineProps(["id", "slug"]);
 
 //ref
-const thread = ref<Thread>(await threadsStore.fetchThread(props.id).then());
-const creator = ref<User>(await usersStore.fetchUser(thread.value.userId));
+const thread = await threadsStore.fetchThread(props.id);
+const creator = await usersStore.fetchUser(thread.userId);
 
 //computed
 const threadPosts = computed(() => {
@@ -42,6 +42,11 @@ const addPost = (eventData: any) => {
     };
     postsStore.createPost(post);
 };
+
+thread.posts.forEach(async (postId) => {
+    let post = await postsStore.fetchPost(postId);
+    usersStore.fetchUser(post!.userId);
+});
 </script>
 
 <template>

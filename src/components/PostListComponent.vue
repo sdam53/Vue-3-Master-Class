@@ -4,6 +4,7 @@
 import { findById } from "@/middleware/HelperFunctions";
 import { useUsersStore } from "@/stores/UsersStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import type Post from "@/types/Post";
 
 //props
 const props = defineProps(["posts"]);
@@ -19,19 +20,39 @@ const postStore = usePostsStore();
 const userById = (userId: string) => {
     return findById(userStore.users, userId);
 };
+
+/**
+ * makes the userstore make a request to get user, which then gets saved
+ * @param userId userid
+ */
+async function getUser(userId: string) {
+    let user = await userStore.fetchUser(userId);
+    return user;
+}
+
+//on created
+/**
+ * goes through each user in the thread and makes request to get their information
+ */
+props.posts.forEach((post: Post) => {
+    getUser(post.userId);
+});
 </script>
 
 <template>
     <div class="post-list">
         <div class="post" v-for="post in props.posts" :key="post.id">
-            <div class="user-info">
+            <div v-if="userById(post.userId)" class="user-info">
                 <a href="#" class="user-name">{{ userById(post.userId)!.name }}</a>
                 <a href="#">
                     <img class="avatar-large" :src="userById(post.userId)!.avatar" alt="" />
                 </a>
-                <p class="desktop-only text-small">
-                    {{ postStore.getUserPostCount(post.userId) }} posts
-                </p>
+                <!--
+
+                    <p class="desktop-only text-small">
+                        {{ postStore.getUserPostCount(post.userId) }} posts
+                    </p>
+                -->
             </div>
             <div class="post-content">
                 <div>

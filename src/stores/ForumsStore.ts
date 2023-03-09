@@ -13,8 +13,8 @@ export const useForumsStore = defineStore("ForumsStore", () => {
     const sourceDataStore = useSourceDataStore();
 
     //ref
-    const forums = ref(sourceDataStore.forums);
-    //const forums = ref<Forum[]>([]);
+    //const forums = ref(sourceDataStore.forums);
+    const forums = ref<Forum[]>([]);
 
     return { forums };
 });
