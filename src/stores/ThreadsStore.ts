@@ -44,7 +44,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     };
 
     //function to create a new thread
-    async function createThread(title: string, text: string, forumId: string) {
+    async function createThread(title: string, text: string, forumId: string): Promise<Thread> {
         let id: string = "qqqgg" + Math.random();
         let userId: string = currentUserStore.authId;
         let publishedAt: number = Math.floor(Date.now() / 1000);

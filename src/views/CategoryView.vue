@@ -12,7 +12,7 @@ import { findById } from "@/middleware/HelperFunctions";
 
 //stores
 const categoriesStore = useCategoriesStore();
-const ForumsStore = useForumsStore();
+const forumsStore = useForumsStore();
 
 //props
 const props = defineProps({
@@ -33,8 +33,16 @@ const category = computed(() => {
 
 //function to get forums for a certain category
 const getForumsForCategory = (category: Category) => {
-    return ForumsStore.forums.filter((forum) => forum.categoryId === category.id);
+    return forumsStore.forums.filter((forum) => forum.categoryId === category.id);
 };
+
+async function created() {
+    if (category.value === undefined) {
+        let category = await categoriesStore.fetchCategory(props.id);
+        forumsStore.fetchForums(category.forums);
+    }
+}
+await created();
 </script>
 
 <template>

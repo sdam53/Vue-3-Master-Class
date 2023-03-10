@@ -17,15 +17,17 @@ const props = defineProps({
     }
 });
 
+//stores
+let forumStore = useForumsStore();
+let threadStore = useThreadsStore();
+
 //computed data
 const forum = computed(() => {
-    let forumStore = useForumsStore();
     return findById(forumStore.forums, props.forumId);
 });
 
 //function to save and create a new thread
 async function save(title: string, text: string) {
-    let threadStore = useThreadsStore();
     let thread = await threadStore.createThread(title, text, props.forumId);
     router.push({ name: "ThreadShow", params: { id: thread?.id, slug: thread?.slug } });
 }
@@ -34,10 +36,17 @@ async function save(title: string, text: string) {
 const cancel = () => {
     router.push({ name: "Forum", params: { id: forum.value?.id, slug: forum.value?.slug } });
 };
+
+async function created() {
+    if (forum.value === undefined) {
+        forumStore.fetchForum(props.forumId);
+    }
+}
+await created();
 </script>
 
 <template>
-    <div class="col-full push-top">
+    <div v-if="forum" class="col-full push-top">
         <h1>
             Create new thread in <i>{{ forum?.name }}</i>
         </h1>

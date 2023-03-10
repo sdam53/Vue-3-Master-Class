@@ -17,19 +17,20 @@ const props = defineProps({
     }
 });
 
+//stores
+let threadStore = useThreadsStore();
+let postStore = usePostsStore();
+
 //computed data
 const thread = computed(() => {
-    let threadStore = useThreadsStore();
     return findById(threadStore.threads, props.id);
 });
 const text = computed(() => {
-    let postStore = usePostsStore();
     return findById(postStore.posts, thread.value?.posts[0])?.text || "";
 });
 
 //function to save changes
 async function save(title: string, text: string) {
-    let threadStore = useThreadsStore();
     let thread = await threadStore.updateThread(title, text, props.id);
     router.push({ name: "ThreadShow", params: { id: thread?.id, slug: thread?.slug } });
 }
@@ -38,10 +39,18 @@ async function save(title: string, text: string) {
 const cancel = () => {
     router.push({ name: "ThreadShow", params: { id: thread.value?.id, slug: thread.value?.slug } });
 };
+
+async function created() {
+    if (thread.value === undefined) {
+        await threadStore.fetchThread(props.id);
+        await postStore.fetchPost(thread.value?.posts[0]);
+    }
+}
+await created();
 </script>
 
 <template>
-    <div class="col-full push-top">
+    <div v-if="thread && text" class="col-full push-top">
         <h1>
             Editing <i>{{ thread?.title }}</i>
         </h1>
