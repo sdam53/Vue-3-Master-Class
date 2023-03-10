@@ -1,5 +1,6 @@
 //pinia store to keep track of users
 
+import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { findById, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type User from "@/types/User";
@@ -33,34 +34,27 @@ export const useUsersStore = defineStore("UsersStore", () => {
         upsert(users.value, { ...user });
     };
 
+    /**
+     * fetches a user from firestorm
+     * @param userId the userid
+     */
     async function fetchUser(userId: string): Promise<User> {
-        console.log("Fetching user");
-        let db = getFirestore();
-        return new Promise((resolve) => {
-            let docRef = doc(db, "users", userId);
-            getDoc(docRef).then((doc) => {
-                let docItem = doc.data();
-                let user: User = {
-                    avatar: docItem?.avatar,
-                    email: docItem?.email,
-                    lastVisitAt: docItem?.lastVisitAt,
-                    name: docItem?.name,
-                    isModerator: docItem?.isModerator,
-                    registeredAt: docItem?.registeredAt,
-                    username: docItem?.username,
-                    usernameLower: docItem?.usernameLower,
-                    id: doc.id
-                };
-                //let user: User = { ...doc.data(), id: doc.id }; //would be ideal but error
-                //look into this later
-                setUser({ ...user });
-                resolve({ ...user });
-            });
-            //onSnapshot(docRef, (doc) => {});
-        });
+        let user = await fetchItem(userId, "users");
+        setUser({ ...user });
+        return { ...user };
     }
 
-    return { users, getUser, fetchUser, setUser };
+    /**
+     * fetches multiple users from firestorm
+     * @param userIds list ofuserids
+     */
+    async function fetchUsers(userIds: string[]): Promise<User[]> {
+        let users: User[] = await fetchItems(userIds, "users");
+        users.forEach((user) => setUser(user));
+        return users;
+    }
+
+    return { users, getUser, fetchUser, fetchUsers, setUser };
 });
 
 if (import.meta.hot) {

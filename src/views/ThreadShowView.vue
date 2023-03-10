@@ -22,13 +22,16 @@ const usersStore = useUsersStore();
 const props = defineProps(["id", "slug"]);
 
 //ref
-const thread = await threadsStore.fetchThread(props.id);
-const creator = await usersStore.fetchUser(thread.userId);
+//const creator = await usersStore.fetchUser(thread.userId);
 
 //computed
+const threads = computed(() => threadsStore.threads);
+const posts = computed(() => postsStore.posts);
+const thread = computed(() => findById(threadsStore.threads, props.id));
 const threadPosts = computed(() => {
     return postsStore.posts.filter((post) => post.threadId === props.id);
 });
+const creator = computed(() => usersStore.getUser(thread.value.userId));
 
 /**
  * function to add a post to a thread
@@ -43,14 +46,19 @@ const addPost = (eventData: any) => {
     postsStore.createPost(post);
 };
 
-thread.posts.forEach(async (postId) => {
-    let post = await postsStore.fetchPost(postId);
-    usersStore.fetchUser(post!.userId);
-});
+async function created() {
+    //fetches all posts and user in a thread and saves it to memory
+    let thread = await threadsStore.fetchThread(props.id);
+    usersStore.fetchUser(thread.userId);
+    let posts = await postsStore.fetchPosts(thread.posts);
+    let users = posts.map((post) => post.userId);
+    usersStore.fetchUsers(users);
+}
+await created();
 </script>
 
 <template>
-    <div class="col-large push-top">
+    <div v-if="thread" class="col-large push-top">
         <h1>
             {{ thread?.title }}
             <!--Somehow this doesnt take params and just knows where to send you-->
@@ -59,7 +67,7 @@ thread.posts.forEach(async (postId) => {
             >
         </h1>
         <p>
-            By <b>{{ creator.name }}</b
+            By <b>{{ creator?.name }}</b
             ><a href="#" class="link-unstyled">{{}}</a>,
             <i>{{ diffForHumans(thread.publishedAt) }}.</i>
             <span style="float: right; margin-top: 2px" class="hide-mobile text-faded text-small"

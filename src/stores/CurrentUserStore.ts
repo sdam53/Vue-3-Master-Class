@@ -22,6 +22,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     //ref
     const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");
 
+    userStore.fetchUser(authId.value);
+
     //computed data
     const authUser = computed(() => findById(userStore.users, authId.value));
     const name = computed(() => authUser.value?.name);

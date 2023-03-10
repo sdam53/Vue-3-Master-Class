@@ -14,6 +14,7 @@ import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import type Forum from "@/types/Forum";
+import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 
 /**
  * threads store
@@ -33,6 +34,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     //computed data
     const threadInfo = (threadId: string) => {
         const thread: Thread = findById(threads.value, threadId);
+        if (!thread) return {};
         return {
             ...thread,
             author: findById(usersStore.users, thread.userId),
@@ -120,32 +122,24 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         return newThread;
     }
 
-    //fetches a thread
+    /**
+     * fetches the thread from firestore
+     * @param threadId the thread id
+     */
     async function fetchThread(threadId: string): Promise<Thread> {
-        console.log("Fetching Thread");
-        let db = getFirestore();
-        return new Promise((resolve) => {
-            let docRef = doc(db, "threads", threadId);
-            onSnapshot(docRef, (doc) => {
-                let docItem = doc.data();
-                let thread: Thread = {
-                    contributors: docItem?.contributors,
-                    firstPostId: docItem?.firstPostId,
-                    forumId: docItem?.forumId,
-                    lastPostAt: docItem?.lastPostAt,
-                    lastPostId: docItem?.lastPostId,
-                    posts: docItem?.posts,
-                    publishedAt: docItem?.publishedAt,
-                    slug: docItem?.slug,
-                    title: docItem?.title,
-                    userId: docItem?.userId,
-                    id: doc.id
-                };
-                //let thread: Thread = { ...doc.data(), id: doc.id }; //would be ideal but error
-                setThread({ ...thread });
-                resolve({ ...thread });
-            });
-        });
+        let thread = await fetchItem(threadId, "threads");
+        setThread({ ...thread });
+        return { ...thread };
+    }
+
+    /**
+     * fetches threads from firestore
+     * @param threadIds list of thread ids
+     */
+    async function fetchThreads(threadIds: string[]): Promise<Thread[]> {
+        let threads: Thread[] = await fetchItems(threadIds, "threads");
+        threads.forEach((thread) => setThread(thread));
+        return threads;
     }
 
     return {
@@ -154,7 +148,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         updateThread,
         appendThreadToUser,
         appendUserToThread,
-        fetchThread
+        fetchThread,
+        fetchThreads
     };
 });
 

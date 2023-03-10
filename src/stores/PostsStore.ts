@@ -4,12 +4,11 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
-import { useCurrentUserStore } from "./CurrentUserStore";
-import { doc, onSnapshot } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
+import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 
 /**
  * post store
@@ -50,29 +49,27 @@ export const usePostsStore = defineStore("PostsStore", () => {
         return posts.value.filter((post) => post.userId === userId).length;
     };
 
-    async function fetchPost(postId: string): Promise<Post | null> {
-        console.log("Fetching Post");
-        let db = getFirestore();
-        //return null;
-        return new Promise((resolve) => {
-            let docRef = doc(db, "posts", postId);
-            onSnapshot(docRef, (doc) => {
-                let docItem = doc.data();
-                let post: Post = {
-                    publishedAt: docItem?.publishedAt,
-                    text: docItem?.text,
-                    threadId: docItem?.threadId,
-                    userId: docItem?.userId,
-                    id: doc.id
-                };
-
-                setPost({ ...post });
-                resolve({ ...post });
-            });
-        });
+    /**
+     * fetches a post from firestorm
+     * @param postId the postid
+     */
+    async function fetchPost(postId: string): Promise<Post> {
+        let post = await fetchItem(postId, "posts");
+        setPost({ ...post });
+        return { ...post };
     }
 
-    return { posts, createPost, setPost, getUserPosts, getUserPostCount, fetchPost };
+    /**
+     * fetchs multiple posts from firestorm
+     * @param postIds the postids
+     */
+    async function fetchPosts(postIds: string[]): Promise<Post[]> {
+        let posts: Post[] = await fetchItems(postIds, "posts");
+        posts.forEach((post) => setPost(post));
+        return posts;
+    }
+
+    return { posts, createPost, setPost, getUserPosts, getUserPostCount, fetchPost, fetchPosts };
 });
 
 if (import.meta.hot) {

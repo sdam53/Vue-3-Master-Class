@@ -29,14 +29,6 @@ async function getUser(userId: string) {
     let user = await userStore.fetchUser(userId);
     return user;
 }
-
-//on created
-/**
- * goes through each user in the thread and makes request to get their information
- */
-props.posts.forEach((post: Post) => {
-    getUser(post.userId);
-});
 </script>
 
 <template>
