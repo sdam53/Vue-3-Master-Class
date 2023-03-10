@@ -15,7 +15,9 @@ import {
     collection,
     doc,
     DocumentSnapshot,
+    getDoc,
     getFirestore,
+    serverTimestamp,
     updateDoc,
     writeBatch
 } from "@firebase/firestore";
@@ -36,7 +38,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
     //function to create a new post to a thread
     async function createPost(post: Post) {
         post.userId = currentUser.authId;
-        post.publishedAt = Math.floor(Date.now() / 1000);
+        post.publishedAt = serverTimestamp(); //Math.floor(Date.now() / 1000);
 
         //save the new post to the db
         let db = getFirestore();
@@ -47,7 +49,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
         //we use a batch in case a failure occurs
         //cant use .add in batch so yea
         //https://stackoverflow.com/questions/46725357/firestore-batch-add-is-not-a-function
-        let postRef = doc(collection(db, "post"));
+        let postRef = doc(colRef);
         batch.set(postRef, post);
         batch.update(doc(db, "threads", post.threadId), {
             posts: arrayUnion(postRef.id),
@@ -55,11 +57,13 @@ export const usePostsStore = defineStore("PostsStore", () => {
         });
         await batch.commit();
 
+        //TODO: server time stamp makes it so its NaN when posting until refresh
+        let newPost = await getDoc(postRef);
+
         //update locally
-        post.id = postRef.id;
-        setPost(post);
-        threadsStore.appendPostToThread(post.id, post.threadId);
-        threadsStore.appendUserToThread(post.userId, post.threadId);
+        setPost({ ...newPost.data(), id: newPost.id } as Post);
+        threadsStore.appendPostToThread(newPost.id, newPost.data()?.threadId);
+        threadsStore.appendUserToThread(newPost.data()?.userId, newPost.data()?.threadId);
     }
 
     //function to set a post

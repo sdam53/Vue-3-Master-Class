@@ -1,3 +1,5 @@
+import type { FieldValue } from "@firebase/firestore";
+
 /**
  * post type
  */
@@ -7,7 +9,7 @@ export default interface Post {
         by: string;
         moderated: boolean;
     };
-    publishedAt: number;
+    publishedAt: number | FieldValue; //serverTimestamp
     reactions?: any; //deal with it later
     text: string;
     threadId: string;
