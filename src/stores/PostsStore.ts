@@ -46,16 +46,17 @@ export const usePostsStore = defineStore("PostsStore", () => {
         //creates the new post and stores to db
         //we use a batch in case a failure occurs
         //cant use .add in batch so yea
-        //TODO: https://stackoverflow.com/questions/46725357/firestore-batch-add-is-not-a-function
-        let newPost = await addDoc(colRef, post);
+        //https://stackoverflow.com/questions/46725357/firestore-batch-add-is-not-a-function
+        let postRef = doc(collection(db, "post"));
+        batch.set(postRef, post);
         batch.update(doc(db, "threads", post.threadId), {
-            posts: arrayUnion(newPost.id),
+            posts: arrayUnion(postRef.id),
             contributors: arrayUnion(post.userId)
         });
         await batch.commit();
 
         //update locally
-        post.id = newPost.id;
+        post.id = postRef.id;
         setPost(post);
         threadsStore.appendPostToThread(post.id, post.threadId);
         threadsStore.appendUserToThread(post.userId, post.threadId);
