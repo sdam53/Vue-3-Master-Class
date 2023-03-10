@@ -29,7 +29,7 @@ const threads = computed(() => threadsStore.threads);
 const posts = computed(() => postsStore.posts);
 const thread = computed(() => findById(threadsStore.threads, props.id));
 const threadPosts = computed(() => {
-    return postsStore.posts.filter((post) => post.threadId === props.id);
+    return postsStore.posts.filter((post: Post) => post.threadId === props.id);
 });
 const creator = computed(() => usersStore.getUser(thread.value.userId));
 
@@ -51,7 +51,7 @@ async function created() {
     let thread = await threadsStore.fetchThread(props.id);
     usersStore.fetchUser(thread.userId);
     let posts = await postsStore.fetchPosts(thread.posts);
-    let users = posts.map((post) => post.userId);
+    let users = posts.map((post: Post) => post.userId);
     usersStore.fetchUsers(users);
 }
 await created();
@@ -71,8 +71,8 @@ await created();
             ><a href="#" class="link-unstyled">{{}}</a>,
             <i>{{ diffForHumans(thread.publishedAt) }}.</i>
             <span style="float: right; margin-top: 2px" class="hide-mobile text-faded text-small"
-                >{{ thread?.posts.length }} replies by
-                {{ thread?.contributors.length }} contributor/s</span
+                >{{ thread?.posts?.length || 0 }} replies by
+                {{ thread?.contributors?.length || 0 }} contributor/s</span
             >
         </p>
         <PostListComponent :posts="threadPosts" />

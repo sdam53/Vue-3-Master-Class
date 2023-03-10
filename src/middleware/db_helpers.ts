@@ -25,6 +25,8 @@ async function fetchItem(id: string, resource: string): Promise<any> {
  * @param resource resource type
  */
 const fetchItems = (ids: string[], resource: string) => {
+    console.log(`Fetching multiple ${resource}...`);
+
     return Promise.all(ids.map((id) => fetchItem(id, resource)));
 };
 
