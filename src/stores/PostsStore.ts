@@ -9,6 +9,15 @@ import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
+import {
+    addDoc,
+    arrayUnion,
+    collection,
+    doc,
+    DocumentSnapshot,
+    getFirestore,
+    updateDoc
+} from "@firebase/firestore";
 
 /**
  * post store
@@ -24,15 +33,24 @@ export const usePostsStore = defineStore("PostsStore", () => {
     const posts = ref<Post[]>([]);
 
     //function to create a new post to a thread
-    const createPost = (post: Post) => {
+    async function createPost(post: Post) {
         post.id = "qqqgg" + Math.random();
         post.userId = currentUser.authId;
         post.publishedAt = Math.floor(Date.now() / 1000);
-        posts.value.push(post);
-        const thread: Thread = findById(threadsStore.threads, post.threadId);
-        thread?.posts.push(post.id);
+
+        let db = getFirestore();
+        let colRef = collection(db, "posts");
+        let newPost = await addDoc(colRef, post);
+
+        //updates the thread about the new post and user in firestorm
+        await updateDoc(doc(db, "threads", post.threadId), {
+            posts: arrayUnion(newPost.id),
+            contributors: arrayUnion(post.userId)
+        });
+        setPost(post);
+        threadsStore.appendPostToThread(post.id, post.threadId);
         threadsStore.appendUserToThread(post.userId, post.threadId);
-    };
+    }
 
     //function to set a post
     const setPost = (post: Post) => {

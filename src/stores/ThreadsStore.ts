@@ -7,7 +7,7 @@ import { useForumsStore } from "./ForumsStore";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useUsersStore } from "./UsersStore";
-import { doc, onSnapshot } from "firebase/firestore";
+import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
@@ -102,13 +102,20 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     //adds a user to a thread
     const appendUserToThread = (userId: string, threadId: string) => {
         const thread: Thread = findById(threads.value, threadId);
+        /*
         if (thread.contributors.includes(userId)) {
             console.log("NOOOOO");
             return;
         }
         console.log("yes");
-
         thread.contributors.push(userId);
+        */
+        upsert(thread.contributors, userId);
+    };
+
+    const appendPostToThread = (postId: string, threadId: string) => {
+        const thread: Thread = findById(threads.value, threadId);
+        upsert(thread.posts, postId);
     };
 
     //updates a thread's title and text
@@ -148,6 +155,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         updateThread,
         appendThreadToUser,
         appendUserToThread,
+        appendPostToThread,
         fetchThread,
         fetchThreads
     };
