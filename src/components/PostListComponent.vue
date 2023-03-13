@@ -5,6 +5,7 @@ import { findById } from "@/middleware/HelperFunctions";
 import { useUsersStore } from "@/stores/UsersStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Post from "@/types/Post";
+import type User from "@/types/User";
 
 //props
 const props = defineProps(["posts"]);
@@ -27,7 +28,7 @@ const userById = (userId: string) => {
  */
 async function getUser(userId: string) {
     let user = await userStore.fetchUser(userId);
-    return user;
+    return user as User;
 }
 </script>
 
@@ -39,12 +40,10 @@ async function getUser(userId: string) {
                 <a href="#">
                     <img class="avatar-large" :src="userById(post.userId)!.avatar" alt="" />
                 </a>
-                <!--
-
-                    <p class="desktop-only text-small">
-                        {{ postStore.getUserPostCount(post.userId) }} posts
-                    </p>
-                -->
+                <!-- This will make non stop calls to DB
+                        <p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>
+                        <p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p>
+                    -->
             </div>
             <div class="post-content">
                 <div>

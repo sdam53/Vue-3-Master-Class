@@ -10,6 +10,9 @@ module.exports = {
 };
 */
 
+/*
+
+*/
 const firebaseConfig = {
     apiKey: "AIzaSyD_xLu-bgWtlvtcs6pEkkxilc-gFJY7tvo",
     authDomain: "vue-3-mastery-forum.firebaseapp.com",

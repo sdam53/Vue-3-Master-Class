@@ -17,6 +17,7 @@ import {
     DocumentSnapshot,
     getDoc,
     getFirestore,
+    increment,
     serverTimestamp,
     updateDoc,
     writeBatch
@@ -54,6 +55,9 @@ export const usePostsStore = defineStore("PostsStore", () => {
         batch.update(doc(db, "threads", post.threadId), {
             posts: arrayUnion(postRef.id),
             contributors: arrayUnion(post.userId)
+        });
+        batch.update(doc(db, "users", currentUser.authId), {
+            postsCount: increment(1)
         });
         await batch.commit();
 

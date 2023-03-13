@@ -16,4 +16,6 @@ export default interface User {
     id: string;
     threads?: string[];
     location?: string;
+    postsCount?: number;
+    threadsCount?: number;
 }

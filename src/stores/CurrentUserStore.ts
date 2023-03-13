@@ -34,12 +34,12 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         return postStore.posts.filter((post: Post) => post.userId === authId.value);
     });
     const postsCount = computed(() => {
-        return posts.value.length;
+        return authUser.value.postsCount || 0;
     });
     const threads = computed(() => {
         return threadStore.threads.filter((thread: Thread) => thread.userId === authId.value);
     });
-    const threadsCount = computed(() => threads.value.length);
+    const threadsCount = computed(() => threads.value.length || 0);
 
     //function to update the current user
     const updateUser = (user: User) => {
