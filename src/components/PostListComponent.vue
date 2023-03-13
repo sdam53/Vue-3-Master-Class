@@ -6,13 +6,23 @@ import { useUsersStore } from "@/stores/UsersStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Post from "@/types/Post";
 import type User from "@/types/User";
+import { ref, type PropType } from "vue";
+import PostEditor from "./PostEditorComponent.vue";
 
 //props
-const props = defineProps(["posts"]);
+const props = defineProps({
+    posts: {
+        type: Array as PropType<Post[]>,
+        required: true
+    }
+})
 
 //store
 const userStore = useUsersStore();
 const postStore = usePostsStore();
+
+//refs
+const editing = ref<string | null>(null) //id of post to be edited
 
 /**
  * returns users based on their id
@@ -30,6 +40,16 @@ async function getUser(userId: string) {
     let user = await userStore.fetchUser(userId);
     return user as User;
 }
+
+const toggleEditMode = (id: string) => {
+    editing.value = id === editing.value ? null : id;
+}
+
+const updatePost = (eventData: any) => {
+    //postStore.updatePost(eventData.id, eventData.text)
+    postStore.updatePost(eventData as Post)
+    editing.value = null;
+}
 </script>
 
 <template>
@@ -41,17 +61,19 @@ async function getUser(userId: string) {
                     <img class="avatar-large" :src="userById(post.userId)!.avatar" alt="" />
                 </a>
                 <!-- This will make non stop calls to DB
-                                            <p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>
-                                            <p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p>
-                                        -->
+                                                                                                                                                                        <p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>
+                                                                                                                                                                        <p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p>
+                                                                                                                                                                    -->
             </div>
             <div class="post-content">
-                <div>
-                    <p>
+                <div class="col-full">
+                    <PostEditor v-if="editing === post.id" @savePost="updatePost" :post="post">Edit Mode</PostEditor>
+                    <p v-else>
                         {{ post.text }}
                     </p>
                 </div>
-                <a href="#" style="margin-left: auto; padding-left:10px;" class="link-unstyled" title="Make a change">
+                <a @click.prevent="toggleEditMode(post.id)" href="#" style="margin-left: auto; padding-left:10px;"
+                    class="link-unstyled" title="Make a change">
                     <fa icon="pencil-alt" />
                 </a>
 

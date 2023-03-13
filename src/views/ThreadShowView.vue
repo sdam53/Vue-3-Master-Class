@@ -40,9 +40,11 @@ const creator = computed(() => usersStore.getUser(thread.value.userId));
 //TODO look into eventData type. It is Event but .post doesnt exist in that type
 const addPost = (eventData: any) => {
     const post: Post = {
-        ...eventData.post,
+        ...eventData,
         threadId: props.id
     };
+    console.log(post);
+
     postsStore.createPost(post);
 };
 

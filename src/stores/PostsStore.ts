@@ -38,6 +38,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
 
     //function to create a new post to a thread
     async function createPost(post: Post) {
+        console.log(post);
+
         post.userId = currentUser.authId;
         post.publishedAt = serverTimestamp(); //Math.floor(Date.now() / 1000);
 
@@ -68,6 +70,22 @@ export const usePostsStore = defineStore("PostsStore", () => {
         setPost({ ...newPost.data(), id: newPost.id } as Post);
         threadsStore.appendPostToThread(newPost.id, newPost.data()?.threadId);
         threadsStore.appendUserToThread(newPost.data()?.userId, newPost.data()?.threadId);
+    }
+
+    async function updatePost(post: Post) {
+        let updatedPost: any = {
+            text: post.text,
+            edited: {
+                at: serverTimestamp(),
+                by: currentUser.authId,
+                moderated: false
+            }
+        };
+        let db = getFirestore();
+        let postRef = doc(db, "posts", post.id);
+        await updateDoc(postRef, updatedPost);
+        updatedPost = await getDoc(postRef);
+        setPost({ ...updatedPost.data(), id: updatedPost.id });
     }
 
     //function to set a post
@@ -105,7 +123,16 @@ export const usePostsStore = defineStore("PostsStore", () => {
         return posts;
     }
 
-    return { posts, createPost, setPost, getUserPosts, getUserPostCount, fetchPost, fetchPosts };
+    return {
+        posts,
+        createPost,
+        updatePost,
+        setPost,
+        getUserPosts,
+        getUserPostCount,
+        fetchPost,
+        fetchPosts
+    };
 });
 
 if (import.meta.hot) {

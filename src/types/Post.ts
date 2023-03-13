@@ -5,7 +5,7 @@ import type { FieldValue } from "@firebase/firestore";
  */
 export default interface Post {
     edited?: {
-        at: number;
+        at: number | FieldValue;
         by: string;
         moderated: boolean;
     };
