@@ -8,6 +8,7 @@ import type User from "@/types/User";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedDate from "dayjs/plugin/localizedFormat";
+import type { DocumentReference } from "@firebase/firestore";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedDate);
@@ -69,4 +70,9 @@ const upsert = (resources: any[], resource: any) => {
     }
 };
 
-export { findById, stringToSlug, diffForHumans, humanFriendlyDate, upsert };
+const docToResource = (doc: any) => {
+    if (typeof doc?.data !== "function") return doc;
+    return { ...doc.data(), id: doc.id };
+};
+
+export { findById, stringToSlug, diffForHumans, humanFriendlyDate, upsert, docToResource };

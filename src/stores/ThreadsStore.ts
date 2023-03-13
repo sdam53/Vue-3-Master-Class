@@ -7,7 +7,7 @@ import { useForumsStore } from "./ForumsStore";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useUsersStore } from "./UsersStore";
-import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
+import { docToResource, findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
@@ -152,11 +152,30 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     async function updateThread(title: string, text: string, id: string) {
         const thread: Thread = findById(threads.value, id);
         const post: Post = findById(postStore.posts, thread.posts[0]);
-        const newThread: Thread = { ...thread, title }; //using spread operator and overriding title
-        const newPost: Post = { ...post, text }; //same but for post
-        setThread(newThread);
-        postStore.setPost(newPost);
-        return newThread;
+        let newThread: Thread = { ...thread, title }; //using spread operator and overriding title
+        let newPost: Post = { ...post, text }; //same but for post
+
+        //getting db ref
+        let db = getFirestore();
+        let threadRef = doc(db, "threads", id);
+        let postRef = doc(db, "posts", post.id);
+        let batch = writeBatch(db);
+
+        //batch updates
+        batch.update(threadRef, { ...newThread });
+        batch.update(postRef, { ...newPost });
+        await batch.commit();
+
+        //getting the new thread and post from db
+        newThread = await getDoc(threadRef);
+        newThread = docToResource(newThread);
+        newPost = await getDoc(postRef);
+        newPost = docToResource(newPost);
+
+        //locally setting
+        setThread({ ...newThread });
+        postStore.setPost({ ...newPost });
+        return docToResource(newThread);
     }
 
     /**
