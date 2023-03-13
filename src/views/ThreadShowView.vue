@@ -62,18 +62,14 @@ await created();
         <h1>
             {{ thread?.title }}
             <!--Somehow this doesnt take params and just knows where to send you-->
-            <router-link :to="{ name: 'ThreadEdit' }" class="btn-green btn-small" tag="button"
-                >Edit Thread</router-link
-            >
+            <router-link :to="{ name: 'ThreadEdit' }" class="btn-green btn-small" tag="button">Edit Thread</router-link>
         </h1>
         <p>
-            By <b>{{ creator?.name }}</b
-            ><a href="#" class="link-unstyled">{{}}</a>,
-            <i>{{ diffForHumans(thread.publishedAt) }}.</i>
-            <span style="float: right; margin-top: 2px" class="hide-mobile text-faded text-small"
-                >{{ thread?.posts?.length || 0 }} replies by
-                {{ thread?.contributors?.length || 0 }} contributor/s</span
-            >
+            By <b>{{ creator?.name }}</b><a href="#" class="link-unstyled">{{}}</a>,
+            <i>{{ diffForHumans(thread.publishedAt.seconds || thread.publishedAt) }}.</i>
+            <span style="float: right; margin-top: 2px" class="hide-mobile text-faded text-small">{{ thread?.posts?.length
+                || 0 }} replies by
+                {{ thread?.contributors?.length || 0 }} contributor/s</span>
         </p>
         <PostListComponent :posts="threadPosts" />
         <PostEditorComponent @savePost="addPost" />

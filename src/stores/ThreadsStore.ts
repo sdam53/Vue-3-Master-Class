@@ -7,14 +7,25 @@ import { useForumsStore } from "./ForumsStore";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useUsersStore } from "./UsersStore";
-import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
 import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import type Forum from "@/types/Forum";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
+import {
+    addDoc,
+    arrayUnion,
+    collection,
+    doc,
+    DocumentSnapshot,
+    FieldValue,
+    getDoc,
+    getFirestore,
+    serverTimestamp,
+    updateDoc,
+    writeBatch
+} from "@firebase/firestore";
 
 /**
  * threads store
@@ -45,12 +56,15 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
 
     //function to create a new thread
     async function createThread(title: string, text: string, forumId: string): Promise<Thread> {
-        let id: string = "qqqgg" + Math.random();
+        //db and new thread reference
+        let db = getFirestore();
+        let threadRef = doc(collection(db, "threads"));
+        //creating the thread
         let userId: string = currentUserStore.authId;
-        let publishedAt: number = Math.floor(Date.now() / 1000);
+        let publishedAt: FieldValue = serverTimestamp();
         const thread: Thread = {
             contributors: [],
-            firstPostId: "as",
+            firstPostId: "", //im asuming this means the id of the post not the user
             forumId: forumId,
             lastPostAt: 12,
             lastPostId: "12",
@@ -59,22 +73,38 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
             slug: stringToSlug(title),
             title: title,
             userId: userId,
-            id: id
+            id: threadRef.id
         };
-        setThread(thread);
-        appendThreadToUser(userId, id); //user.threads
-        appendUserToThread(userId, id); //thread.contributors
-        appendThreadToForum(forumId, id); //forum.threads
+        //getting user and forum ref
+        let userRef = doc(db, "users", userId);
+        let forumRef = doc(db, "forums", forumId);
+        //batch job to add new thread and append to the user and forum
+        let batch = writeBatch(db);
+        batch.set(threadRef, thread);
+        batch.update(userRef, {
+            threads: arrayUnion(threadRef.id)
+        });
+        batch.update(forumRef, {
+            threads: arrayUnion(threadRef.id)
+        });
+        await batch.commit();
+        //the new thread
+        const newThread = await getDoc(threadRef);
+        //setting thread locally
+        setThread(newThread.data() as Thread);
+        appendThreadToUser(userId, threadRef.id); //user.threads
+        appendUserToThread(userId, threadRef.id); //thread.contributors
+        appendThreadToForum(forumId, threadRef.id); //forum.threads
         let post: Post = {
             text: text,
             threadId: thread.id,
-            //need it in type Post
+            //need it in type Post, it gets handled in createPost
             publishedAt: 0,
             userId: "0",
             id: "0"
         };
-        postStore.createPost(post);
-        return findById(threads.value, id);
+        await postStore.createPost(post);
+        return findById(threads.value, threadRef.id);
     }
 
     //sets a thread into memory
@@ -101,16 +131,16 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
 
     //adds a user to a thread
     const appendUserToThread = (userId: string, threadId: string) => {
-        const thread: Thread = findById(threads.value, threadId);
-        /*
-        if (thread.contributors.includes(userId)) {
-            console.log("NOOOOO");
+        if (!currentUserStore.isSignedIn || currentUserStore.authId !== userId) return;
+
+        let thread: Thread = findById(threads.value, threadId);
+        let user = findById(usersStore.users, userId);
+
+        if (thread.contributors != null && thread.contributors.includes(userId)) {
             return;
         }
-        console.log("yes");
+        thread.contributors = thread.contributors || [];
         thread.contributors.push(userId);
-        */
-        upsert(thread.contributors, userId);
     };
 
     const appendPostToThread = (postId: string, threadId: string) => {

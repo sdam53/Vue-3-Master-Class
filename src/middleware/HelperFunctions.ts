@@ -61,6 +61,7 @@ const humanFriendlyDate = (timestamp: number) => {
  */
 const upsert = (resources: any[], resource: any) => {
     let index = resources.findIndex((e) => e.id === resource.id);
+
     if (resource.id && index !== -1) {
         resources[index] = resource;
     } else {

@@ -1,3 +1,5 @@
+import type { FieldValue } from "@firebase/firestore";
+
 /**
  * thread type
  */
@@ -8,7 +10,7 @@ export default interface Thread {
     lastPostAt: number;
     lastPostId: string;
     posts: string[];
-    publishedAt: number;
+    publishedAt: number | FieldValue; //serverTimestamp;
     slug: string;
     title: string;
     userId: string;
