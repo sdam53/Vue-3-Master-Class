@@ -41,9 +41,9 @@ async function getUser(userId: string) {
                     <img class="avatar-large" :src="userById(post.userId)!.avatar" alt="" />
                 </a>
                 <!-- This will make non stop calls to DB
-                                    <p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>
-                                    <p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p>
-                                -->
+                                            <p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>
+                                            <p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p>
+                                        -->
             </div>
             <div class="post-content">
                 <div>
@@ -52,7 +52,7 @@ async function getUser(userId: string) {
                     </p>
                 </div>
                 <a href="#" style="margin-left: auto; padding-left:10px;" class="link-unstyled" title="Make a change">
-                    <font-awesome-icon icon="pencil-alt" />
+                    <fa icon="pencil-alt" />
                 </a>
 
             </div>
