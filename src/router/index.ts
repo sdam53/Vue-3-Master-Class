@@ -12,6 +12,7 @@ import ThreadEdit from "@/views/ThreadEditView.vue";
 import Forum from "@/views/ForumView.vue";
 import Category from "@/views/CategoryView.vue";
 import Profile from "@/views/ProfileView.vue";
+import { useFirebaseStore } from "@/stores/FirebaseStore";
 
 //import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
@@ -93,7 +94,7 @@ const routes = [
 ];
 
 //exporting it and adding options
-export default createRouter({
+const router = createRouter({
     history: createWebHistory(),
     routes: routes,
     scrollBehavior(to) {
@@ -103,3 +104,10 @@ export default createRouter({
         return scroll;
     }
 });
+
+router.beforeEach(() => {
+    let firebaseStore = useFirebaseStore();
+    firebaseStore.clearAllUnsubscriptions();
+});
+
+export default router;

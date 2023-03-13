@@ -1,5 +1,7 @@
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
+import { useFirebaseStore } from "@/stores/FirebaseStore";
+import { setItem } from "@/middleware/HelperFunctions";
 
 /**
  * return a resource from firestore based on id and resource type
@@ -8,14 +10,17 @@ import { getFirestore } from "firebase/firestore";
  * @param resource the resource type
  */
 async function fetchItem(id: string, resource: string): Promise<any> {
-    console.log(`Fetching ${resource}...`);
+    //console.log(`Fetching ${resource}...`);
+    let firebaseStore = useFirebaseStore();
     let db = getFirestore();
     return new Promise((resolve) => {
         let docRef = doc(db, resource, id);
-        onSnapshot(docRef, (doc) => {
+        let unsubscribe = onSnapshot(docRef, (doc) => {
             let docItem: any = doc.data();
+            setItem({ ...docItem, id: doc.id }, resource);
             resolve({ ...docItem, id: doc.id });
         });
+        firebaseStore.addUnsubscription(unsubscribe);
     });
 }
 

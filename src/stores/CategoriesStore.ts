@@ -57,7 +57,7 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
         });
     }
 
-    return { categories, fetchCategory, fetchAllCategories };
+    return { categories, fetchCategory, fetchAllCategories, setCategory };
 });
 
 if (import.meta.hot) {

@@ -206,7 +206,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         appendUserToThread,
         appendPostToThread,
         fetchThread,
-        fetchThreads
+        fetchThreads,
+        setThread
     };
 });
 

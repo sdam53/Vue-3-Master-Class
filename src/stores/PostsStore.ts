@@ -84,7 +84,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
         let db = getFirestore();
         let postRef = doc(db, "posts", post.id);
         await updateDoc(postRef, updatedPost);
-        updatedPost = await getDoc(postRef);
+        updatedPost = await fetchItem(postRef.id, "posts");
         setPost({ ...updatedPost.data(), id: updatedPost.id });
     }
 

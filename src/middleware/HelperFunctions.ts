@@ -9,6 +9,11 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedDate from "dayjs/plugin/localizedFormat";
 import type { DocumentReference } from "@firebase/firestore";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { useForumsStore } from "@/stores/ForumsStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import { usePostsStore } from "@/stores/PostsStore";
+import { useUsersStore } from "@/stores/UsersStore";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedDate);
@@ -70,9 +75,43 @@ const upsert = (resources: any[], resource: any) => {
     }
 };
 
+/**
+ * converts db doc to object
+ * @param doc doc doc obj
+ */
 const docToResource = (doc: any) => {
     if (typeof doc?.data !== "function") return doc;
     return { ...doc.data(), id: doc.id };
 };
 
-export { findById, stringToSlug, diffForHumans, humanFriendlyDate, upsert, docToResource };
+/**
+ * sets an item
+ * @param item the item
+ * @param resource the type of resource
+ */
+const setItem = (item: any, resource: any) => {
+    switch (resource) {
+        case "categories":
+            let catStore = useCategoriesStore();
+            catStore.setCategory(item);
+            break;
+        case "forums":
+            let forumStore = useForumsStore();
+            forumStore.setForum(item);
+            break;
+        case "threads":
+            let threadsStore = useThreadsStore();
+            threadsStore.setThread(item);
+            break;
+        case "posts":
+            let postsStore = usePostsStore();
+            postsStore.setPost(item);
+            break;
+        case "users":
+            let usersStore = useUsersStore();
+            usersStore.setUser(item);
+            break;
+    }
+};
+
+export { findById, stringToSlug, diffForHumans, humanFriendlyDate, upsert, docToResource, setItem };
