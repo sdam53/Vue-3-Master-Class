@@ -7,6 +7,7 @@ import { useForumsStore } from "@/stores/ForumsStore";
 import { findById } from "@/middleware/HelperFunctions";
 import type Forum from "@/types/Forum";
 import { useUsersStore } from "@/stores/UsersStore";
+import { useAsyncState } from "@vueuse/core";
 
 //stores
 const threadsStore = useThreadsStore();
@@ -34,31 +35,28 @@ const forum = computed(() => {
     return findById(forumsStore.forums, props.id);
 });
 
-async function created() {
+const { isReady } = useAsyncState(async () => {
     //fetch the forum
     let form: Forum = await forumsStore.fetchForum(props.id);
     await threadsStore.fetchThreads(form.threads);
     usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
-}
-await created();
+}, undefined);
+
 </script>
 
 <template>
-    <div v-if="forum" class="col-full push-top">
+    <div v-if="isReady" class="col-full push-top">
         <div class="forum-header">
             <div class="forum-details">
                 <h1>{{ forum?.name }}</h1>
                 <p class="text-lead">{{ forum?.description }}</p>
             </div>
-            <router-link
-                :to="{ name: 'ThreadCreate', params: { forumId: forum?.id } }"
-                class="btn-green btn-small"
-                >Start a thread</router-link
-            >
+            <router-link :to="{ name: 'ThreadCreate', params: { forumId: forum?.id } }" class="btn-green btn-small">Start a
+                thread</router-link>
         </div>
     </div>
 
-    <div class="col-full push-top">
+    <div v-if="isReady" class="col-full push-top">
         <ThreadList :threads="threads" />
     </div>
 </template>

@@ -8,6 +8,7 @@ import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Thread from "@/types/Thread";
 import { findById } from "@/middleware/HelperFunctions";
+import { useAsyncState } from "@vueuse/core";
 
 //props
 const props = defineProps({
@@ -40,17 +41,17 @@ const cancel = () => {
     router.push({ name: "ThreadShow", params: { id: thread.value?.id, slug: thread.value?.slug } });
 };
 
-async function created() {
+const { isReady } = useAsyncState(async () => {
     if (thread.value === undefined) {
         await threadStore.fetchThread(props.id);
         await postStore.fetchPost(thread.value?.posts[0]);
     }
-}
-await created();
+}, undefined);
+
 </script>
 
 <template>
-    <div v-if="thread && text" class="col-full push-top">
+    <div v-if="isReady" class="col-full push-top">
         <h1>
             Editing <i>{{ thread?.title }}</i>
         </h1>

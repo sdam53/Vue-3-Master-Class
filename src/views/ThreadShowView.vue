@@ -11,6 +11,7 @@ import { findById, diffForHumans } from "@/middleware/HelperFunctions";
 import { useUsersStore } from "@/stores/UsersStore";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
+import { useAsyncState } from "@vueuse/core";
 
 //stores
 const threadsStore = useThreadsStore();
@@ -48,19 +49,19 @@ const addPost = (eventData: any) => {
     postsStore.createPost(post);
 };
 
-async function created() {
+const { isReady } = useAsyncState(async () => {
     //fetches all posts and user in a thread and saves it to memory
     let thread = await threadsStore.fetchThread(props.id);
     usersStore.fetchUser(thread.userId);
     let posts = await postsStore.fetchPosts(thread.posts);
     let users = posts.map((post: Post) => post.userId);
-    usersStore.fetchUsers(users);
-}
-await created();
+    await usersStore.fetchUsers(users);
+}, undefined);
+
 </script>
 
 <template>
-    <div v-if="thread" class="col-large push-top">
+    <div v-if="isReady" class="col-large push-top">
         <h1>
             {{ thread?.title }}
             <!--Somehow this doesnt take params and just knows where to send you-->

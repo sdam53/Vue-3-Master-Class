@@ -8,6 +8,7 @@ import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import type Forum from "@/types/Forum";
 import { findById } from "@/middleware/HelperFunctions";
+import { useAsyncState } from "@vueuse/core";
 
 //prop
 const props = defineProps({
@@ -37,16 +38,16 @@ const cancel = () => {
     router.push({ name: "Forum", params: { id: forum.value?.id, slug: forum.value?.slug } });
 };
 
-async function created() {
+const { isReady } = useAsyncState(async () => {
     if (forum.value === undefined) {
-        forumStore.fetchForum(props.forumId);
+        await forumStore.fetchForum(props.forumId);
     }
-}
-await created();
+}, undefined);
+
 </script>
 
 <template>
-    <div v-if="forum" class="col-full push-top">
+    <div v-if="isReady" class="col-full push-top">
         <h1>
             Create new thread in <i>{{ forum?.name }}</i>
         </h1>

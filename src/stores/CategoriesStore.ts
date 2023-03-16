@@ -4,7 +4,7 @@ import type Category from "@/types/Category";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 import { useSourceDataStore } from "./SourceDataStore";
-import { collection, doc, onSnapshot, QuerySnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import { upsert } from "@/middleware/HelperFunctions";
 import { fetchItem } from "@/middleware/db_helpers";
@@ -24,7 +24,7 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
      * adds a category into memory
      * @param category category object
      */
-    const setCategory = (category: Category) => {
+    const setCategory = (category: Category): void => {
         upsert(categories.value, category);
     };
 
