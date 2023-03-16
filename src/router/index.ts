@@ -8,6 +8,8 @@ import NotFound from "@/views/NotFoundView.vue";
 import Thread from "@/views/ThreadShowView.vue";
 import ThreadCreate from "@/views/ThreadCreateView.vue";
 import ThreadEdit from "@/views/ThreadEditView.vue";
+import Register from "@/views/RegisterView.vue";
+import Login from "@/views/LoginView.vue";
 
 import Forum from "@/views/ForumView.vue";
 import Category from "@/views/CategoryView.vue";
@@ -85,6 +87,16 @@ const routes = [
         name: "ProfileEdit",
         component: Profile,
         props: { edit: true }
+    },
+    {
+        path: "/login",
+        name: "Login",
+        component: Login
+    },
+    {
+        path: "/register",
+        name: "Register",
+        component: Register
     },
     {
         path: "/:pathMatch(.*)*",

@@ -7,10 +7,12 @@ import { useCurrentUserStore } from "./stores/CurrentUserStore";
 
 const currentUser = useCurrentUserStore();
 currentUser.fetchAuthUser();
+
 </script>
 
 <template>
     <TheNavbar />
+
     <TheFooter />
 </template>
 

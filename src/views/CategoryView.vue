@@ -28,6 +28,8 @@ const props = defineProps({
     }
 });
 
+const emits = defineEmits(["ready"])
+
 //computed data
 const category = computed(() => {
     return findById(categoriesStore.categories, props.id);

@@ -62,16 +62,14 @@ const menuItems = ref([
 
                 <v-btn v-if="currentUser.isSignedIn" flat :to="`/me`">
                     <!--<v-img left dark src="currentUser.authUser?.avatar"></v-img>
-                    -->{{ currentUser.authUser?.name }}
+                                                                        -->{{ currentUser.authUser?.name }}
                 </v-btn>
-
-                <v-btn v-else flat :to="`/`">
+                <v-btn v-else flat :to="{ name: 'Login' }" style="cursor: pointer">
                     <v-icon left dark>{{ "mdi-login" }}</v-icon>
                     Sign In
                 </v-btn>
             </v-toolbar-items>
         </v-toolbar>
-
         <suspense>
             <v-content class="container">
                 <router-view></router-view>
