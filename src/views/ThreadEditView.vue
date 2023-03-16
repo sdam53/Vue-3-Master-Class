@@ -4,6 +4,7 @@
 import { computed } from "vue";
 import router from "@/router";
 import ThreadEditor from "@/components/ThreadEditorComponent.vue";
+import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Thread from "@/types/Thread";
@@ -51,6 +52,7 @@ const { isReady } = useAsyncState(async () => {
 </script>
 
 <template>
+    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="col-full push-top">
         <h1>
             Editing <i>{{ thread?.title }}</i>

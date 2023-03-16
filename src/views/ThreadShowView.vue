@@ -4,6 +4,7 @@
 import { computed, ref, type Ref } from "vue";
 import PostListComponent from "@/components/PostListComponent.vue";
 import PostEditorComponent from "@/components/PostEditorComponent.vue";
+import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Post from "@/types/Post";
@@ -61,6 +62,7 @@ const { isReady } = useAsyncState(async () => {
 </script>
 
 <template>
+    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="col-large push-top">
         <h1>
             {{ thread?.title }}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 //page to show list of threads in a forum. Basically child of category and parent of threads
 import ThreadList from "@/components/ThreadListComponent.vue";
+import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { defineProps, computed } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useForumsStore } from "@/stores/ForumsStore";
@@ -45,6 +46,7 @@ const { isReady } = useAsyncState(async () => {
 </script>
 
 <template>
+    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="col-full push-top">
         <div class="forum-header">
             <div class="forum-details">

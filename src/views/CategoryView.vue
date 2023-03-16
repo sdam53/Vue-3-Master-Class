@@ -5,6 +5,7 @@
 //we get sent here by the ForumListComponent
 import { computed, defineProps } from "vue";
 import ForumListComponent from "@/components/ForumListComponent.vue";
+import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore.js";
 import { useForumsStore } from "@/stores/ForumsStore.js";
 import type Category from "@/types/Category";
@@ -47,6 +48,7 @@ const { isReady } = useAsyncState(async () => {
 </script>
 
 <template>
+    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="container push-top">
         <h1>{{ category?.name }}</h1>
         <ForumListComponent :forums="getForumsForCategory(category!)" :title="'Forums'" />

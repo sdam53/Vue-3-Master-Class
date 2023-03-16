@@ -4,6 +4,7 @@
 import { computed } from "vue";
 import router from "@/router";
 import ThreadEditor from "@/components/ThreadEditorComponent.vue";
+import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import type Forum from "@/types/Forum";
@@ -47,6 +48,7 @@ const { isReady } = useAsyncState(async () => {
 </script>
 
 <template>
+    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="col-full push-top">
         <h1>
             Create new thread in <i>{{ forum?.name }}</i>

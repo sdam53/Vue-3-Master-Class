@@ -2,12 +2,12 @@
 //home page to show categories and their forums
 
 import CategoryListComponent from "@/components/CategoryListComponent.vue";
+import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useAsyncState } from "@vueuse/core";
 import type Category from "@/types/Category";
 import { computed, ref } from "vue";
-
 //store
 const categoriesStore = useCategoriesStore();
 const forumsStore = useForumsStore();
@@ -28,6 +28,7 @@ const { isReady } = useAsyncState(async () => {
 </script>
 
 <template>
+    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="container">
         <h1 class="push-top">Welcome to the Forum</h1>
         <CategoryListComponent :categories="categories" />
