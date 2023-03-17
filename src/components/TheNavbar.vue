@@ -29,6 +29,19 @@ const menuItems = ref([
         icon: "mdi-forum"
     }
 ]);
+
+const signedInItems = ref([
+    {
+        title: "Profile",
+        path: "/me",
+        //icon: "mdi-forum"
+    },
+    {
+        title: "Sign Out",
+        path: "/logout",
+        //icon: "mdi-forum"
+    }
+])
 </script>
 
 <template>
@@ -49,11 +62,19 @@ const menuItems = ref([
                     {{ item.title }}
                 </v-btn>
 
-                <v-btn v-if="currentUser.isSignedIn" flat :to="`/me`">
-                    <!--<v-img left dark src="currentUser.authUser?.avatar"></v-img>
-                                                                                                                                                                            -->{{
-                                                                                                                                                                                currentUser.authUser?.name }}
-                </v-btn>
+
+                <v-menu open-on-hover v-if="currentUser.isSignedIn">
+                    <template v-slot:activator="{ props }">
+                        <v-btn :to="{ name: 'Profile' }" style="cursor: pointer" color="primary" v-bind="props">
+                            {{ currentUser.authUser?.name }}
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item v-for="(item, index) in signedInItems" :key="index">
+                            <v-btn flat :to="item.path">{{ item.title }}</v-btn>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
                 <v-btn v-else flat :to="{ name: 'Login' }" style="cursor: pointer">
                     <v-icon left dark>{{ "mdi-login" }}</v-icon>
                     Sign In

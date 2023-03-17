@@ -21,7 +21,6 @@ currentUser.fetchAuthUser();
     </suspense>
 
     <footer>
-        <TheFooter />
     </footer>
 </template>
 
