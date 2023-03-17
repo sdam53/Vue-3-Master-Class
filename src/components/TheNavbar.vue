@@ -32,19 +32,8 @@ const menuItems = ref([
 </script>
 
 <template>
-    <v-app>
-        <v-navigation-drawer v-model="sidebar" app>
-            <v-list v-if="sidebar">
-                <v-list-tile v-for="item in menuItems" :key="item.title" :to="item.path">
-                    <v-list-tile-action>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-                </v-list-tile>
-            </v-list>
-        </v-navigation-drawer>
-
-        <v-toolbar app>
+    <div>
+        <v-toolbar>
             <span class="hidden-sm-and-up">
                 <v-toolbar-side-icon @click="sidebar = !sidebar"> </v-toolbar-side-icon>
             </span>
@@ -62,7 +51,8 @@ const menuItems = ref([
 
                 <v-btn v-if="currentUser.isSignedIn" flat :to="`/me`">
                     <!--<v-img left dark src="currentUser.authUser?.avatar"></v-img>
-                                                                        -->{{ currentUser.authUser?.name }}
+                                                                                                                                                                            -->{{
+                                                                                                                                                                                currentUser.authUser?.name }}
                 </v-btn>
                 <v-btn v-else flat :to="{ name: 'Login' }" style="cursor: pointer">
                     <v-icon left dark>{{ "mdi-login" }}</v-icon>
@@ -70,12 +60,7 @@ const menuItems = ref([
                 </v-btn>
             </v-toolbar-items>
         </v-toolbar>
-        <suspense>
-            <v-content class="container">
-                <router-view></router-view>
-            </v-content>
-        </suspense>
-    </v-app>
+    </div>
 </template>
 
-<style scoped></style>
+<style></style>

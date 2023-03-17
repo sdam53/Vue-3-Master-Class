@@ -11,9 +11,18 @@ currentUser.fetchAuthUser();
 </script>
 
 <template>
-    <TheNavbar />
+    <header>
+        <TheNavbar />
+    </header>
+    <suspense>
+        <div class="container">
+            <router-view></router-view>
+        </div>
+    </suspense>
 
-    <TheFooter />
+    <footer>
+        <TheFooter />
+    </footer>
 </template>
 
 <style>
