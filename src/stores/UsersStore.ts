@@ -18,6 +18,7 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
+import { useCurrentUserStore } from "./CurrentUserStore";
 
 /**
  * user store
@@ -76,6 +77,8 @@ export const useUsersStore = defineStore("UsersStore", () => {
         let id = res.user.uid;
         //adding to db
         let newUser = await registerUser(user, id);
+        let currentUserStore = useCurrentUserStore();
+        await currentUserStore.fetchAuthUser();
         return newUser;
     }
 

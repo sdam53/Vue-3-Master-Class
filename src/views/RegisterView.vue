@@ -32,7 +32,7 @@ async function register() {
         email: form.value.email,
         avatar: form.value.avatar,
     } as User, form.value.password)
-    router.push({ name: "Login" })
+    router.push({ name: "Home" })
     isReady.value = false
 }
 

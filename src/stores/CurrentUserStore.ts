@@ -9,6 +9,7 @@ import { usePostsStore } from "./PostsStore";
 import { useThreadsStore } from "./ThreadsStore";
 import { useUsersStore } from "./UsersStore";
 import { findById, upsert } from "@/middleware/HelperFunctions";
+import { getAuth } from "@firebase/auth";
 
 /**
  * current user store
@@ -51,11 +52,18 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         //authUser.value = user;
     };
 
+    const setAuthId = (id: string) => {
+        authId.value = id;
+    };
+
     function fetchAuthUser() {
+        let userId = getAuth().currentUser?.uid;
+        if (!userId) return;
         userStore.fetchUser(authId.value);
+        setAuthId(userId);
     }
 
-    async function login() {}
+    async function login(email: string, password: string) {}
 
     async function logout() {}
 
