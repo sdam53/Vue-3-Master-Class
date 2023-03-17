@@ -33,15 +33,17 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const website = computed(() => authUser.value?.website);
     const isSignedIn = computed(() => authUser.value && name.value);
     const posts = computed(() => {
-        return postStore.posts.filter((post: Post) => post.userId === authId.value);
+        return postStore.posts.filter((post: Post) => post.userId === authId.value) || [];
     });
     const postsCount = computed(() => {
-        return authUser.value.postsCount || 0;
+        return isSignedIn.value ? authUser.value.postsCount : 0;
     });
     const threads = computed(() => {
-        return threadStore.threads.filter((thread: Thread) => thread.userId === authId.value);
+        return isSignedIn.value
+            ? threadStore.threads.filter((thread: Thread) => thread.userId === authId.value)
+            : [];
     });
-    const threadsCount = computed(() => threads.value.length || 0);
+    const threadsCount = computed(() => (isSignedIn.value ? threads.value.length || 0 : 0));
 
     //function to update the current user
     const updateUser = (user: User) => {
@@ -52,6 +54,10 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     function fetchAuthUser() {
         userStore.fetchUser(authId.value);
     }
+
+    async function login() {}
+
+    async function logout() {}
 
     return {
         authId,

@@ -5,6 +5,7 @@ import PostList from "@/components/PostListComponent.vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
+import router from "@/router";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -13,6 +14,10 @@ const currentUserStore = useCurrentUserStore();
 const props = defineProps({
     edit: { type: Boolean, default: false }
 });
+
+if (!currentUserStore.isSignedIn) {
+    router.push({ name: 'Login' })
+}
 </script>
 
 <template>
