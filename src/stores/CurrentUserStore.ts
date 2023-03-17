@@ -52,10 +52,17 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         //authUser.value = user;
     };
 
+    /**
+     * set the users auth id
+     * @param id auth id
+     */
     const setAuthId = (id: string) => {
         authId.value = id;
     };
 
+    /**
+     * fetches the currently signed in user's auth id
+     */
     function fetchAuthUser() {
         let userId = getAuth().currentUser?.uid;
         if (!userId) return;

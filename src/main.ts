@@ -11,6 +11,7 @@ import { getAuth } from "@firebase/auth";
 import { useCurrentUserStore } from "./stores/CurrentUserStore";
 
 const firebase = initializeApp(firebaseConfig);
+//allows for logins to persist even after browser refreshes
 getAuth().onAuthStateChanged((user) => {
     if (user) {
         let currentUserStore = useCurrentUserStore();
