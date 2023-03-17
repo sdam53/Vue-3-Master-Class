@@ -7,8 +7,17 @@ import { FontAwesome } from "@/plugins/FontAwesome";
 import { vuetify } from "@/plugins/Vuetify";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./config/firebase";
+import { getAuth } from "@firebase/auth";
+import { useCurrentUserStore } from "./stores/CurrentUserStore";
 
 const firebase = initializeApp(firebaseConfig);
+getAuth().onAuthStateChanged((user) => {
+    if (user) {
+        let currentUserStore = useCurrentUserStore();
+        currentUserStore.fetchAuthUser();
+    }
+});
+
 const pinia = createPinia();
 const app = createApp(App);
 

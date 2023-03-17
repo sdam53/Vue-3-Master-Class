@@ -59,8 +59,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     function fetchAuthUser() {
         let userId = getAuth().currentUser?.uid;
         if (!userId) return;
-        userStore.fetchUser(authId.value);
         setAuthId(userId);
+        userStore.fetchUser(authId.value);
     }
 
     async function login(email: string, password: string) {}

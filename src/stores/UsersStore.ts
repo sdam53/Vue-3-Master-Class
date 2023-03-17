@@ -78,7 +78,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
         //adding to db
         let newUser = await registerUser(user, id);
         let currentUserStore = useCurrentUserStore();
-        await currentUserStore.fetchAuthUser();
+        //await currentUserStore.fetchAuthUser();
         return newUser;
     }
 
