@@ -26,7 +26,7 @@ const form = ref<RegistrationForm>({
  */
 async function register() {
     //do a loading
-    await usersStore.registerUser({
+    await usersStore.registerUserWithEmailPassword({
         name: form.value.name,
         username: form.value.username,
         email: form.value.email,

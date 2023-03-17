@@ -13,6 +13,7 @@ import {
     writeBatch,
     collection
 } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 import { usePostsStore } from "./PostsStore";
@@ -63,15 +64,32 @@ export const useUsersStore = defineStore("UsersStore", () => {
     }
 
     /**
+     * registers a user into google auth and return their id
+     * @param email user email
+     * @param password user password
+     * @returns id the id of the registered user
+     */
+    async function registerUserWithEmailPassword(user: User, password: string): Promise<User> {
+        //adding user into auth and getting the id
+        let auth = getAuth();
+        let res = await createUserWithEmailAndPassword(auth, user.email, password);
+        let id = res.user.uid;
+        //adding to db
+        let newUser = await registerUser(user, id);
+        return newUser;
+    }
+
+    /**
      * registers a new user to the db
      * @param user user info
      * @param password user password //seperate due to User type not allowing password
+     * @returns user obj
      */
-    async function registerUser(user: User, password: string): Promise<User> {
-        //deal with password after this
+    async function registerUser(user: User, id: string): Promise<User> {
+        //adding user into firestore
         //getting db and new user ref
         let db = getFirestore();
-        let userRef = doc(collection(db, "users"));
+        let userRef = doc(db, "users", id);
         //setting up the new user
         let registeredAt = serverTimestamp();
         let theUser: User = {
@@ -96,7 +114,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
         return newUser as User;
     }
 
-    return { users, getUser, fetchUser, fetchUsers, setUser, registerUser };
+    return { users, getUser, fetchUser, fetchUsers, setUser, registerUserWithEmailPassword };
 });
 
 if (import.meta.hot) {
