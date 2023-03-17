@@ -85,7 +85,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
         let postRef = doc(db, "posts", post.id);
         await updateDoc(postRef, updatedPost);
         updatedPost = await fetchItem(postRef.id, "posts");
-        setPost({ ...updatedPost.data(), id: updatedPost.id });
+        setPost({ ...updatedPost });
     }
 
     //function to set a post

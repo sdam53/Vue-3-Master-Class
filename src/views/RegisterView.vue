@@ -2,9 +2,15 @@
 //page to register a user 
 
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
+import { useUsersStore } from "@/stores/UsersStore";
 import type RegistrationForm from "@/types/RegisterForm";
+import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
+import router from "@/router";
 import { ref } from "vue";
+
+//stores
+const usersStore = useUsersStore()
 
 //refs
 const form = ref<RegistrationForm>({
@@ -18,8 +24,16 @@ const form = ref<RegistrationForm>({
 /**
  * function to register the user
  */
-const register = () => {
-    console.log("REgister");
+async function register() {
+    //do a loading
+    await usersStore.registerUser({
+        name: form.value.name,
+        username: form.value.username,
+        email: form.value.email,
+        avatar: form.value.avatar,
+    } as User, form.value.password)
+    router.push({ name: "Login" })
+    isReady.value = false
 }
 
 
@@ -57,7 +71,7 @@ const { isReady } = useAsyncState(async () => {
                 </div>
 
                 <div class="form-group">
-                    <label for="avatar">Avatar</label>
+                    <label for="avatar">Avatar (Optional)</label>
                     <input v-model="form.avatar" id="avatar" type="text" class="form-input">
                 </div>
 

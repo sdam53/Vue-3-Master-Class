@@ -20,7 +20,9 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const userStore = useUsersStore();
 
     //ref
-    const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3a");
+    //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3_");3b2x1vGujmAe79ngvktc
+    //const authId = ref("3b2x1vGujmAe79ngvktc");HiPWtTRCQUGo377B18MS;
+    const authId = ref("");
 
     //computed data
     const authUser = computed(() => findById(userStore.users, authId.value));

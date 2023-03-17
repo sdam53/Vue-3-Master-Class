@@ -4,7 +4,15 @@ import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { findById, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type User from "@/types/User";
-import { getFirestore, doc, onSnapshot, getDoc } from "firebase/firestore";
+import {
+    getFirestore,
+    doc,
+    onSnapshot,
+    getDoc,
+    serverTimestamp,
+    writeBatch,
+    collection
+} from "firebase/firestore";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 import { usePostsStore } from "./PostsStore";
@@ -54,7 +62,41 @@ export const useUsersStore = defineStore("UsersStore", () => {
         return users;
     }
 
-    return { users, getUser, fetchUser, fetchUsers, setUser };
+    /**
+     * registers a new user to the db
+     * @param user user info
+     * @param password user password //seperate due to User type not allowing password
+     */
+    async function registerUser(user: User, password: string): Promise<User> {
+        //deal with password after this
+        //getting db and new user ref
+        let db = getFirestore();
+        let userRef = doc(collection(db, "users"));
+        //setting up the new user
+        let registeredAt = serverTimestamp();
+        let theUser: User = {
+            avatar:
+                user.avatar ||
+                `https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png`,
+            email: user.email.toLowerCase(),
+            lastVisitAt: registeredAt,
+            name: user.name,
+            isModerator: false,
+            registeredAt: registeredAt,
+            username: user.username,
+            usernameLower: user.username.toLowerCase()
+        };
+        //adding user to firestore
+        let batch = writeBatch(db);
+        batch.set(userRef, theUser);
+        await batch.commit();
+        //getting user from firestore
+        let newUser = await fetchItem(userRef.id, "users");
+        setUser(newUser as User);
+        return newUser as User;
+    }
+
+    return { users, getUser, fetchUser, fetchUsers, setUser, registerUser };
 });
 
 if (import.meta.hot) {

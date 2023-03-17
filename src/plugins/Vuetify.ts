@@ -10,7 +10,7 @@ const vuetify = createVuetify({
     components,
     directives,
     theme: {
-        //defaultTheme: "dark" //requires changing alot of things due to using external css and stuff
+        defaultTheme: "dark" //requires changing alot of things due to using external css and stuff
     }
 });
 
