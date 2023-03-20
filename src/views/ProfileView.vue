@@ -33,7 +33,6 @@ document.title = "My Profile"
                 <UserProfileCard v-if="!props.edit" :user="currentUserStore.authUser as User" />
                 <UserProfileCardEditor v-else :user="currentUserStore.authUser as User" />
             </div>
-
             <div class="col-7 push-top">
                 <div class="profile-header">
                     <span class="text-lead">

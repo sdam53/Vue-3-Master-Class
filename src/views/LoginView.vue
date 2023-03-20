@@ -15,6 +15,12 @@ const form = ref<LoginForm>({
 })
 const isReady = ref<Boolean>(false)
 
+if (currentUserStore.isSignedIn) {
+    console.log("WHY");
+
+    router.push({ name: "Home" })
+}
+
 /**
  * logins in the user and sends them to the home page
  * else error message will show

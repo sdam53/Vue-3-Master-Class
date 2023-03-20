@@ -23,7 +23,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     //ref
     //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");3b2x1vGujmAe79ngvktc;HiPWtTRCQUGo377B18MS
     //const authId = ref<string | null>("HiPWtTRCQUGo377B18MS");
-    const authId = ref<string | null>("");
+    const authId = ref<string | null>(null);
 
     //computed data
     const authUser = computed<User | null>(() =>
@@ -34,7 +34,9 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const username = computed(() => authUser.value?.username);
     const bio = computed(() => authUser.value?.bio);
     const website = computed(() => authUser.value?.website);
-    const isSignedIn = computed(() => authUser.value && name.value);
+    const isSignedIn = computed(() => {
+        return authId.value != null && authId.value != "";
+    });
     const posts = computed(() => {
         return postStore.posts.filter((post: Post) => post.userId === authId.value) || [];
     });
