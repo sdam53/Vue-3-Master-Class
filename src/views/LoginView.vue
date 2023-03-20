@@ -36,6 +36,7 @@ async function login() {
     //isReady.value = true;
 }
 
+document.title = "Login"
 </script>
 
 <template>
