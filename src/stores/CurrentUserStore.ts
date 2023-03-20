@@ -22,7 +22,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
 
     //ref
     //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");3b2x1vGujmAe79ngvktc;HiPWtTRCQUGo377B18MS
-    const authId = ref("HiPWtTRCQUGo377B18MS");
+    const authId = ref<string | null>("HiPWtTRCQUGo377B18MS");
     //const authId = ref<string | null>("");
 
     //computed data
@@ -57,7 +57,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
 
     /**
      * set the users auth id
-     * TODO: We want to set it to null if there is no user signed in but it doesnt like it so yea
      * @param id auth id
      */
     const setAuthId = (id: string | null) => {
