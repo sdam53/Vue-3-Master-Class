@@ -70,7 +70,7 @@ const getCategorySlug = computed(() => {
             <h2 class="list-title">
                 <router-link v-if="props.categoryId" :to="{
                     name: 'Category',
-                    params: { id: categoryId, slug: getCategorySlug }
+                    params: { id: categoryId, slug: props.slug }
                 }">{{ props.title }}</router-link>
                 <span v-else>{{ props.title }}</span>
             </h2>

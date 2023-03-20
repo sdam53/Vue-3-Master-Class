@@ -55,6 +55,7 @@ const { isReady } = useAsyncState(async () => {
     <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="container push-top">
         <h1>{{ category?.name }}</h1>
-        <ForumListComponent :forums="getForumsForCategory(category)" :title="'Forums'" />
+        <ForumListComponent :forums="getForumsForCategory(category)" :title="'Forums'" :slug="category.slug"
+            :category-id="category.id" />
     </div>
 </template>
