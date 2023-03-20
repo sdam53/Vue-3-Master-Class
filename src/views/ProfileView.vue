@@ -8,6 +8,8 @@ import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.v
 import router from "@/router";
 import type User from "@/types/User";
 import { computed } from "vue";
+import { useAsyncState } from "@vueuse/core";
+import { getAuth } from "@firebase/auth";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -17,16 +19,33 @@ const props = defineProps({
     edit: { type: Boolean, default: false }
 });
 
-//if the user is not signed in then move them to the login page
-if (!currentUserStore.isSignedIn) {
-    router.push({ name: 'Login' })
-}
-
 //document.title = currentUserStore.username ? currentUserStore.username + "\'s Profile" : "404 User"
 document.title = "My Profile"
+
+/*
+TODO: When logged in and on /me. if you refresh you will be sent to login due to 
+current user not existing for a quick second.
+*/
+const { isReady } = useAsyncState(async () => {
+    let auth = getAuth();
+    let user = auth.currentUser;
+    console.log(user);
+
+    if (!user) console.log("NO USER");
+    else console.log("YES USER");
+
+
+    //await currentUserStore.fetchAuthUser()
+
+    //if the user is not signed in then move them to the login page
+    //if (!currentUserStore.isSignedIn) router.push({ name: 'Login' })
+}, undefined)
+
+
 </script>
 
 <template>
+    <UseLoadingScreen v-show="isReady" />
     <div class="container">
         <div class="flex-grid">
             <div class="col-3 push-top">

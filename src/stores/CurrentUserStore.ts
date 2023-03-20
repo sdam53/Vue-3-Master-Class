@@ -68,12 +68,12 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     /**
      * fetches the currently signed in user's auth id
      */
-    function fetchAuthUser() {
+    async function fetchAuthUser() {
         let userId = getAuth().currentUser?.uid;
         if (!userId) return;
         setAuthId(userId);
         if (!authId.value) return;
-        userStore.fetchUser(authId.value);
+        await userStore.fetchUser(authId.value);
     }
 
     /**
