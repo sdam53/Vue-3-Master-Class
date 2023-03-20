@@ -44,7 +44,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
 
     //computed data
     const threadInfo = (threadId: string) => {
-        const thread: Thread = findById(threads.value, threadId);
+        const thread: Thread = findById(threads.value, threadId) as Thread;
         if (!thread) return {};
         return {
             ...thread,
@@ -55,10 +55,18 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     };
 
     //function to create a new thread
-    async function createThread(title: string, text: string, forumId: string): Promise<Thread> {
+    async function createThread(
+        title: string,
+        text: string,
+        forumId: string
+    ): Promise<Thread | null> {
+        //if user is not signed in then no new thread for them
+        if (!currentUserStore.authId) return null;
+
         //db and new thread reference
         let db = getFirestore();
         let threadRef = doc(collection(db, "threads"));
+
         //creating the thread
         let userId: string = currentUserStore.authId;
         let publishedAt: FieldValue = serverTimestamp();
@@ -104,7 +112,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
             id: "0"
         };
         await postStore.createPost(post);
-        return findById(threads.value, threadRef.id);
+        return findById(threads.value, threadRef.id) as Thread;
     }
 
     //sets a thread into memory
@@ -114,14 +122,14 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
 
     //adds a thread to a forum
     const appendThreadToForum = (forumId: string, threadId: string) => {
-        const forum: Forum = findById(forumStore.forums, forumId);
+        const forum: Forum = findById(forumStore.forums, forumId) as Forum;
         forum?.threads.push(threadId);
     };
 
     //adds a thread to a user
     //should this be used only when a user creates a thread? i think so
     const appendThreadToUser = (userId: string, threadId: string) => {
-        const user: User = findById(usersStore.users, userId);
+        const user: User = findById(usersStore.users, userId) as User;
         if (user.threads != null && user.threads.includes(threadId)) {
             return;
         }
@@ -133,7 +141,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     const appendUserToThread = (userId: string, threadId: string) => {
         if (!currentUserStore.isSignedIn || currentUserStore.authId !== userId) return;
 
-        let thread: Thread = findById(threads.value, threadId);
+        let thread: Thread = findById(threads.value, threadId) as Thread;
         let user = findById(usersStore.users, userId);
 
         if (thread.contributors != null && thread.contributors.includes(userId)) {
@@ -144,14 +152,14 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     };
 
     const appendPostToThread = (postId: string, threadId: string) => {
-        const thread: Thread = findById(threads.value, threadId);
+        const thread: Thread = findById(threads.value, threadId) as Thread;
         upsert(thread.posts, postId);
     };
 
     //updates a thread's title and text
     async function updateThread(title: string, text: string, id: string) {
-        const thread: Thread = findById(threads.value, id);
-        const post: Post = findById(postStore.posts, thread.posts[0]);
+        const thread: Thread = findById(threads.value, id) as Thread;
+        const post: Post = findById(postStore.posts, thread.posts[0]) as Post;
         let newThread: Thread = { ...thread, title }; //using spread operator and overriding title
         let newPost: Post = { ...post, text }; //same but for post
 
@@ -167,10 +175,10 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         await batch.commit();
 
         //getting the new thread and post from db
-        newThread = await getDoc(threadRef);
-        newThread = docToResource(newThread);
-        newPost = await getDoc(postRef);
-        newPost = docToResource(newPost);
+        let newThreadDoc = await getDoc(threadRef);
+        newThread = docToResource(newThreadDoc);
+        let newPostDoc = await getDoc(postRef);
+        newPost = docToResource(newPostDoc);
 
         //locally setting
         setThread({ ...newThread });

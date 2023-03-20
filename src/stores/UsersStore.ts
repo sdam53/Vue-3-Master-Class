@@ -33,8 +33,8 @@ export const useUsersStore = defineStore("UsersStore", () => {
     const users = ref<User[]>([]);
 
     //function to get specific user
-    const getUser = (userId: string): User | null => {
-        return findById(users.value, userId);
+    const getUser = (userId: string | null): User | null => {
+        return userId ? (findById(users.value, userId) as User) : null;
     };
 
     //function to set the user

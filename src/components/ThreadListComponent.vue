@@ -7,6 +7,8 @@ import { usePostsStore } from "@/stores/PostsStore";
 import type { PropType } from "vue"; //used to set props with objects
 import type Thread from "@/types/Thread";
 import { findById } from "@/middleware/HelperFunctions";
+import type Post from "@/types/Post";
+import type User from "@/types/User";
 
 //props
 //being used regardless of it saying no
@@ -22,15 +24,15 @@ const usersStore = useUsersStore();
 const postsStore = usePostsStore();
 
 //refs
-const posts = reactive(postsStore.posts);
-const users = reactive(usersStore.users);
+const posts = reactive<Post[]>(postsStore.posts);
+const users = reactive<User[]>(usersStore.users);
 
 /**
  * gets a post based on id
  * @param postId the postid
  */
 function postById(postId: string) {
-    return findById(posts, postId);
+    return findById(posts, postId) as Post;
 }
 
 /**
@@ -38,7 +40,7 @@ function postById(postId: string) {
  * @param userId userid
  */
 function userById(userId: string) {
-    return findById(users, userId);
+    return findById(users, userId) as User;
 }
 </script>
 

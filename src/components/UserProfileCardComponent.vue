@@ -20,11 +20,7 @@ const props = defineProps({
 <template>
     <div class="profile-card">
         <p class="text-center">
-            <img
-                :src="currentUserStore.avatar"
-                :alt="`${currentUserStore.name} profile picture`"
-                class="avatar-xlarge"
-            />
+            <img :src="currentUserStore.avatar" :alt="`${currentUserStore.name} profile picture`" class="avatar-xlarge" />
         </p>
 
         <h1 class="title">{{ currentUserStore.username }}</h1>
@@ -53,9 +49,7 @@ const props = defineProps({
 
         <div class="text-center">
             <hr />
-            <router-link :to="{ name: 'ProfileEdit' }" class="btn-green btn-small"
-                >Edit Profile</router-link
-            >
+            <router-link :to="{ name: 'ProfileEdit' }" class="btn-green btn-small">Edit Profile</router-link>
         </div>
     </div>
 </template>

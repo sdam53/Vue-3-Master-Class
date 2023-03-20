@@ -9,19 +9,24 @@ export const useFirebaseStore = defineStore("FirebaseStore", () => {
     //refs
     const unsubscriptions = ref([]);
 
-    //adds new subscription
-    const addUnsubscription = (sub: any) => {
+    /**
+     * adds a new subscription
+     * @param sub unsub function
+     */
+    const addUnsubscription = (sub: never) => {
+        //type never
+        //https://www.tutorialsteacher.com/typescript/typescript-never
         unsubscriptions.value.push(sub);
     };
 
-    //clear all subscriptions
+    //clears all subscriptions
     const clearAllUnsubscriptions = () => {
         unsubscriptions.value = [];
     };
 
     //unsubscribe too all snapshots
     async function unsubscribeAllSnapshots() {
-        unsubscriptions.value.forEach((unsub) => unsub());
+        unsubscriptions.value.forEach((unsub: (a: void) => void) => unsub()); //function type expression as the type
         clearAllUnsubscriptions();
     }
     return { addUnsubscription, clearAllUnsubscriptions, unsubscribeAllSnapshots };

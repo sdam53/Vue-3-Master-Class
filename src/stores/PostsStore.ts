@@ -38,7 +38,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
 
     //function to create a new post to a thread
     async function createPost(post: Post) {
-        console.log(post);
+        //user not signed in so no posting allowed
+        if (!currentUser.authId) return;
 
         post.userId = currentUser.authId;
         post.publishedAt = serverTimestamp(); //Math.floor(Date.now() / 1000);
@@ -63,7 +64,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
         });
         await batch.commit();
 
-        //TODO: server time stamp makes it so its NaN when posting until refresh
+        //get the updated post
         let newPost = await getDoc(postRef);
 
         //update locally

@@ -8,7 +8,7 @@ const form = ref<LoginForm>({
     password: ""
 })
 
-const isReady = ref(false)
+const isReady = ref<Boolean>(false)
 
 const login = () => {
     console.log("Login")

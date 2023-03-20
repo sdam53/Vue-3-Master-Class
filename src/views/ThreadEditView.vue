@@ -10,6 +10,7 @@ import { usePostsStore } from "@/stores/PostsStore";
 import type Thread from "@/types/Thread";
 import { findById } from "@/middleware/HelperFunctions";
 import { useAsyncState } from "@vueuse/core";
+import type Post from "@/types/Post";
 
 //props
 const props = defineProps({
@@ -24,11 +25,12 @@ let threadStore = useThreadsStore();
 let postStore = usePostsStore();
 
 //computed data
-const thread = computed(() => {
-    return findById(threadStore.threads, props.id);
+const thread = computed<Thread>(() => {
+    return findById(threadStore.threads, props.id) as Thread;
 });
-const text = computed(() => {
-    return findById(postStore.posts, thread.value?.posts[0])?.text || "";
+const text = computed<string>(() => {
+    let post: Post = findById(postStore.posts, thread.value?.posts[0]) as Post
+    return post ? post.text : "";
 });
 
 //function to save changes

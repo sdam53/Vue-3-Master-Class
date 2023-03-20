@@ -27,13 +27,13 @@ const props = defineProps(["id", "slug"]);
 //const creator = await usersStore.fetchUser(thread.userId);
 
 //computed
-const threads = computed(() => threadsStore.threads);
-const posts = computed(() => postsStore.posts);
-const thread = computed(() => findById(threadsStore.threads, props.id));
-const threadPosts = computed(() => {
+const threads = computed<Thread[]>(() => threadsStore.threads);
+const posts = computed<Post[]>(() => postsStore.posts);
+const thread = computed<Thread>(() => findById(threadsStore.threads, props.id) as Thread);
+const threadPosts = computed<Post[]>(() => {
     return postsStore.posts.filter((post: Post) => post.threadId === props.id);
 });
-const creator = computed(() => usersStore.getUser(thread.value.userId));
+const creator = computed<User>(() => usersStore.getUser(thread.value?.userId) as User);
 
 /**
  * function to add a post to a thread
@@ -45,8 +45,6 @@ const addPost = (eventData: any) => {
         ...eventData,
         threadId: props.id
     };
-    console.log(post);
-
     postsStore.createPost(post);
 };
 

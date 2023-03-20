@@ -14,6 +14,7 @@ import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useUsersStore } from "@/stores/UsersStore";
+import type Post from "@/types/Post";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedDate);
@@ -24,7 +25,11 @@ dayjs.extend(localizedDate);
  * @param resources an array of users, threads, forums, or categories
  * @param id the id to search for
  */
-const findById = (resources: Array<User | Thread | Forum | Category | any>, id: string): any => {
+const findById = (
+    resources: Array<User | Thread | Forum | Category | Post>,
+    id: string | null
+): User | Thread | Forum | Category | Post | undefined | null => {
+    if (!id) return null;
     if (!resources || !id) return null;
     return resources.find((item) => item.id === id);
 };

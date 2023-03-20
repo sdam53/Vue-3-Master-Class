@@ -24,8 +24,8 @@ let forumStore = useForumsStore();
 let threadStore = useThreadsStore();
 
 //computed data
-const forum = computed(() => {
-    return findById(forumStore.forums, props.forumId);
+const forum = computed<Forum>(() => {
+    return findById(forumStore.forums, props.forumId) as Fo;
 });
 
 //function to save and create a new thread

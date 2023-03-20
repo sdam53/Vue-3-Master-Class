@@ -21,12 +21,14 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const userStore = useUsersStore();
 
     //ref
-    //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3_");3b2x1vGujmAe79ngvktc
-    //const authId = ref("3b2x1vGujmAe79ngvktc");HiPWtTRCQUGo377B18MS;
-    const authId = ref("");
+    //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");3b2x1vGujmAe79ngvktc;HiPWtTRCQUGo377B18MS
+    const authId = ref("HiPWtTRCQUGo377B18MS");
+    //const authId = ref<string | null>("");
 
     //computed data
-    const authUser = computed(() => findById(userStore.users, authId.value));
+    const authUser = computed<User | null>(() =>
+        authId.value ? (findById(userStore.users, authId.value) as User) : null
+    );
     const name = computed(() => authUser.value?.name);
     const avatar = computed(() => authUser.value?.avatar);
     const username = computed(() => authUser.value?.username);
@@ -37,7 +39,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         return postStore.posts.filter((post: Post) => post.userId === authId.value) || [];
     });
     const postsCount = computed(() => {
-        return isSignedIn.value ? authUser.value.postsCount : 0;
+        //return isSignedIn.value ? authUser.value.postsCount : 0;
+        return posts.value.length;
     });
     const threads = computed(() => {
         return isSignedIn.value
@@ -54,9 +57,10 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
 
     /**
      * set the users auth id
+     * TODO: We want to set it to null if there is no user signed in but it doesnt like it so yea
      * @param id auth id
      */
-    const setAuthId = (id: string) => {
+    const setAuthId = (id: string | null) => {
         authId.value = id;
     };
 
@@ -64,15 +68,27 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * fetches the currently signed in user's auth id
      */
     function fetchAuthUser() {
+        if (!authId.value) return;
         let userId = getAuth().currentUser?.uid;
         if (!userId) return;
         setAuthId(userId);
         userStore.fetchUser(authId.value);
     }
 
+    /**
+     * function to login user
+     * @param email users email
+     * @param password users password
+     */
     async function login(email: string, password: string) {}
 
-    async function logout() {}
+    /**
+     * function to log out the user
+     */
+    async function logout() {
+        await getAuth().signOut();
+        setAuthId(null);
+    }
 
     return {
         authId,
@@ -89,7 +105,9 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         threadsCount,
         //setUser,
         updateUser,
-        fetchAuthUser
+        fetchAuthUser,
+        login,
+        logout
     };
 });
 

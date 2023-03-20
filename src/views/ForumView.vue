@@ -9,6 +9,7 @@ import { findById } from "@/middleware/HelperFunctions";
 import type Forum from "@/types/Forum";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useAsyncState } from "@vueuse/core";
+import type Thread from "@/types/Thread";
 
 //stores
 const threadsStore = useThreadsStore();
@@ -28,12 +29,12 @@ const props = defineProps({
 });
 
 //computed data
-const threads = computed(() => {
+const threads = computed<Thread[]>(() => {
     if (!forum.value) return [];
-    return threadsStore.threads.filter((thread) => thread.forumId === props.id);
+    return threadsStore.threads.filter((thread) => thread.forumId === props.id) as Thread[];
 });
-const forum = computed(() => {
-    return findById(forumsStore.forums, props.id);
+const forum = computed<Forum>(() => {
+    return findById(forumsStore.forums, props.id) as Forum;
 });
 
 const { isReady } = useAsyncState(async () => {

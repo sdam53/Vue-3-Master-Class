@@ -2,15 +2,35 @@
 //component to display forums and their respected threads
 
 import type Forum from "@/types/Forum";
+import { stringLength } from "@firebase/util";
+import type { PropType } from "vue";
 
 //props
-const props = defineProps(["forums", "title", "categoryId", "slug"]);
+const props = defineProps({
+    forums: {
+        type: Object as PropType<Forum[]>,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    categoryId: {
+        type: String,
+        required: true
+    },
+    slug: {
+        type: String,
+        default: "Forum0",
+        required: true
+    }
+})
 
 /**
  * returns the string to use depending on how much threads a forum has
  * @param forum the forum
  */
-const forumThreadsWord = (forum: Forum) => {
+const forumThreadsWord = (forum: Forum): string => {
     if (forum.threads?.length) {
         return forum.threads.length > 1 ? "threads" : "thread";
     } else {
@@ -22,7 +42,7 @@ const forumThreadsWord = (forum: Forum) => {
  * returns the amount of threads a forum has
  * @param forum the forum
  */
-const forumThreadsCount = (forum: Forum) => {
+const forumThreadsCount = (forum: Forum): number => {
     if (forum.threads?.length) {
         return forum.threads.length;
     } else {
@@ -35,23 +55,16 @@ const forumThreadsCount = (forum: Forum) => {
     <div class="col-full">
         <div class="forum-list">
             <h2 class="list-title">
-                <router-link
-                    v-if="props.categoryId"
-                    :to="{
-                        name: 'Category',
-                        params: { id: categoryId, slug: 'asd' }
-                    }"
-                    >{{ props.title }}</router-link
-                >
+                <router-link v-if="props.categoryId" :to="{
+                    name: 'Category',
+                    params: { id: categoryId, slug: 'asd' }
+                }">{{ props.title }}</router-link>
                 <span v-else>{{ props.title }}</span>
             </h2>
 
             <div class="forum-listing" v-for="forum in props.forums" :key="forum.id">
                 <div class="forum-details">
-                    <router-link
-                        :to="{ name: 'Forum', params: { id: forum.id, slug: forum.slug } }"
-                        class="text-xlarge"
-                    >
+                    <router-link :to="{ name: 'Forum', params: { id: forum.id, slug: forum.slug } }" class="text-xlarge">
                         {{ forum.name }}
                     </router-link>
 

@@ -15,7 +15,7 @@ const forumsStore = useForumsStore();
 //ref
 
 //computed props
-const categories = computed(() => categoriesStore.categories);
+const categories = computed<Category[]>(() => categoriesStore.categories);
 
 //
 const { isReady } = useAsyncState(async () => {

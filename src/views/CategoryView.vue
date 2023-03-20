@@ -32,7 +32,7 @@ const emits = defineEmits(["ready"])
 
 //computed data
 const category = computed(() => {
-    return findById(categoriesStore.categories, props.id);
+    return findById(categoriesStore.categories, props.id) as Category;
 });
 
 //function to get forums for a certain category
@@ -43,7 +43,7 @@ const getForumsForCategory = (category: Category) => {
 //
 const { isReady } = useAsyncState(async () => {
     if (category.value === undefined) {
-        let category = await categoriesStore.fetchCategory(props.id);
+        let category = await categoriesStore.fetchCategory(props.id) as Category;
         await forumsStore.fetchForums(category.forums);
     }
 }, undefined);
@@ -53,6 +53,6 @@ const { isReady } = useAsyncState(async () => {
     <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="container push-top">
         <h1>{{ category?.name }}</h1>
-        <ForumListComponent :forums="getForumsForCategory(category!)" :title="'Forums'" />
+        <ForumListComponent :forums="getForumsForCategory(category)" :title="'Forums'" />
     </div>
 </template>
