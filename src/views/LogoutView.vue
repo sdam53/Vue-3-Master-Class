@@ -7,11 +7,15 @@ import router from "@/router";
 //store
 const currentUserStore = useCurrentUserStore()
 
-const isReady = ref<Boolean>(false)
+const isReady = ref<Boolean>(true)
 
 await currentUserStore.logout()
 
-router.push({ name: "Home" })
+//kinda like when it run a bit longer
+setTimeout(() => {
+    router.push({ name: "Home" })
+}, 1000)
+
 
 </script>
 

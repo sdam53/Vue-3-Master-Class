@@ -99,8 +99,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         let auth = getAuth();
         await signOut(auth);
         setAuthId(null);
-        console.log("signing out");
-        console.log(authId.value);
     }
 
     return {
