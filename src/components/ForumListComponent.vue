@@ -1,9 +1,12 @@
 <script setup lang="ts">
 //component to display forums and their respected threads
 
+import { findById } from "@/middleware/HelperFunctions";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import type Category from "@/types/Category";
 import type Forum from "@/types/Forum";
 import { stringLength } from "@firebase/util";
-import type { PropType } from "vue";
+import { computed, type PropType } from "vue";
 
 //props
 const props = defineProps({
@@ -21,7 +24,6 @@ const props = defineProps({
     },
     slug: {
         type: String,
-        default: "Forum0",
         required: true
     }
 })
@@ -49,6 +51,17 @@ const forumThreadsCount = (forum: Forum): number => {
         return 0;
     }
 };
+
+/**
+ * gets the slug of a category
+ * @param id the category id
+ */
+const getCategorySlug = computed(() => {
+    if (!props.categoryId) return "";
+    let categoriesStore = useCategoriesStore()
+    let category = findById(categoriesStore.categories, props.categoryId) as Category
+    return category ? category.slug : ""
+})
 </script>
 
 <template>
@@ -57,7 +70,7 @@ const forumThreadsCount = (forum: Forum): number => {
             <h2 class="list-title">
                 <router-link v-if="props.categoryId" :to="{
                     name: 'Category',
-                    params: { id: categoryId, slug: 'asd' }
+                    params: { id: categoryId, slug: getCategorySlug }
                 }">{{ props.title }}</router-link>
                 <span v-else>{{ props.title }}</span>
             </h2>
