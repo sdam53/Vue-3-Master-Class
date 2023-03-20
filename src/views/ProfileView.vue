@@ -7,6 +7,7 @@ import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
 import router from "@/router";
 import type User from "@/types/User";
+import { computed } from "vue";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -20,6 +21,9 @@ const props = defineProps({
 if (!currentUserStore.isSignedIn) {
     router.push({ name: 'Login' })
 }
+
+//document.title = currentUserStore.username ? currentUserStore.username + "\'s Profile" : "404 User"
+document.title = "My Profile"
 </script>
 
 <template>

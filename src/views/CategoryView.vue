@@ -3,7 +3,7 @@
 //navigate by clicking on a category
 //TODO: ATM slug doesnt display
 //we get sent here by the ForumListComponent
-import { computed, defineProps } from "vue";
+import { computed, defineProps, nextTick } from "vue";
 import ForumListComponent from "@/components/ForumListComponent.vue";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore.js";
@@ -46,7 +46,9 @@ const { isReady } = useAsyncState(async () => {
         let category = await categoriesStore.fetchCategory(props.id) as Category;
         await forumsStore.fetchForums(category.forums);
     }
+    document.title = category.value.name;
 }, undefined);
+
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script async setup lang="ts">
 //page that shows a individual thread and its posts
 
-import { computed, ref, type Ref } from "vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 import PostListComponent from "@/components/PostListComponent.vue";
 import PostEditorComponent from "@/components/PostEditorComponent.vue";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
@@ -55,7 +55,9 @@ const { isReady } = useAsyncState(async () => {
     let posts = await postsStore.fetchPosts(thread.posts);
     let users = posts.map((post: Post) => post.userId);
     await usersStore.fetchUsers(users);
+    document.title = thread.title
 }, undefined);
+
 
 </script>
 

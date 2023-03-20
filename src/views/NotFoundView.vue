@@ -1,6 +1,6 @@
-<script lang="ts">
+<script setup lang="ts">
 //page not found redirect
-export default {};
+document.title = "404 Not Found";
 </script>
 
 <template>

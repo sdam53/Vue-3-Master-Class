@@ -4,10 +4,10 @@
 import { reactive } from "vue";
 import { useUsersStore } from "@/stores/UsersStore";
 import { usePostsStore } from "@/stores/PostsStore";
-import type { PropType } from "vue"; //used to set props with objects
-import type Thread from "@/types/Thread";
 import { findById } from "@/middleware/HelperFunctions";
+import type { PropType } from "vue"; //used to set props with objects
 import type Post from "@/types/Post";
+import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 
 //props

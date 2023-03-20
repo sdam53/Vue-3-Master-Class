@@ -2,7 +2,7 @@
 //page to show list of threads in a forum. Basically child of category and parent of threads
 import ThreadList from "@/components/ThreadListComponent.vue";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
-import { defineProps, computed } from "vue";
+import { defineProps, computed, nextTick } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { findById } from "@/middleware/HelperFunctions";
@@ -39,11 +39,12 @@ const forum = computed<Forum>(() => {
 
 const { isReady } = useAsyncState(async () => {
     //fetch the forum
-    let form: Forum = await forumsStore.fetchForum(props.id);
-    await threadsStore.fetchThreads(form.threads);
+    let forum: Forum = await forumsStore.fetchForum(props.id);
+    await threadsStore.fetchThreads(forum.threads);
     usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
-}, undefined);
+    document.title = forum.name;
 
+}, undefined);
 </script>
 
 <template>

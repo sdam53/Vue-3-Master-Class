@@ -25,6 +25,8 @@ const { isReady } = useAsyncState(async () => {
     const forumIds = categories.map((category) => category.forums).flat();
     await forumsStore.fetchForums(forumIds);
 }, undefined);
+
+document.title = "Home";
 </script>
 
 <template>

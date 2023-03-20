@@ -38,9 +38,11 @@ async function register() {
 
 
 const { isReady } = useAsyncState(async () => {
-    //not much to do here but I think its nicer 
+    //not much to do here but I think its nicer
     //to be consistent with the other pages
+    document.title = "Register"
 }, undefined);
+
 </script>
 
 <template>

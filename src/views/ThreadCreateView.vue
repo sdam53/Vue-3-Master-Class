@@ -43,6 +43,7 @@ const { isReady } = useAsyncState(async () => {
     if (forum.value === undefined) {
         await forumStore.fetchForum(props.forumId);
     }
+    document.title = "Start a new thread"
 }, undefined);
 
 </script>

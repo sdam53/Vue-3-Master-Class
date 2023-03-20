@@ -15,6 +15,7 @@ const login = () => {
     isReady.value = !isReady.value
     setTimeout(() => isReady.value = !isReady.value
         , 500)
+    document.title = "Login"
 }
 
 </script>

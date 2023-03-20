@@ -49,6 +49,7 @@ const { isReady } = useAsyncState(async () => {
         await threadStore.fetchThread(props.id);
         await postStore.fetchPost(thread.value?.posts[0]);
     }
+    document.title = `Editing '${thread.value.title}'`;
 }, undefined);
 
 </script>
