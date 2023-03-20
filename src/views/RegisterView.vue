@@ -8,9 +8,11 @@ import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import router from "@/router";
 import { ref } from "vue";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 
 //stores
 const usersStore = useUsersStore()
+const currentUserStore = useCurrentUserStore()
 
 //refs
 const form = ref<RegistrationForm>({
@@ -34,6 +36,11 @@ async function register() {
     } as User, form.value.password)
     router.push({ name: "Home" })
     isReady.value = false
+}
+
+async function registerWithGoogle() {
+    await currentUserStore.signInWithGoogle()
+    router.push({ name: "Home" })
 }
 
 
@@ -83,7 +90,8 @@ const { isReady } = useAsyncState(async () => {
 
             </form>
             <div class="text-center push-top">
-                <button class="btn-red btn-xsmall"><i class="fa fa-google fa-btn"></i>Sign up with Google</button>
+                <button @click.prevent="registerWithGoogle" class="btn-red btn-xsmall"><i
+                        class="fa fa-google fa-btn"></i>Sign up with Google</button>
             </div>
         </div>
     </div>

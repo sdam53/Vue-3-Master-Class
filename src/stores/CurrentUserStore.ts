@@ -9,7 +9,14 @@ import { usePostsStore } from "./PostsStore";
 import { useThreadsStore } from "./ThreadsStore";
 import { useUsersStore } from "./UsersStore";
 import { findById, upsert } from "@/middleware/HelperFunctions";
-import { getAuth, signInWithEmailAndPassword, signOut } from "@firebase/auth";
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut
+} from "@firebase/auth";
+import { collection, doc, getDoc, getFirestore, serverTimestamp } from "@firebase/firestore";
 
 /**
  * current user store
@@ -95,6 +102,36 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     }
 
     /**
+     * registers a user through google auth
+     */
+    async function signInWithGoogle() {
+        //setting up google auth
+        let provider = new GoogleAuthProvider();
+        let auth = getAuth();
+        //signing up using pop up
+        let res = await signInWithPopup(auth, provider);
+        let user = res.user;
+        //getting the user from firestore
+        const db = getFirestore();
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        //if this user isnt in the data base then we add them
+        //else we just update the user, which is done by a listener
+        if (!userDoc.exists()) {
+            let newUser: User = {
+                avatar: user.photoURL,
+                email: user.email,
+                name: user.displayName,
+                username: user.email
+            } as User;
+            console.log(user);
+            console.log(newUser);
+
+            return userStore.registerUser(newUser, user.uid);
+        }
+    }
+
+    /**
      * function to log out the user
      */
     async function logout() {
@@ -120,6 +157,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         updateUser,
         fetchAuthUser,
         signInWithEmailAndPass,
+        signInWithGoogle,
         logout,
         setAuthId
     };

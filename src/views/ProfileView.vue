@@ -29,14 +29,7 @@ current user not existing for a quick second.
 const { isReady } = useAsyncState(async () => {
     let auth = getAuth();
     let user = auth.currentUser;
-    console.log(user);
-
-    if (!user) console.log("NO USER");
-    else console.log("YES USER");
-
-
     //await currentUserStore.fetchAuthUser()
-
     //if the user is not signed in then move them to the login page
     //if (!currentUserStore.isSignedIn) router.push({ name: 'Login' })
 }, undefined)

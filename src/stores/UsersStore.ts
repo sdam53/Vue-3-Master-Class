@@ -118,7 +118,15 @@ export const useUsersStore = defineStore("UsersStore", () => {
         return newUser as User;
     }
 
-    return { users, getUser, fetchUser, fetchUsers, setUser, registerUserWithEmailPassword };
+    return {
+        users,
+        getUser,
+        fetchUser,
+        fetchUsers,
+        setUser,
+        registerUserWithEmailPassword,
+        registerUser
+    };
 });
 
 if (import.meta.hot) {
