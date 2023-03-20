@@ -9,7 +9,7 @@ import { usePostsStore } from "./PostsStore";
 import { useThreadsStore } from "./ThreadsStore";
 import { useUsersStore } from "./UsersStore";
 import { findById, upsert } from "@/middleware/HelperFunctions";
-import { getAuth } from "@firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "@firebase/auth";
 
 /**
  * current user store
@@ -22,8 +22,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
 
     //ref
     //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");3b2x1vGujmAe79ngvktc;HiPWtTRCQUGo377B18MS
-    const authId = ref<string | null>("HiPWtTRCQUGo377B18MS");
-    //const authId = ref<string | null>("");
+    //const authId = ref<string | null>("HiPWtTRCQUGo377B18MS");
+    const authId = ref<string | null>("");
 
     //computed data
     const authUser = computed<User | null>(() =>
@@ -67,26 +67,40 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * fetches the currently signed in user's auth id
      */
     function fetchAuthUser() {
-        if (!authId.value) return;
         let userId = getAuth().currentUser?.uid;
         if (!userId) return;
         setAuthId(userId);
+        if (!authId.value) return;
         userStore.fetchUser(authId.value);
     }
 
     /**
-     * function to login user
-     * @param email users email
-     * @param password users password
+     * sign in the user using email and password
+     * @param email user email
+     * @param password user password
      */
-    async function login(email: string, password: string) {}
+    async function signInWithEmailAndPass(email: string, password: string) {
+        let auth = getAuth();
+        await signInWithEmailAndPassword(auth, email, password);
+        /*//actually dont need these bottom pieces since we have an observer in the main page
+            .then((userCredentials) => {
+
+            })
+            .catch((error) => {
+                throw error;
+            });
+            */
+    }
 
     /**
      * function to log out the user
      */
     async function logout() {
-        await getAuth().signOut();
+        let auth = getAuth();
+        await signOut(auth);
         setAuthId(null);
+        console.log("signing out");
+        console.log(authId.value);
     }
 
     return {
@@ -105,8 +119,9 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         //setUser,
         updateUser,
         fetchAuthUser,
-        login,
-        logout
+        signInWithEmailAndPass,
+        logout,
+        setAuthId
     };
 });
 

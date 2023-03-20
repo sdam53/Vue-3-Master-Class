@@ -77,7 +77,8 @@ export const useUsersStore = defineStore("UsersStore", () => {
         let id = res.user.uid;
         //adding to db
         let newUser = await registerUser(user, id);
-        let currentUserStore = useCurrentUserStore();
+        //i want the user to sign in when registering
+        //let currentUserStore = useCurrentUserStore();
         //await currentUserStore.fetchAuthUser();
         return newUser;
     }

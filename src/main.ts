@@ -13,10 +13,15 @@ import { useCurrentUserStore } from "./stores/CurrentUserStore";
 const firebase = initializeApp(firebaseConfig);
 //allows for logins to persist even after browser refreshes
 getAuth().onAuthStateChanged((user) => {
+    console.log("STATE CHANGE");
+    console.log(user);
+
     if (user) {
         let currentUserStore = useCurrentUserStore();
         currentUserStore.fetchAuthUser();
+        console.log("SIGNED IN");
     }
+    console.log("end");
 });
 
 const pinia = createPinia();

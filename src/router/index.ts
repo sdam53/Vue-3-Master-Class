@@ -15,6 +15,7 @@ import Forum from "@/views/ForumView.vue";
 import Category from "@/views/CategoryView.vue";
 import Profile from "@/views/ProfileView.vue";
 import { useFirebaseStore } from "@/stores/FirebaseStore";
+import Logout from "@/views/LogoutView.vue";
 
 //import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
@@ -92,6 +93,11 @@ const routes = [
         path: "/login",
         name: "Login",
         component: Login
+    },
+    {
+        path: "/logout",
+        name: "Logout",
+        component: Logout
     },
     {
         path: "/register",

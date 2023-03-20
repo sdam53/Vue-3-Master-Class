@@ -2,20 +2,32 @@
 import { ref } from "vue";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import type LoginForm from "@/types/LoginForm";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import router from "@/router";
 
+//store
+const currentUserStore = useCurrentUserStore()
+
+//ref
 const form = ref<LoginForm>({
     email: "",
     password: ""
 })
-
 const isReady = ref<Boolean>(false)
 
-const login = () => {
-    console.log("Login")
-    isReady.value = !isReady.value
-    setTimeout(() => isReady.value = !isReady.value
-        , 500)
-    document.title = "Login"
+/**
+ * logins in the user and sends them to the home page
+ * else error message will show
+ */
+async function login() {
+    try {
+        isReady.value = false;
+        await currentUserStore.signInWithEmailAndPass(form.value.email, form.value.password)
+        router.push({ name: "Home" })
+    } catch (error) {
+        alert((error as Error).message)
+    }
+    //isReady.value = true;
 }
 
 </script>

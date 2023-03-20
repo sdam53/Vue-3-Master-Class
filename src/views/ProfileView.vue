@@ -28,10 +28,8 @@ document.title = "My Profile"
 
 <template>
     <div class="container">
-        <!--TODO: When not signed in, redirect to the login screen-->
         <div class="flex-grid">
             <div class="col-3 push-top">
-                <!--TODO: Deal with this error-->
                 <UserProfileCard v-if="!props.edit" :user="currentUserStore.authUser as User" />
                 <UserProfileCardEditor v-else :user="currentUserStore.authUser as User" />
             </div>
