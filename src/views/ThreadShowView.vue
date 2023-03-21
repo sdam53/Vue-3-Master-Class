@@ -56,7 +56,7 @@ const { isReady } = useAsyncState(async () => {
     usersStore.fetchUser(thread.userId);
     let posts = await postsStore.fetchPosts(thread.posts);
     let users = posts.map((post: Post) => post.userId);
-    await usersStore.fetchUsers(users);
+    usersStore.fetchUsers(users);
     document.title = thread.title
     emits("ready")
 }, undefined);
