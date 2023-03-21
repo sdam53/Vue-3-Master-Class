@@ -9,6 +9,7 @@ import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./config/firebase";
 import { getAuth } from "@firebase/auth";
 import { useCurrentUserStore } from "./stores/CurrentUserStore";
+import { Vue3ProgressPlugin } from "@marcoschulte/vue3-progress";
 
 const firebase = initializeApp(firebaseConfig);
 //allows for logins to persist even after browser refreshes
@@ -32,4 +33,6 @@ app.use(router);
 app.use(vuetify);
 //using fontawesome
 app.use(FontAwesome);
+//vue3 top loading bar
+app.use(Vue3ProgressPlugin);
 app.mount("#app");

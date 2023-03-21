@@ -1,7 +1,6 @@
 <script setup lang="ts">
 //page to show list of threads in a forum. Basically child of category and parent of threads
 import ThreadList from "@/components/ThreadListComponent.vue";
-import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { defineProps, computed, nextTick } from "vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useForumsStore } from "@/stores/ForumsStore";
@@ -10,6 +9,9 @@ import type Forum from "@/types/Forum";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useAsyncState } from "@vueuse/core";
 import type Thread from "@/types/Thread";
+
+//emits
+const emits = defineEmits(["ready"])
 
 //stores
 const threadsStore = useThreadsStore();
@@ -43,12 +45,11 @@ const { isReady } = useAsyncState(async () => {
     await threadsStore.fetchThreads(forum.threads);
     usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
     document.title = forum.name;
-
+    emits("ready")
 }, undefined);
 </script>
 
 <template>
-    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="col-full push-top">
         <div class="forum-header">
             <div class="forum-details">

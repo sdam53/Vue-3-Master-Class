@@ -4,7 +4,6 @@
 import { computed, onMounted, ref, type Ref } from "vue";
 import PostListComponent from "@/components/PostListComponent.vue";
 import PostEditorComponent from "@/components/PostEditorComponent.vue";
-import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import type Post from "@/types/Post";
@@ -22,6 +21,9 @@ const usersStore = useUsersStore();
 //prop
 //TODO: it requires a slug but it actually isnt being used
 const props = defineProps(["id", "slug"]);
+
+//emits
+const emits = defineEmits(["ready"])
 
 //ref
 //const creator = await usersStore.fetchUser(thread.userId);
@@ -56,6 +58,7 @@ const { isReady } = useAsyncState(async () => {
     let users = posts.map((post: Post) => post.userId);
     await usersStore.fetchUsers(users);
     document.title = thread.title
+    emits("ready")
 }, undefined);
 
 

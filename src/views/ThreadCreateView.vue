@@ -11,6 +11,9 @@ import type Forum from "@/types/Forum";
 import { findById } from "@/middleware/HelperFunctions";
 import { useAsyncState } from "@vueuse/core";
 
+//emits
+const emits = defineEmits(["ready"])
+
 //prop
 const props = defineProps({
     forumId: {
@@ -44,6 +47,7 @@ const { isReady } = useAsyncState(async () => {
         await forumStore.fetchForum(props.forumId);
     }
     document.title = "Start a new thread"
+    emits("ready")
 }, undefined);
 
 </script>

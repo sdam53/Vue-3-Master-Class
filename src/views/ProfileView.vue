@@ -5,7 +5,6 @@ import PostList from "@/components/PostListComponent.vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
-import router from "@/router";
 import type User from "@/types/User";
 import { computed } from "vue";
 import { useAsyncState } from "@vueuse/core";
@@ -13,6 +12,9 @@ import { getAuth } from "@firebase/auth";
 
 //store
 const currentUserStore = useCurrentUserStore();
+
+//emits
+const emits = defineEmits(["ready"]);
 
 //prop
 const props = defineProps({
@@ -32,13 +34,12 @@ const { isReady } = useAsyncState(async () => {
     //await currentUserStore.fetchAuthUser()
     //if the user is not signed in then move them to the login page
     //if (!currentUserStore.isSignedIn) router.push({ name: 'Login' })
+    //emits("ready")
+    emits("ready")
 }, undefined)
-
-
 </script>
 
 <template>
-    <UseLoadingScreen v-show="isReady" />
     <div class="container">
         <div class="flex-grid">
             <div class="col-3 push-top">

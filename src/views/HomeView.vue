@@ -2,35 +2,35 @@
 //home page to show categories and their forums
 
 import CategoryListComponent from "@/components/CategoryListComponent.vue";
-import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useAsyncState } from "@vueuse/core";
 import type Category from "@/types/Category";
-import { computed, ref } from "vue";
+import { computed, ref, } from "vue";
 //store
 const categoriesStore = useCategoriesStore();
 const forumsStore = useForumsStore();
 
 //ref
 
+//emits
+const emits = defineEmits(["ready"])
+
 //computed props
 const categories = computed<Category[]>(() => categoriesStore.categories);
 
 //
 const { isReady } = useAsyncState(async () => {
-    let categoriesStore = useCategoriesStore();
-    let forumsStore = useForumsStore();
     const categories: Category[] = await categoriesStore.fetchAllCategories();
     const forumIds = categories.map((category) => category.forums).flat();
     await forumsStore.fetchForums(forumIds);
+    emits("ready")
 }, undefined);
 
 document.title = "Home";
 </script>
 
 <template>
-    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="container">
         <h1 class="push-top">Welcome to the Forum</h1>
         <CategoryListComponent :categories="categories" />
