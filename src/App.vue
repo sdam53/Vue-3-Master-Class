@@ -13,14 +13,15 @@ const currentUser = useCurrentUserStore();
 currentUser.fetchAuthUser();
 
 const progressBar = ref<any>(null);
-const loadingScreen = ref<boolean>(false);
+const loadingScreen = ref<boolean>(true);
 
 /**
  * turn on loading after each page change
  */
 router.beforeEach(() => {
+    ready()
     progressBar.value = useProgress().start()
-    loadingScreen.value = false;
+    loadingScreen.value = true;
 });
 
 /**
@@ -28,13 +29,13 @@ router.beforeEach(() => {
  */
 function ready() {
     if (progressBar.value) progressBar.value.finish();
-    loadingScreen.value = true;
+    loadingScreen.value = false;
 }
 </script>
 
 <template>
     <vue3-progress-bar></vue3-progress-bar>
-    <UseLoadingScreen v-show="!loadingScreen" />
+    <UseLoadingScreen v-show="loadingScreen" />
     <header>
         <TheNavbar />
     </header>
@@ -50,7 +51,9 @@ function ready() {
 <style lang="scss">
 @import "@/assets/style.css";
 
-$vue3-progress-bar-color: #74155c !important;
+$vue3-progress-bar-color: #0db1c7 !important;
+$vue3-progress-bar-height: 2px !default;
+
 @import "./../node_modules/@marcoschulte/vue3-progress/dist/index.scss";
 /* exposed variables
 https://www.npmjs.com/package/@marcoschulte/vue3-progress?activeTab=readme
