@@ -14,8 +14,9 @@ import { Vue3ProgressPlugin } from "@marcoschulte/vue3-progress";
 const firebase = initializeApp(firebaseConfig);
 //allows for logins to persist even after browser refreshes
 getAuth().onAuthStateChanged((user) => {
+    let currentUserStore = useCurrentUserStore();
+    currentUserStore.unsubscribeAuthUserSnapshot();
     if (user) {
-        let currentUserStore = useCurrentUserStore();
         currentUserStore.fetchAuthUser();
     }
 });

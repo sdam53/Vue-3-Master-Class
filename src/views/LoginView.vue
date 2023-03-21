@@ -8,6 +8,9 @@ import router from "@/router";
 //store
 const currentUserStore = useCurrentUserStore()
 
+//emits
+const emits = defineEmits(["ready"])
+
 //ref
 const form = ref<LoginForm>({
     email: "",
@@ -16,8 +19,6 @@ const form = ref<LoginForm>({
 const isReady = ref<Boolean>(false)
 
 if (currentUserStore.isSignedIn) {
-    console.log("WHY");
-
     router.push({ name: "Home" })
 }
 
@@ -41,11 +42,15 @@ async function loginWithGoogle() {
     router.push({ name: "Home" });
 }
 
+setTimeout(() => {
+    isReady.value = true
+}, 1000)
+
 document.title = "Login"
+emits("ready")
 </script>
 
 <template>
-    <UseLoadingScreen v-show="isReady" />
     <div class="container">
         <div class="flex-grid justify-center">
             <div class="col-1">

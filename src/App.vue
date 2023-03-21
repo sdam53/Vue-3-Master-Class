@@ -40,7 +40,7 @@ function ready() {
     </header>
     <suspense>
         <div class="container">
-            <router-view @ready="ready"></router-view>
+            <router-view @ready="ready" :key="$route.path"></router-view>
         </div>
     </suspense>
     <footer>

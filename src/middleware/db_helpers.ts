@@ -8,19 +8,29 @@ import { setItem } from "@/middleware/HelperFunctions";
  * not a big fan of having to use any types
  * @param id the id
  * @param resource the resource type
+ * @param handleUnsubscribe function to handle special cases. defaults to null
  */
-async function fetchItem(id: string, resource: string): Promise<any> {
+async function fetchItem(
+    id: string,
+    resource: string,
+    handleUnsubscribe: ((sub: any) => void) | null = null
+): Promise<any> {
     //console.log(`Fetching ${resource}...`);
     let firebaseStore = useFirebaseStore();
     let db = getFirestore();
     return new Promise((resolve) => {
         let docRef = doc(db, resource, id);
-        let unsubscribe = onSnapshot(docRef, (doc) => {
+        let unsubscribe: () => void = onSnapshot(docRef, (doc) => {
             let docItem: any = doc.data();
             setItem({ ...docItem, id: doc.id }, resource);
             resolve({ ...docItem, id: doc.id });
         });
-        firebaseStore.addUnsubscription(unsubscribe);
+
+        if (handleUnsubscribe) {
+            handleUnsubscribe(unsubscribe);
+        } else {
+            firebaseStore.addUnsubscription(unsubscribe);
+        }
     });
 }
 

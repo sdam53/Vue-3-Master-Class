@@ -34,9 +34,8 @@ const { isReady } = useAsyncState(async () => {
     //await currentUserStore.fetchAuthUser()
     //if the user is not signed in then move them to the login page
     //if (!currentUserStore.isSignedIn) router.push({ name: 'Login' })
-    //emits("ready")
-    emits("ready")
 }, undefined)
+emits("ready")
 </script>
 
 <template>

@@ -19,15 +19,12 @@ import { ref } from "vue";
 import { usePostsStore } from "./PostsStore";
 import { useSourceDataStore } from "./SourceDataStore";
 import { useCurrentUserStore } from "./CurrentUserStore";
+import { useFirebaseStore } from "./FirebaseStore";
 
 /**
  * user store
  */
 export const useUsersStore = defineStore("UsersStore", () => {
-    //store
-    const sourceDataStore = useSourceDataStore();
-    const postStore = usePostsStore();
-
     //ref
     //const users = ref(sourceDataStore.users);
     const users = ref<User[]>([]);

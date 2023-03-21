@@ -17,6 +17,7 @@ import {
     signOut
 } from "@firebase/auth";
 import { collection, doc, getDoc, getFirestore, serverTimestamp } from "@firebase/firestore";
+import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 
 /**
  * current user store
@@ -31,6 +32,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");3b2x1vGujmAe79ngvktc;HiPWtTRCQUGo377B18MS
     //const authId = ref<string | null>("HiPWtTRCQUGo377B18MS");
     const authId = ref<string | null>(null);
+    const authUserUnsubscribe = ref<(() => void) | null>(null);
 
     //computed data
     const authUser = computed<User | null>(() =>
@@ -80,7 +82,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         if (!userId) return;
         setAuthId(userId);
         if (!authId.value) return;
-        await userStore.fetchUser(authId.value);
+        let user = await fetchItem(userId, "users", setAuthUserUnsubscribe);
+        userStore.setUser({ ...user });
     }
 
     /**
@@ -140,8 +143,27 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         setAuthId(null);
     }
 
+    /**
+     * unsub auth user
+     * @param unsubscribe unsub function
+     */
+    const setAuthUserUnsubscribe = (unsubscribe: (() => void) | null) => {
+        authUserUnsubscribe.value = unsubscribe;
+    };
+
+    /**
+     * unsub to currently signed in user's snapshot
+     */
+    async function unsubscribeAuthUserSnapshot() {
+        if (authUserUnsubscribe.value) {
+            authUserUnsubscribe.value();
+            setAuthUserUnsubscribe(null);
+        }
+    }
+
     return {
         authId,
+        authUserUnsubscribe,
         authUser,
         isSignedIn,
         name,
@@ -159,7 +181,9 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         signInWithEmailAndPass,
         signInWithGoogle,
         logout,
-        setAuthId
+        setAuthId,
+        setAuthUserUnsubscribe,
+        unsubscribeAuthUserSnapshot
     };
 });
 

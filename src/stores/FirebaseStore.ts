@@ -7,13 +7,13 @@ import { ref } from "vue";
  */
 export const useFirebaseStore = defineStore("FirebaseStore", () => {
     //refs
-    const unsubscriptions = ref([]);
+    const unsubscriptions = ref<(() => void)[]>([]);
 
     /**
      * adds a new subscription
      * @param sub unsub function
      */
-    const addUnsubscription = (sub: never) => {
+    const addUnsubscription = (sub: () => void) => {
         //type never
         //https://www.tutorialsteacher.com/typescript/typescript-never
         unsubscriptions.value.push(sub);
@@ -26,10 +26,15 @@ export const useFirebaseStore = defineStore("FirebaseStore", () => {
 
     //unsubscribe too all snapshots
     async function unsubscribeAllSnapshots() {
-        unsubscriptions.value.forEach((unsub: (a: void) => void) => unsub()); //function type expression as the type
+        unsubscriptions.value.forEach((unsub: () => void) => unsub()); //function type expression as the type
         clearAllUnsubscriptions();
     }
-    return { addUnsubscription, clearAllUnsubscriptions, unsubscribeAllSnapshots };
+
+    return {
+        addUnsubscription,
+        clearAllUnsubscriptions,
+        unsubscribeAllSnapshots
+    };
 });
 
 if (import.meta.hot) {

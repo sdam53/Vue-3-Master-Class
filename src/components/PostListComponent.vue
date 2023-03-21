@@ -56,14 +56,12 @@ const updatePost = (eventData: any) => {
     <div class="post-list">
         <div class="post" v-for="post in props.posts" :key="post.id">
             <div v-if="userById(post.userId)" class="user-info">
-                <a href="#" class="user-name">{{ userById(post.userId)!.name }}</a>
+                <a href="#" class="user-name">{{ (userById(post.userId) as User)!.name }}</a>
                 <a href="#">
-                    <img class="avatar-large" :src="userById(post.userId)!.avatar" alt="" />
+                    <img class="avatar-large" :src="(userById(post.userId) as User)!.avatar || undefined"
+                        alt="User Profile Image" />
                 </a>
-                <!-- This will make non stop calls to DB
-                                                                                                                                                                                    <p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>
-                                                                                                                                                                                    <p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p>
-                                                                                                                                                                                -->
+                <!--<p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p><p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>-->
             </div>
             <div class="post-content">
                 <div class="col-full">
