@@ -9,6 +9,7 @@ import type User from "@/types/User";
 import { computed } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { getAuth } from "@firebase/auth";
+import router from "@/router";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -34,8 +35,13 @@ const { isReady } = useAsyncState(async () => {
     //await currentUserStore.fetchAuthUser()
     //if the user is not signed in then move them to the login page
     //if (!currentUserStore.isSignedIn) router.push({ name: 'Login' })
+    setTimeout(() => {
+        if (!currentUserStore.authId) router.push({ name: 'Login' })
+        emits("ready")
+    }, 700)
 }, undefined)
-emits("ready")
+
+isReady
 </script>
 
 <template>

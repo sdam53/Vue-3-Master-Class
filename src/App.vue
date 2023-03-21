@@ -40,7 +40,7 @@ function ready() {
         <TheNavbar />
     </header>
     <suspense>
-        <div class="container">
+        <div class="container" v-show="!loadingScreen">
             <router-view @ready="ready" :key="$route.path"></router-view>
         </div>
     </suspense>

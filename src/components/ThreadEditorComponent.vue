@@ -1,7 +1,8 @@
 <script setup lang="ts">
 //component for thread editing
 
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
+import _ from "lodash";
 
 //props
 const props = defineProps({
@@ -16,7 +17,7 @@ const props = defineProps({
 });
 
 //emits
-const emit = defineEmits(["save", "cancel"]);
+const emit = defineEmits(["save", "cancel", "dirty", "clean"]);
 
 //refs
 const form = ref({
@@ -40,6 +41,20 @@ const save = () => {
 const cancel = () => {
     emit("cancel", {});
 };
+
+/**
+ * watch changes in form
+ * using lodash clonedeep function to watch 
+ * if you dont old val and new are referencing the same and will not work right
+ */
+watch(() => _.cloneDeep(form), (newValue, oldValue) => {
+    console.log(newValue.value, oldValue.value);
+    if (newValue.value.title !== oldValue.value.title || newValue.value.text !== oldValue.value.text) {
+        emit("dirty")
+    } else {
+        emit("clean")
+    }
+})
 </script>
 
 <template>
