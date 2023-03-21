@@ -47,7 +47,17 @@ function ready() {
     </footer>
 </template>
 
-<style>
+<style lang="scss">
 @import "@/assets/style.css";
-@import "@marcoschulte/vue3-progress/dist/index.css";
+
+$vue3-progress-bar-color: #74155c !important;
+@import "./../node_modules/@marcoschulte/vue3-progress/dist/index.scss";
+/* exposed variables
+https://www.npmjs.com/package/@marcoschulte/vue3-progress?activeTab=readme
+$vue3-progress-bar-container-z-index: 999999 !default;
+$vue3-progress-bar-container-transition: all 500ms ease !default;
+$vue3-progress-bar-color: #42b983 !default;
+$vue3-progress-bar-height: 2px !default;
+$vue3-progress-bar-transition: all 200ms ease !default;
+*/
 </style>
