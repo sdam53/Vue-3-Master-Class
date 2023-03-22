@@ -2,7 +2,7 @@
  * Router to handle page routing
  */
 
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
 import Home from "@/views/HomeView.vue";
 import NotFound from "@/views/NotFoundView.vue";
 import Thread from "@/views/ThreadShowView.vue";
@@ -83,33 +83,14 @@ const routes = [
         path: "/me",
         name: "Profile",
         component: Profile,
-        meta: { toTop: true, smoothScroll: true },
-        beforeEnter(to, from, next) {
-            //TODO: Figure out where the Route type is located
-            //TODO: figure out how to access store quicker??? its undefined when refreshed
-            setTimeout(() => {
-                const currentUserStore = useCurrentUserStore();
-                if (!currentUserStore.isSignedIn) next({ name: "Login" });
-                else next();
-                //if (!currentUserStore.authId) router.push({ name: 'Login' })
-            }, 700);
-        }
+        meta: { toTop: true, smoothScroll: true, requiresAuth: true }
     },
     {
         path: "/me/edit",
         name: "ProfileEdit",
         component: Profile,
-        props: { edit: true },
-        beforeEnter(to, from, next) {
-            //TODO: Figure out where the Route type is located
-            //TODO: figure out how to access store quicker??? its undefined when refreshed
-            setTimeout(() => {
-                const currentUserStore = useCurrentUserStore();
-                if (!currentUserStore.isSignedIn) next({ name: "Login" });
-                else next();
-                //if (!currentUserStore.authId) router.push({ name: 'Login' })
-            }, 700);
-        }
+        meta: { toTop: true, smoothScroll: true, requiresAuth: true },
+        props: { edit: true }
     },
     {
         path: "/login",
@@ -157,9 +138,18 @@ const router = createRouter({
     }
 });
 
-router.beforeEach(() => {
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     let firebaseStore = useFirebaseStore();
     firebaseStore.clearAllUnsubscriptions();
+    //if the page requires auth user then they will get sent to / if they arent signed in
+    if (to.meta.requiresAuth) {
+        //TODO: figure out how to access store quicker??? its undefined when refreshed
+        //TODO: Doesnt work right with /me/edit
+        setTimeout(() => {
+            const currentUserStore = useCurrentUserStore();
+            if (!currentUserStore.isSignedIn) router.push({ name: "Login" });
+        }, 700);
+    }
 });
 
 export default router;
