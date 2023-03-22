@@ -32,6 +32,7 @@ const existing = computed(() => !!props.title); //cast to boolean
  * sends an event to the ThreadEditView page to save the edit
  */
 const save = () => {
+    emit("clean")
     emit("save", form.value.title, form.value.text);
 };
 

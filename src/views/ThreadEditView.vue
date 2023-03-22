@@ -1,7 +1,7 @@
 <script setup lang="ts">
 //page to edit a thread
 
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import router from "@/router";
 import ThreadEditor from "@/components/ThreadEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -10,6 +10,7 @@ import type Thread from "@/types/Thread";
 import { findById } from "@/middleware/HelperFunctions";
 import { useAsyncState } from "@vueuse/core";
 import type Post from "@/types/Post";
+import { onBeforeRouteLeave } from "vue-router";
 
 //emits
 const emits = defineEmits(["ready"]);
@@ -21,6 +22,9 @@ const props = defineProps({
         required: true
     }
 });
+
+//refs
+const formIsDirty = ref<boolean>(false);
 
 //stores
 let threadStore = useThreadsStore();
@@ -55,6 +59,19 @@ const { isReady } = useAsyncState(async () => {
     emits("ready");
 }, undefined);
 
+/**
+ * prevents the user from leaving the page by accident and risk losing changes.
+ */
+onBeforeRouteLeave((to, from) => {
+    if (formIsDirty.value) {
+        const answer = window.confirm(
+            'Do you really want to leave? you have unsaved changes!'
+        )
+        // cancel the navigation and stay on the same page
+        if (!answer) return false
+    }
+});
+
 </script>
 
 <template>
@@ -62,7 +79,8 @@ const { isReady } = useAsyncState(async () => {
         <h1>
             Editing <i>{{ thread?.title }}</i>
         </h1>
-        <ThreadEditor :title="thread?.title || ''" :text="text" @save="save" @cancel="cancel">
+        <ThreadEditor :title="thread?.title || ''" :text="text" @save="save" @cancel="cancel" @dirty="formIsDirty = true"
+            @clean="formIsDirty = false">
         </ThreadEditor>
     </div>
 </template>

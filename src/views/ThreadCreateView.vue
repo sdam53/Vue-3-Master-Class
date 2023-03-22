@@ -65,8 +65,7 @@ onBeforeRouteLeave((to, from) => {
         // cancel the navigation and stay on the same page
         if (!answer) return false
     }
-
-})
+});
 </script>
 
 <template>
