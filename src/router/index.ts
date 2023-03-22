@@ -16,6 +16,8 @@ import Category from "@/views/CategoryView.vue";
 import Profile from "@/views/ProfileView.vue";
 import { useFirebaseStore } from "@/stores/FirebaseStore";
 import Logout from "@/views/LogoutView.vue";
+import { useUsersStore } from "@/stores/UsersStore";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 
 //import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
@@ -81,13 +83,33 @@ const routes = [
         path: "/me",
         name: "Profile",
         component: Profile,
-        meta: { toTop: true, smoothScroll: true }
+        meta: { toTop: true, smoothScroll: true },
+        beforeEnter(to, from, next) {
+            //TODO: Figure out where the Route type is located
+            //TODO: figure out how to access store quicker??? its undefined when refreshed
+            setTimeout(() => {
+                const currentUserStore = useCurrentUserStore();
+                if (!currentUserStore.isSignedIn) next({ name: "Login" });
+                else next();
+                //if (!currentUserStore.authId) router.push({ name: 'Login' })
+            }, 700);
+        }
     },
     {
         path: "/me/edit",
         name: "ProfileEdit",
         component: Profile,
-        props: { edit: true }
+        props: { edit: true },
+        beforeEnter(to, from, next) {
+            //TODO: Figure out where the Route type is located
+            //TODO: figure out how to access store quicker??? its undefined when refreshed
+            setTimeout(() => {
+                const currentUserStore = useCurrentUserStore();
+                if (!currentUserStore.isSignedIn) next({ name: "Login" });
+                else next();
+                //if (!currentUserStore.authId) router.push({ name: 'Login' })
+            }, 700);
+        }
     },
     {
         path: "/login",
@@ -99,6 +121,18 @@ const routes = [
         name: "Logout",
         component: Logout
     },
+    /*
+    {
+        //If you dont want to have a page for logout
+        path: "/logout",
+        name: "Logout",
+        beforeEnter(to, from, next) {
+            const currentUserStore = useCurrentUserStore();
+            await currentUserStore.logout();
+            next({name: "Home"});
+        }
+    },
+    */
     {
         path: "/register",
         name: "Register",

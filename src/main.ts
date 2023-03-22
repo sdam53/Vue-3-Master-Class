@@ -22,18 +22,19 @@ getAuth().onAuthStateChanged((user) => {
 });
 
 const pinia = createPinia();
+const theRouter = router;
 const app = createApp(App);
 
 //use pinia for glabal state management
 app.use(pinia);
 //this allows us to glablly use a component without importing it
 app.component("AppDate", AppDate);
-//use our router we made
-app.use(router);
 //using vuetify
 app.use(vuetify);
 //using fontawesome
 app.use(FontAwesome);
 //vue3 top loading bar
 app.use(Vue3ProgressPlugin);
+//use our router we made
+app.use(theRouter);
 app.mount("#app");
