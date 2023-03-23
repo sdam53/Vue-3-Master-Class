@@ -26,8 +26,7 @@ const props = defineProps({
 document.title = "My Profile"
 
 /*
-TODO: When logged in and on /me. if you refresh you will be sent to login due to 
-current user not existing for a quick second.
+Not logged in is being handled in router file 
 */
 const { isReady } = useAsyncState(async () => {
     let auth = getAuth();

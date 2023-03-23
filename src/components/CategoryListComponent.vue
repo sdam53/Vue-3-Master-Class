@@ -29,7 +29,6 @@ const getForumsForCategory = (category: Category) => {
 </script>
 
 <template>
-    <!--TODO figure out the slug error and get the slug-->
     <ForumList v-for="category in props.categories" :key="category.id" :forums="getForumsForCategory(category)"
         :title="category.name" :categoryId="category.id" :slug="category.slug" />
 </template>

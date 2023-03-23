@@ -19,7 +19,6 @@ const postsStore = usePostsStore();
 const usersStore = useUsersStore();
 
 //prop
-//TODO: it requires a slug but it actually isnt being used
 const props = defineProps(["id", "slug"]);
 
 //emits

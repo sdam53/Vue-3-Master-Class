@@ -1,8 +1,6 @@
 <script setup lang="ts">
 //page to show different categories of forums.
 //navigate by clicking on a category
-//TODO: ATM slug doesnt display
-//we get sent here by the ForumListComponent
 import { computed, defineProps, nextTick } from "vue";
 import ForumListComponent from "@/components/ForumListComponent.vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore.js";

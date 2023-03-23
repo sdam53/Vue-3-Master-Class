@@ -60,7 +60,6 @@ const routes = [
         component: Thread,
         props: true
         //this basically will check if this endpoint is right, and if not we get sent to notFound
-        //TODO: figure out to, from, next types
         //TODO: pinia isnt created at this point so have to remove this for now. figure it out
         /*
         beforeEnter(to: any, from: any, next: any) {
@@ -138,7 +137,9 @@ const router = createRouter({
     }
 });
 
-router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+    let currentUserStore = useCurrentUserStore();
+    await currentUserStore.initAuthentication();
     let firebaseStore = useFirebaseStore();
     firebaseStore.clearAllUnsubscriptions();
     //if the page requires auth user then they will get sent to / if they arent signed in

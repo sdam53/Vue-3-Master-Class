@@ -161,6 +161,24 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         }
     }
 
+    /**
+     * initiates the user authentification observer
+     */
+    async function initAuthentication() {
+        return new Promise((resolve) => {
+            //allows for logins to persist even after browser refreshes
+            getAuth().onAuthStateChanged((user) => {
+                unsubscribeAuthUserSnapshot();
+                if (user) {
+                    fetchAuthUser();
+                }
+                console.log("NEW BEW");
+
+                resolve(user);
+            });
+        });
+    }
+
     return {
         authId,
         authUserUnsubscribe,
@@ -183,7 +201,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         logout,
         setAuthId,
         setAuthUserUnsubscribe,
-        unsubscribeAuthUserSnapshot
+        unsubscribeAuthUserSnapshot,
+        initAuthentication
     };
 });
 
