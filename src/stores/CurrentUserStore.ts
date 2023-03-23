@@ -172,8 +172,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
                 if (user) {
                     fetchAuthUser();
                 }
-                console.log("NEW BEW");
-
                 resolve(user);
             });
         });
