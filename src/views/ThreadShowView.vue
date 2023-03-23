@@ -12,6 +12,8 @@ import { useUsersStore } from "@/stores/UsersStore";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
+import { stringLength } from "@firebase/util";
+import router from "@/router";
 
 //stores
 const threadsStore = useThreadsStore();
@@ -19,10 +21,20 @@ const postsStore = usePostsStore();
 const usersStore = useUsersStore();
 
 //prop
-const props = defineProps(["id", "slug"]);
+//const props = defineProps(["id", "slug"]);
+const props = defineProps({
+    id: {
+        type: String,
+        required: true
+    },
+    slug: {
+        type: String,
+        required: false
+    }
+})
 
 //emits
-const emits = defineEmits(["ready"])
+const emits = defineEmits(["ready", "notReady"])
 
 //ref
 //const creator = await usersStore.fetchUser(thread.userId);
@@ -52,15 +64,20 @@ const addPost = (eventData: any) => {
 const { isReady } = useAsyncState(async () => {
     //fetches all posts and user in a thread and saves it to memory
     let thread = await threadsStore.fetchThread(props.id);
-    usersStore.fetchUser(thread.userId);
-    let posts = await postsStore.fetchPosts(thread.posts);
-    let users = posts.map((post: Post) => post.userId);
-    usersStore.fetchUsers(users);
-    document.title = thread.title
-    emits("ready")
+
+    //updates the slug if the user used an incorrect one by redirecting
+    if (props.slug !== thread.slug) {
+        router.push({ name: "ThreadShow", params: { id: thread.id, slug: thread.slug }, })
+    } else {
+        //continue on
+        usersStore.fetchUser(thread.userId);
+        let posts = await postsStore.fetchPosts(thread.posts);
+        let users = posts.map((post: Post) => post.userId);
+        usersStore.fetchUsers(users);
+        document.title = thread.title
+        emits("ready")
+    }
 }, undefined);
-
-
 </script>
 
 <template>

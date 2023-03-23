@@ -57,7 +57,7 @@ const routes = [
         props: true
     },
     {
-        path: "/thread/:id/:slug",
+        path: "/thread/:id/:slug?", //'?' makes it optional
         name: "ThreadShow",
         component: Thread,
         props: true,

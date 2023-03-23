@@ -19,9 +19,7 @@ const loadingScreen = ref<boolean>(true);
  * turn on loading after each page change
  */
 router.beforeEach(() => {
-    ready()
-    progressBar.value = useProgress().start()
-    loadingScreen.value = true;
+    notReady()
 });
 
 /**
@@ -30,6 +28,12 @@ router.beforeEach(() => {
 function ready() {
     if (progressBar.value) progressBar.value.finish();
     loadingScreen.value = false;
+}
+
+function notReady() {
+    ready()
+    progressBar.value = useProgress().start()
+    loadingScreen.value = true;
 }
 </script>
 
@@ -41,7 +45,7 @@ function ready() {
     </header>
     <suspense>
         <div class="container" v-show="!loadingScreen">
-            <router-view @ready="ready" :key="$route.path"></router-view>
+            <router-view @ready="ready" @notReady="notReady" :key="$route.path"></router-view>
         </div>
     </suspense>
     <footer>
