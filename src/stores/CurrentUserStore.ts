@@ -33,6 +33,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     //const authId = ref<string | null>("HiPWtTRCQUGo377B18MS");
     const authId = ref<string | null>(null);
     const authUserUnsubscribe = ref<(() => void) | null>(null);
+    const authObserverUnsubscribe = ref<(() => void) | null>(null);
 
     //computed data
     const authUser = computed<User | null>(() =>
@@ -151,6 +152,10 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         authUserUnsubscribe.value = unsubscribe;
     };
 
+    const setAuthObserverUnsubscribe = (unsubscribe: (() => void) | null) => {
+        authObserverUnsubscribe.value = unsubscribe;
+    };
+
     /**
      * unsub to currently signed in user's snapshot
      */
@@ -164,16 +169,26 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     /**
      * initiates the user authentification observer
      */
-    async function initAuthentication() {
+    async function initAuthentication(): Promise<User | null> {
+        //TODO: Pinia in console doesnt have this ref for some reason
+        //subs the user auth
+        if (authObserverUnsubscribe.value) {
+            authObserverUnsubscribe.value();
+        }
         return new Promise((resolve) => {
             //allows for logins to persist even after browser refreshes
-            getAuth().onAuthStateChanged((user) => {
+            const unsub = getAuth().onAuthStateChanged(async (user) => {
+                //unsubs the user
                 unsubscribeAuthUserSnapshot();
                 if (user) {
-                    fetchAuthUser();
+                    //resolves the user
+                    await fetchAuthUser();
+                    resolve(user as unknown as User); //does this work?
+                } else {
+                    resolve(null);
                 }
-                resolve(user);
             });
+            setAuthObserverUnsubscribe(unsub);
         });
     }
 
