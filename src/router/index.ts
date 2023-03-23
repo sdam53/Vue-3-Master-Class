@@ -18,6 +18,8 @@ import { useFirebaseStore } from "@/stores/FirebaseStore";
 import Logout from "@/views/LogoutView.vue";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import { findById } from "@/middleware/HelperFunctions";
 
 //import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
@@ -58,25 +60,24 @@ const routes = [
         path: "/thread/:id/:slug",
         name: "ThreadShow",
         component: Thread,
-        props: true
+        props: true,
         //this basically will check if this endpoint is right, and if not we get sent to notFound
-        //TODO: pinia isnt created at this point so have to remove this for now. figure it out
-        /*
-        beforeEnter(to: any, from: any, next: any) {
-            const threadExist = sourceData.threads.find((thread) => thread.id === to.params.id);
-            console.log(threadExist);
+        async beforeEnter(to: RouteLocationNormalized, from: RouteLocationNormalized, next: any) {
+            const threadStore = useThreadsStore();
+            await threadStore.fetchThread(to.params.id as string);
+            const threadExist = findById(threadStore.threads, to.params.id as string);
             if (!threadExist)
                 return {
                     name: "NotFound",
                     params: {
                         pathMatch: to.path.substring(1).split("/")
                     },
+                    //preserve existing query and hash
                     query: to.query,
                     hash: to.hash
                 };
             else next();
         }
-        */
     },
     {
         path: "/me",

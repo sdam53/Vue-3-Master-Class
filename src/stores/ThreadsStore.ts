@@ -192,6 +192,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
      */
     async function fetchThread(threadId: string): Promise<Thread> {
         let thread = await fetchItem(threadId, "threads");
+        console.log(thread);
+
         setThread({ ...thread });
         return { ...thread };
     }

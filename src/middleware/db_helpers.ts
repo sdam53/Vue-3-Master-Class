@@ -9,6 +9,7 @@ import { setItem } from "@/middleware/HelperFunctions";
  * @param id the id
  * @param resource the resource type
  * @param handleUnsubscribe function to handle special cases. defaults to null
+ * @returns Promise<any> these will contain null items
  */
 async function fetchItem(
     id: string,
@@ -21,9 +22,13 @@ async function fetchItem(
     return new Promise((resolve) => {
         let docRef = doc(db, resource, id);
         let unsubscribe: () => void = onSnapshot(docRef, (doc) => {
-            let docItem: any = doc.data();
-            setItem({ ...docItem, id: doc.id }, resource);
-            resolve({ ...docItem, id: doc.id });
+            if (doc.exists()) {
+                let docItem: any = doc.data();
+                setItem({ ...docItem, id: doc.id }, resource);
+                resolve({ ...docItem, id: doc.id });
+            } else {
+                resolve(null);
+            }
         });
 
         if (handleUnsubscribe) {
@@ -38,6 +43,7 @@ async function fetchItem(
  * fetches multiple items from firestorm
  * @param ids list of ids
  * @param resource resource type
+ * @returns Promise<any>[] these will contain null items
  */
 const fetchItems = (ids: string[], resource: string) => {
     console.log(`Fetching multiple ${resource}...`);

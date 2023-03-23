@@ -1,6 +1,10 @@
 <script setup lang="ts">
 //page not found redirect
+
+const emits = defineEmits(["ready"]);
+
 document.title = "404 Not Found";
+emits("ready")
 </script>
 
 <template>

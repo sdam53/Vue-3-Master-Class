@@ -116,10 +116,12 @@ export const usePostsStore = defineStore("PostsStore", () => {
 
     /**
      * fetchs multiple posts from firestorm
+     * handles null posts by filtering
      * @param postIds the postids
      */
     async function fetchPosts(postIds: string[]): Promise<Post[]> {
         let posts: Post[] = await fetchItems(postIds, "posts");
+        posts = posts.filter((post) => post);
         posts.forEach((post) => setPost(post));
         return posts;
     }
