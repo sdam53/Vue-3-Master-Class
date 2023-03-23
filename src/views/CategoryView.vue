@@ -8,6 +8,7 @@ import { useForumsStore } from "@/stores/ForumsStore.js";
 import type Category from "@/types/Category";
 import { findById } from "@/middleware/HelperFunctions";
 import { useAsyncState } from "@vueuse/core";
+import router from "@/router";
 
 //stores
 const categoriesStore = useCategoriesStore();
@@ -21,7 +22,7 @@ const props = defineProps({
     },
     slug: {
         type: String,
-        required: true
+        required: false
     }
 });
 
@@ -38,14 +39,18 @@ const getForumsForCategory = (category: Category) => {
     return forumsStore.forums.filter((forum) => forum.categoryId === category.id);
 };
 
-//
 const { isReady } = useAsyncState(async () => {
     if (category.value === undefined) {
-        let category = await categoriesStore.fetchCategory(props.id) as Category;
+        let category: Category = await categoriesStore.fetchCategory(props.id) as Category;
         await forumsStore.fetchForums(category.forums);
     }
-    document.title = category.value.name;
-    emits("ready")
+    //checks if the slug is there and correct, else redirect to fix the url
+    if (props.slug !== category.value.slug) {
+        router.push({ name: "Category", params: { id: category.value.id, slug: category.value.slug }, })
+    } else {
+        document.title = category.value.name;
+        emits("ready")
+    }
 }, undefined);
 
 </script>

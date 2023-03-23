@@ -32,13 +32,13 @@ const routes = [
         component: Home
     },
     {
-        path: "/forum/:id/:slug",
+        path: "/forum/:id/:slug?",
         name: "Forum",
         component: Forum,
         props: true
     },
     {
-        path: "/category/:id/:slug",
+        path: "/category/:id/:slug?",
         name: "Category",
         component: Category,
         props: true
