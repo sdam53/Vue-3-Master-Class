@@ -62,11 +62,11 @@ const routes = [
         component: Thread,
         props: true,
         //this basically will check if this endpoint is right, and if not we get sent to notFound
-        async beforeEnter(to: RouteLocationNormalized, from: RouteLocationNormalized, next: any) {
+        async beforeEnter(to: RouteLocationNormalized, from: RouteLocationNormalized) {
             const threadStore = useThreadsStore();
             await threadStore.fetchThread(to.params.id as string);
             const threadExist = findById(threadStore.threads, to.params.id as string);
-            if (!threadExist)
+            if (!threadExist) {
                 return {
                     name: "NotFound",
                     params: {
@@ -76,7 +76,9 @@ const routes = [
                     query: to.query,
                     hash: to.hash
                 };
-            else next();
+            } else {
+                return true;
+            }
         }
     },
     {
