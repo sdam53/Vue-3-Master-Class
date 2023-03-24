@@ -8,6 +8,7 @@ import { vuetify } from "@/plugins/Vuetify";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./config/firebase";
 import { Vue3ProgressPlugin } from "@marcoschulte/vue3-progress";
+import PageScrollDirective from "./plugins/PageScrollDirective";
 
 const firebase = initializeApp(firebaseConfig);
 
@@ -27,4 +28,6 @@ app.use(FontAwesome);
 app.use(Vue3ProgressPlugin);
 //use our router we made
 app.use(theRouter);
+//custom directive for page scrolling
+app.use(PageScrollDirective);
 app.mount("#app");

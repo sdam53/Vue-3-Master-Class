@@ -4,8 +4,7 @@
 import { computed, ref } from "vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
 import { useUAStore } from "@/stores/UAStore";
-import { useWindowSize } from "@vueuse/core";
-const { width, height } = useWindowSize();
+
 //store
 const currentUser = useCurrentUserStore();
 const UAStore = useUAStore();
@@ -20,6 +19,7 @@ const isDesktop = computed(() => UAStore.isDesktop);
 
 //https://pictogrammers.com/library/mdi/
 //places icon names icon: "mdi-{icon_name}
+//refs
 const menuItems = ref([
     {
         title: "Home",
@@ -37,19 +37,16 @@ const menuItems = ref([
         icon: "mdi-forum"
     }
 ]);
-
 const signIn = ref({
     title: "Sign In",
     name: "Login",
     icon: "mdi-login"
 });
-
 const register = ref({
     title: "Register",
     name: "Register",
     icon: "mdi-account-plus-outline"
 });
-
 const signedInItems = ref([
     {
         title: "Profile",
@@ -62,49 +59,18 @@ const signedInItems = ref([
         icon: "mdi-logout"
     }
 ]);
+
+/**
+ * closes the app drawer
+ */
+function closeDrawer() {
+    drawer.value = false;
+}
 </script>
 
 <template>
-    <div>
-        <!--
-
-            <v-toolbar>
-                <v-toolbar-title>
-                    <router-link to="/" tag="span" style="cursor: pointer">
-                        {{ appTitle }}
-                    </router-link>
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items class="hidden-xs-only">
-                <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">
-                    <v-icon left dark>{{ item.icon }}</v-icon>
-                    {{ item.title }}
-                </v-btn>
-                
-                <v-menu open-on-hover v-if="currentUser.isSignedIn">
-                    <template v-slot:activator="{ props }">
-                        <v-btn
-                        :to="{ name: 'Profile' }"
-                        style="cursor: pointer"
-                        color="primary"
-                        v-bind="props"
-                        >
-                        {{ currentUser.authUser?.name }}
-                    </v-btn>
-                </template>
-                <v-list>
-                    <v-list-item v-for="(item, index) in signedInItems" :key="index">
-                        <v-btn flat :to="item.path">{{ item.title }}</v-btn>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-            <v-btn v-else flat :to="{ name: 'Login' }" style="cursor: pointer">
-                <v-icon left dark>{{ "mdi-login" }}</v-icon>
-                Sign In
-            </v-btn>
-        </v-toolbar-items>
-    </v-toolbar>
--->
+    <!--TODO:This may cause an issue later when we need to scroll through the app drawer itself-->
+    <header v-page-scroll="closeDrawer">
         <!--Using this to force the height of the content divs-->
         <v-toolbar> </v-toolbar>
         <!--The actual nav bar-->
@@ -163,7 +129,7 @@ const signedInItems = ref([
                 <!--Hambuger will contain everything when mobile-->
                 <!--the button icon to get the drawer-->
                 <template v-slot:append class="hidden-xs-only">
-                    <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                    <v-app-bar-nav-icon @click="() => (drawer = !drawer)"></v-app-bar-nav-icon>
                 </template>
             </v-app-bar>
             <!--Items in the nav drawer-->
@@ -223,8 +189,45 @@ const signedInItems = ref([
                 </v-list-item>
             </v-navigation-drawer>
         </v-layout>
-    </div>
-</template>
+    </header>
+    <!-- OLD WAY KEPT IN CASE
+            <v-toolbar>
+                <v-toolbar-title>
+                    <router-link to="/" tag="span" style="cursor: pointer">
+                        {{ appTitle }}
+                    </router-link>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items class="hidden-xs-only">
+                <v-btn flat v-for="item in menuItems" :key="item.title" :to="item.path">
+                    <v-icon left dark>{{ item.icon }}</v-icon>
+                    {{ item.title }}
+                </v-btn>
+                
+                <v-menu open-on-hover v-if="currentUser.isSignedIn">
+                    <template v-slot:activator="{ props }">
+                        <v-btn
+                        :to="{ name: 'Profile' }"
+                        style="cursor: pointer"
+                        color="primary"
+                        v-bind="props"
+                        >
+                        {{ currentUser.authUser?.name }}
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item v-for="(item, index) in signedInItems" :key="index">
+                        <v-btn flat :to="item.path">{{ item.title }}</v-btn>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+            <v-btn v-else flat :to="{ name: 'Login' }" style="cursor: pointer">
+                <v-icon left dark>{{ "mdi-login" }}</v-icon>
+                Sign In
+            </v-btn>
+        </v-toolbar-items>
+    </v-toolbar>
+--></template>
 
 <style lang="scss">
 $navigation-drawer-height: 50% !default;
