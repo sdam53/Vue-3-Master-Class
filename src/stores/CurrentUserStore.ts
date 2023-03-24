@@ -19,17 +19,15 @@ import {
 import {
     collection,
     doc,
-    Firestore,
     getDoc,
-    getDocFromCache,
     getDocs,
     getFirestore,
     query,
     updateDoc,
-    where
+    where,
+    orderBy
 } from "@firebase/firestore";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
-import { orderBy } from "lodash";
 
 /**
  * current user store
@@ -51,6 +49,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const authUser = computed<User | null>(() =>
         authId.value ? (findById(userStore.users, authId.value) as User) : null
     );
+    const email = computed(() => authUser.value?.email);
     const name = computed(() => authUser.value?.name);
     const avatar = computed(() => authUser.value?.avatar);
     const username = computed(() => authUser.value?.username);
@@ -157,9 +156,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
                 name: user.displayName,
                 username: user.email
             } as User;
-            console.log(user);
-            console.log(newUser);
-
             return userStore.registerUser(newUser, user.uid);
         }
     }
@@ -252,6 +248,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         authUserUnsubscribe,
         authUser,
         isSignedIn,
+        email,
         name,
         avatar,
         username,

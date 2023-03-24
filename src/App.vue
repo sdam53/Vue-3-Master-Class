@@ -8,6 +8,7 @@ import { useProgress } from "@marcoschulte/vue3-progress";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import router from "./router";
 import { ref } from "vue";
+import { useUAStore } from "./stores/UAStore";
 
 //fetchs the current auth user if there is one
 const currentUser = useCurrentUserStore();
