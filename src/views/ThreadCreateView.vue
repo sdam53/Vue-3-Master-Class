@@ -46,14 +46,6 @@ const cancel = () => {
     router.push({ name: "Forum", params: { id: forum.value?.id, slug: forum.value?.slug } });
 };
 
-const { isReady } = useAsyncState(async () => {
-    if (forum.value === undefined) {
-        await forumStore.fetchForum(props.forumId);
-    }
-    document.title = "Start a new thread"
-    emits("ready")
-}, undefined);
-
 /**
  * prevents the user from leaving the page by accident and risk losing changes.
  */
@@ -66,10 +58,17 @@ onBeforeRouteLeave((to, from) => {
         if (!answer) return false
     }
 });
+
+const { isReady } = useAsyncState(async () => {
+    if (forum.value === undefined) {
+        await forumStore.fetchForum(props.forumId);
+    }
+    document.title = "Start a new thread"
+    emits("ready")
+}, undefined);
 </script>
 
 <template>
-    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="col-full push-top">
         <h1>
             Create new thread in <i>{{ forum?.name }}</i>

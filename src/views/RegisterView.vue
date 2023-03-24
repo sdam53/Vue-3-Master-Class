@@ -11,8 +11,11 @@ import { ref } from "vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 
 //stores
-const usersStore = useUsersStore()
-const currentUserStore = useCurrentUserStore()
+const usersStore = useUsersStore();
+const currentUserStore = useCurrentUserStore();
+
+//emits
+const emits = defineEmits(["ready"]);
 
 //refs
 const form = ref<RegistrationForm>({
@@ -21,7 +24,7 @@ const form = ref<RegistrationForm>({
     email: "",
     password: "",
     avatar: "",
-})
+});
 
 /**
  * function to register the user
@@ -39,21 +42,19 @@ async function register() {
 }
 
 async function registerWithGoogle() {
-    await currentUserStore.signInWithGoogle()
-    router.push({ name: "Home" })
+    await currentUserStore.signInWithGoogle();
+    router.push({ name: "Home" });
 }
 
 
 const { isReady } = useAsyncState(async () => {
-    //not much to do here but I think its nicer
-    //to be consistent with the other pages
-    document.title = "Register"
+    document.title = "Register";
+    emits("ready");
 }, undefined);
 
 </script>
 
 <template>
-    <UseLoadingScreen v-show="!isReady" />
     <div class="flex-grid justify-center push-top">
         <div class="col-2">
             <form @submit.prevent="register" class="">

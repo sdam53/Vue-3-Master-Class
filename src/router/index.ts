@@ -99,7 +99,8 @@ const routes = [
     {
         path: "/login",
         name: "Login",
-        component: Login
+        component: Login,
+        meta: { requiresGuest: true }
     },
     {
         path: "/logout",
@@ -121,7 +122,8 @@ const routes = [
     {
         path: "/register",
         name: "Register",
-        component: Register
+        component: Register,
+        meta: { requiresGuest: true }
     },
     {
         path: "/:pathMatch(.*)*",
@@ -143,18 +145,25 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+    const timeOutConst = 700;
+
     let currentUserStore = useCurrentUserStore();
     await currentUserStore.initAuthentication();
     let firebaseStore = useFirebaseStore();
     firebaseStore.clearAllUnsubscriptions();
     //if the page requires auth user then they will get sent to / if they arent signed in
     if (to.meta.requiresAuth) {
-        //TODO: figure out how to access store quicker??? its undefined when refreshed
-        //TODO: Doesnt work right with /me/edit
-        setTimeout(() => {
-            const currentUserStore = useCurrentUserStore();
-            if (!currentUserStore.isSignedIn) router.push({ name: "Login" });
-        }, 700);
+        //setTimeout(() => {
+        const currentUserStore = useCurrentUserStore();
+        if (!currentUserStore.isSignedIn)
+            router.push({ name: "Login", query: { redirectTo: to.path } });
+        //}, timeOutConst);
+    }
+    if (to.meta.requiresGuest) {
+        //setTimeout(() => {
+        const currentUserStore = useCurrentUserStore();
+        if (currentUserStore.isSignedIn) router.push({ name: "Home" });
+        //}, timeOutConst);
     }
 });
 

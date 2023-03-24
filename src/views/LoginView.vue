@@ -1,53 +1,68 @@
 <script setup lang='ts'>
-import { ref } from "vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import type LoginForm from "@/types/LoginForm";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import router from "@/router";
+import { useRoute, useRouter } from "vue-router";
+import { useAsyncState } from "@vueuse/core";
 
 //store
 const currentUserStore = useCurrentUserStore()
 
 //emits
-const emits = defineEmits(["ready"])
+const emits = defineEmits(["ready", "notReady"])
 
 //ref
 const form = ref<LoginForm>({
     email: "",
     password: ""
 })
-const isReady = ref<Boolean>(false)
 
-if (currentUserStore.isSignedIn) {
-    router.push({ name: "Home" })
-}
+//router stuff
+const route = useRoute()
+const router = useRouter()
 
 /**
  * logins in the user and sends them to the home page
  * else error message will show
  */
 async function login() {
+    emits("notReady")
     try {
-        isReady.value = false;
         await currentUserStore.signInWithEmailAndPass(form.value.email, form.value.password)
-        router.push({ name: "Home" })
+        successRedirect()
     } catch (error) {
         alert((error as Error).message);
+        emits("ready");
     }
-    //isReady.value = true;
 }
 
+/**
+ * functon that logs in with google pop up
+ */
 async function loginWithGoogle() {
     await currentUserStore.signInWithGoogle();
-    router.push({ name: "Home" });
+    successRedirect()
 }
 
-setTimeout(() => {
-    isReady.value = true
-}, 1000)
+/**
+ * redirects the user to the previous page or home depending on sign in path
+ * route and router needs to be defined in setup
+ */
+async function successRedirect() {
+    //await router.isReady();
+    const redirectTo = route.query.redirectTo || { name: "Home" }
+    router.push(redirectTo as string)
+}
 
-document.title = "Login"
-emits("ready")
+
+
+const { isReady } = useAsyncState(async () => {
+    document.title = "Login"
+    emits("ready")
+}, undefined);
+
+
 </script>
 
 <template>
