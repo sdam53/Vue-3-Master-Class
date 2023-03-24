@@ -7,11 +7,13 @@ import { useCurrentUserStore } from "./stores/CurrentUserStore";
 import { useProgress } from "@marcoschulte/vue3-progress";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import router from "./router";
-import { ref } from "vue"
+import { ref } from "vue";
 
+//fetchs the current auth user if there is one
 const currentUser = useCurrentUserStore();
 currentUser.fetchAuthUser();
 
+//refs to keep track of where to have loading screen and progress bar
 const progressBar = ref<any>(null);
 const loadingScreen = ref<boolean>(true);
 
@@ -19,37 +21,46 @@ const loadingScreen = ref<boolean>(true);
  * turn on loading after each page change
  */
 router.beforeEach(() => {
-    notReady()
+    notReady();
 });
 
 /**
  * when everything needed is loaded, each page will send an 'ready' event
+ * tell us to turn off loading animations
  */
 function ready() {
     if (progressBar.value) progressBar.value.finish();
     loadingScreen.value = false;
 }
 
+/**
+ * resets the loading
+ */
 function notReady() {
-    ready()
-    progressBar.value = useProgress().start()
+    ready();
+    progressBar.value = useProgress().start();
     loadingScreen.value = true;
 }
 </script>
 
 <template>
+    <!--Loading annimations-->
     <vue3-progress-bar></vue3-progress-bar>
     <UseLoadingScreen v-show="loadingScreen" />
+    <!--the navigation bar-->
     <header>
         <TheNavbar />
     </header>
+    <!--the actual page contents which is handled by the router-->
+    <!--3/24/23 suspense is an experiental feature but is needed for async-->
+    <!--:key is used to force router to update and trigger lifecycle hooks-->
     <suspense>
         <div class="container" v-show="!loadingScreen">
             <router-view @ready="ready" @notReady="notReady" :key="$route.path"></router-view>
         </div>
     </suspense>
-    <footer>
-    </footer>
+    <!--Footer-->
+    <footer></footer>
 </template>
 
 <style lang="scss">
@@ -59,7 +70,7 @@ $vue3-progress-bar-color: #0db1c7 !important;
 $vue3-progress-bar-height: 2px !default;
 
 @import "./../node_modules/@marcoschulte/vue3-progress/dist/index.scss";
-/* exposed variables
+/* exposed progress bar variables
 https://www.npmjs.com/package/@marcoschulte/vue3-progress?activeTab=readme
 $vue3-progress-bar-container-z-index: 999999 !default;
 $vue3-progress-bar-container-transition: all 500ms ease !default;

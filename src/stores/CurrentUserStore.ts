@@ -25,6 +25,7 @@ import {
     getDocs,
     getFirestore,
     query,
+    updateDoc,
     where
 } from "@firebase/firestore";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
@@ -72,10 +73,27 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     });
     const threadsCount = computed(() => (isSignedIn.value ? threads.value.length || 0 : 0));
 
-    //function to update the current user
-    const updateUser = (user: User) => {
-        //setUser(user);
-        //authUser.value = user;
+    /**
+     * Updates the user to firesotre
+     * @param user user object with the updates
+     */
+    const updateUser = async (user: User) => {
+        if (!isSignedIn.value) return;
+        const updates = {
+            avatar: user.avatar || null,
+            username: user.username || null,
+            name: user.name || null,
+            bio: user.bio || null,
+            website: user.website || null,
+            email: user.email || null,
+            location: user.location || null
+        };
+        userStore.setUser(updates as User);
+
+        const db = getFirestore();
+        //TODO: Errors but this works and should be the correct way to do it
+        let userRef = doc(db, "users", authId.value);
+        await updateDoc(userRef, updates);
     };
 
     /**
@@ -208,7 +226,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * does not save snapshots
      */
     async function fetchAuthUserPosts() {
-        if (!isSignedIn) return;
+        if (!isSignedIn.value) return;
         const db = getFirestore();
         const postRef = collection(db, "posts");
         const q = query(postRef, where("userId", "==", authId.value));
@@ -221,7 +239,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * does not save snapshots
      */
     async function fetchAuthUserThreads() {
-        if (!isSignedIn) return;
+        if (!isSignedIn.value) return;
         const db = getFirestore();
         const threadRef = collection(db, "threads");
         const q = query(threadRef, where("userId", "==", authId.value));
