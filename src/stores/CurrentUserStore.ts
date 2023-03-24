@@ -16,8 +16,19 @@ import {
     signInWithPopup,
     signOut
 } from "@firebase/auth";
-import { doc, getDoc, getFirestore } from "@firebase/firestore";
+import {
+    collection,
+    doc,
+    Firestore,
+    getDoc,
+    getDocFromCache,
+    getDocs,
+    getFirestore,
+    query,
+    where
+} from "@firebase/firestore";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
+import { orderBy } from "lodash";
 
 /**
  * current user store
@@ -192,6 +203,32 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         });
     }
 
+    /**
+     * fetches the user posts from firestore and stores it in memory
+     * does not save snapshots
+     */
+    async function fetchAuthUserPosts() {
+        if (!isSignedIn) return;
+        const db = getFirestore();
+        const postRef = collection(db, "posts");
+        const q = query(postRef, where("userId", "==", authId.value));
+        const posts = await getDocs(q);
+        posts.forEach((post) => postStore.setPost(post.data() as Post));
+    }
+
+    /**
+     * fetches the user threads from firestore and stores it in memory
+     * does not save snapshots
+     */
+    async function fetchAuthUserThreads() {
+        if (!isSignedIn) return;
+        const db = getFirestore();
+        const threadRef = collection(db, "threads");
+        const q = query(threadRef, where("userId", "==", authId.value));
+        const threads = await getDocs(q);
+        threads.forEach((thread) => threadStore.setThread(thread.data() as Thread));
+    }
+
     return {
         authId,
         authUserUnsubscribe,
@@ -215,7 +252,9 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         setAuthId,
         setAuthUserUnsubscribe,
         unsubscribeAuthUserSnapshot,
-        initAuthentication
+        initAuthentication,
+        fetchAuthUserPosts,
+        fetchAuthUserThreads
     };
 });
 

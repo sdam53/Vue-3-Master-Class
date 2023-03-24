@@ -27,14 +27,8 @@ document.title = "My Profile";
 Not logged in is being handled in router file 
 */
 const { isReady } = useAsyncState(async () => {
-    let auth = getAuth();
-    let user = auth.currentUser;
-    //await currentUserStore.fetchAuthUser()
-    //if the user is not signed in then move them to the login page
-    //if (!currentUserStore.isSignedIn) router.push({ name: 'Login' })
-    setTimeout(() => {
-        //if (!currentUserStore.authId) router.push({ name: 'Login' })
-    }, 700);
+    await currentUserStore.fetchAuthUserThreads();
+    await currentUserStore.fetchAuthUserPosts();
     emits("ready");
 }, undefined);
 
@@ -42,12 +36,14 @@ isReady;
 </script>
 
 <template>
-    <div class="container">
+    <div class="container" style="width: 100%">
         <div class="flex-grid">
+            <!--Profile card and editor-->
             <div class="col-3 push-top">
                 <UserProfileCard v-if="!props.edit" :user="currentUserStore.authUser as User" />
                 <UserProfileCardEditor v-else :user="currentUserStore.authUser as User" />
             </div>
+            <!--Shows user posts-->
             <div class="col-7 push-top">
                 <div class="profile-header">
                     <span class="text-lead">
