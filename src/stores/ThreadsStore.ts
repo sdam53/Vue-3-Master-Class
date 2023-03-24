@@ -5,7 +5,6 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import { useCurrentUserStore } from "./CurrentUserStore";
 import { useForumsStore } from "./ForumsStore";
 import { usePostsStore } from "./PostsStore";
-import { useSourceDataStore } from "./SourceDataStore";
 import { useUsersStore } from "./UsersStore";
 import { docToResource, findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
@@ -14,16 +13,13 @@ import type User from "@/types/User";
 import type Forum from "@/types/Forum";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import {
-    addDoc,
     arrayUnion,
     collection,
     doc,
-    DocumentSnapshot,
     FieldValue,
     getDoc,
     getFirestore,
     serverTimestamp,
-    updateDoc,
     writeBatch
 } from "@firebase/firestore";
 
@@ -32,7 +28,7 @@ import {
  */
 export const useThreadsStore = defineStore("ThreadsStore", () => {
     //store
-    const sourceDataStore = useSourceDataStore();
+    //const sourceDataStore = useSourceDataStore();
     const currentUserStore = useCurrentUserStore();
     const postStore = usePostsStore();
     const forumStore = useForumsStore();

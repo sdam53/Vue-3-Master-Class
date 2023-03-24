@@ -32,7 +32,7 @@ const existing = computed(() => !!props.title); //cast to boolean
  * sends an event to the ThreadEditView page to save the edit
  */
 const save = () => {
-    emit("clean")
+    emit("clean");
     emit("save", form.value.title, form.value.text);
 };
 
@@ -45,30 +45,48 @@ const cancel = () => {
 
 /**
  * watch changes in form
- * using lodash clonedeep function to watch 
+ * using lodash clonedeep function to watch
  * if you dont old val and new are referencing the same and will not work right
  */
-watch(() => _.cloneDeep(form), (newValue, oldValue) => {
-    console.log(newValue.value, oldValue.value);
-    if (newValue.value.title !== oldValue.value.title || newValue.value.text !== oldValue.value.text) {
-        emit("dirty")
-    } else {
-        emit("clean")
+watch(
+    () => _.cloneDeep(form),
+    (newValue, oldValue) => {
+        console.log(newValue.value, oldValue.value);
+        if (
+            newValue.value.title !== oldValue.value.title ||
+            newValue.value.text !== oldValue.value.text
+        ) {
+            emit("dirty");
+        } else {
+            emit("clean");
+        }
     }
-})
+);
 </script>
 
 <template>
     <form @submit.prevent="save">
         <div class="form-group">
             <label for="thread_title">Title:</label>
-            <input v-model="form.title" type="text" id="thread_title" class="form-input" name="title" />
+            <input
+                v-model="form.title"
+                type="text"
+                id="thread_title"
+                class="form-input"
+                name="title"
+            />
         </div>
 
         <div class="form-group">
             <label for="thread_content">Content:</label>
-            <textarea v-model="form.text" id="thread_content" class="form-input" name="content" rows="8"
-                cols="140"></textarea>
+            <textarea
+                v-model="form.text"
+                id="thread_content"
+                class="form-input"
+                name="content"
+                rows="8"
+                cols="140"
+            ></textarea>
         </div>
 
         <div class="btn-group">

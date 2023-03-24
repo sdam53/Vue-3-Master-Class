@@ -4,7 +4,6 @@ import { upsert } from "@/middleware/HelperFunctions";
 import type Forum from "@/types/Forum";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
-import { useSourceDataStore } from "./SourceDataStore";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 
 /**
@@ -12,7 +11,7 @@ import { fetchItem, fetchItems } from "@/middleware/db_helpers";
  */
 export const useForumsStore = defineStore("ForumsStore", () => {
     //store
-    const sourceDataStore = useSourceDataStore();
+    //const sourceDataStore = useSourceDataStore();
 
     //ref
     //const forums = ref(sourceDataStore.forums);

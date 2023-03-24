@@ -27,7 +27,7 @@ const props = defineProps({
 });
 
 //emits
-const emits = defineEmits(["ready"])
+const emits = defineEmits(["ready"]);
 
 //computed data
 const category = computed(() => {
@@ -41,24 +41,30 @@ const getForumsForCategory = (category: Category) => {
 
 const { isReady } = useAsyncState(async () => {
     if (category.value === undefined) {
-        let category: Category = await categoriesStore.fetchCategory(props.id) as Category;
+        let category: Category = (await categoriesStore.fetchCategory(props.id)) as Category;
         await forumsStore.fetchForums(category.forums);
     }
     //checks if the slug is there and correct, else redirect to fix the url
     if (props.slug !== category.value.slug) {
-        router.push({ name: "Category", params: { id: category.value.id, slug: category.value.slug }, })
+        router.push({
+            name: "Category",
+            params: { id: category.value.id, slug: category.value.slug }
+        });
     } else {
         document.title = category.value.name;
-        emits("ready")
+        emits("ready");
     }
 }, undefined);
-
 </script>
 
 <template>
     <div v-if="isReady" class="container push-top">
         <h1>{{ category?.name }}</h1>
-        <ForumListComponent :forums="getForumsForCategory(category)" :title="'Forums'" :slug="category.slug"
-            :category-id="category.id" />
+        <ForumListComponent
+            :forums="getForumsForCategory(category)"
+            :title="'Forums'"
+            :slug="category.slug"
+            :category-id="category.id"
+        />
     </div>
 </template>

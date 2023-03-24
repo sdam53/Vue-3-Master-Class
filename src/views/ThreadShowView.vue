@@ -1,7 +1,7 @@
 <script async setup lang="ts">
 //page that shows a individual thread and its posts
 
-import { computed, onMounted, ref, type Ref } from "vue";
+import { computed } from "vue";
 import PostListComponent from "@/components/PostListComponent.vue";
 import PostEditorComponent from "@/components/PostEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -12,7 +12,6 @@ import { useUsersStore } from "@/stores/UsersStore";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
-import { stringLength } from "@firebase/util";
 import router from "@/router";
 
 //stores
@@ -31,10 +30,10 @@ const props = defineProps({
         type: String,
         required: false
     }
-})
+});
 
 //emits
-const emits = defineEmits(["ready", "notReady"])
+const emits = defineEmits(["ready", "notReady"]);
 
 //ref
 //const creator = await usersStore.fetchUser(thread.userId);
@@ -67,15 +66,15 @@ const { isReady } = useAsyncState(async () => {
 
     //updates the slug if the user used an incorrect one by redirecting
     if (props.slug !== thread.slug) {
-        router.push({ name: "ThreadShow", params: { id: thread.id, slug: thread.slug }, })
+        router.push({ name: "ThreadShow", params: { id: thread.id, slug: thread.slug } });
     } else {
         //continue on
         usersStore.fetchUser(thread.userId);
         let posts = await postsStore.fetchPosts(thread.posts);
         let users = posts.map((post: Post) => post.userId);
         usersStore.fetchUsers(users);
-        document.title = thread.title
-        emits("ready")
+        document.title = thread.title;
+        emits("ready");
     }
 }, undefined);
 </script>
@@ -86,14 +85,18 @@ const { isReady } = useAsyncState(async () => {
         <h1>
             {{ thread?.title }}
             <!--Somehow this doesnt take params and just knows where to send you-->
-            <router-link :to="{ name: 'ThreadEdit' }" class="btn-green btn-small" tag="button">Edit Thread</router-link>
+            <router-link :to="{ name: 'ThreadEdit' }" class="btn-green btn-small" tag="button"
+                >Edit Thread</router-link
+            >
         </h1>
         <p>
-            By <b>{{ creator?.name }}</b><a href="#" class="link-unstyled">{{}}</a>,
+            By <b>{{ creator?.name }}</b
+            ><a href="#" class="link-unstyled">{{}}</a>,
             <i>{{ diffForHumans(thread.publishedAt.seconds || thread.publishedAt) }}.</i>
-            <span style="float: right; margin-top: 2px" class="hide-mobile text-faded text-small">{{ thread?.posts?.length
-                || 0 }} replies by
-                {{ thread?.contributors?.length || 0 }} contributor/s</span>
+            <span style="float: right; margin-top: 2px" class="hide-mobile text-faded text-small"
+                >{{ thread?.posts?.length || 0 }} replies by
+                {{ thread?.contributors?.length || 0 }} contributor/s</span
+            >
         </p>
         <PostListComponent :posts="threadPosts" />
         <PostEditorComponent @savePost="addPost" />

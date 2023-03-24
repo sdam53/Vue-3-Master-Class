@@ -11,10 +11,9 @@ const props = defineProps({
     categories: {
         type: Object as PropType<Category[]>,
         default: [],
-        required: true,
+        required: true
     }
 }); //list of categories and their respected forums
-
 
 //store
 const forumsStore = useForumsStore();
@@ -29,6 +28,12 @@ const getForumsForCategory = (category: Category) => {
 </script>
 
 <template>
-    <ForumList v-for="category in props.categories" :key="category.id" :forums="getForumsForCategory(category)"
-        :title="category.name" :categoryId="category.id" :slug="category.slug" />
+    <ForumList
+        v-for="category in props.categories"
+        :key="category.id"
+        :forums="getForumsForCategory(category)"
+        :title="category.name"
+        :categoryId="category.id"
+        :slug="category.slug"
+    />
 </template>

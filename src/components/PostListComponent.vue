@@ -15,14 +15,14 @@ const props = defineProps({
         type: Array as PropType<Post[]>,
         required: true
     }
-})
+});
 
 //store
 const userStore = useUsersStore();
 const postStore = usePostsStore();
 
 //refs
-const editing = ref<string | null>(null) //id of post to be edited
+const editing = ref<string | null>(null); //id of post to be edited
 
 /**
  * returns users based on their id
@@ -43,13 +43,13 @@ async function getUser(userId: string) {
 
 const toggleEditMode = (id: string) => {
     editing.value = id === editing.value ? null : id;
-}
+};
 
 const updatePost = (eventData: any) => {
     //postStore.updatePost(eventData.id, eventData.text)
-    postStore.updatePost(eventData as Post)
+    postStore.updatePost(eventData as Post);
     editing.value = null;
-}
+};
 </script>
 
 <template>
@@ -58,23 +58,32 @@ const updatePost = (eventData: any) => {
             <div v-if="userById(post.userId)" class="user-info">
                 <a href="#" class="user-name">{{ (userById(post.userId) as User)!.name }}</a>
                 <a href="#">
-                    <img class="avatar-large" :src="(userById(post.userId) as User)!.avatar || undefined"
-                        alt="User Profile Image" />
+                    <img
+                        class="avatar-large"
+                        :src="(userById(post.userId) as User)!.avatar || undefined"
+                        alt="User Profile Image"
+                    />
                 </a>
                 <!--<p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p><p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>-->
             </div>
             <div class="post-content">
                 <div class="col-full">
-                    <PostEditor v-if="editing === post.id" @savePost="updatePost" :post="post">Edit Mode</PostEditor>
+                    <PostEditor v-if="editing === post.id" @savePost="updatePost" :post="post"
+                        >Edit Mode</PostEditor
+                    >
                     <p v-else>
                         {{ post.text }}
                     </p>
                 </div>
-                <a @click.prevent="toggleEditMode(post.id)" href="#" style="margin-left: auto; padding-left:10px;"
-                    class="link-unstyled" title="Make a change">
+                <a
+                    @click.prevent="toggleEditMode(post.id)"
+                    href="#"
+                    style="margin-left: auto; padding-left: 10px"
+                    class="link-unstyled"
+                    title="Make a change"
+                >
                     <fa icon="pencil-alt" />
                 </a>
-
             </div>
             <div class="post-date text-faded">
                 <AppDate :timestamp="post.publishedAt" />

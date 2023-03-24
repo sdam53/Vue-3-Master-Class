@@ -8,7 +8,6 @@ import type User from "@/types/User";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedDate from "dayjs/plugin/localizedFormat";
-import type { DocumentReference } from "@firebase/firestore";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";

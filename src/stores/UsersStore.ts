@@ -2,24 +2,11 @@
 
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { findById, upsert } from "@/middleware/HelperFunctions";
-import type Post from "@/types/Post";
 import type User from "@/types/User";
-import {
-    getFirestore,
-    doc,
-    onSnapshot,
-    getDoc,
-    serverTimestamp,
-    writeBatch,
-    collection
-} from "firebase/firestore";
+import { getFirestore, doc, serverTimestamp, writeBatch } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
-import { usePostsStore } from "./PostsStore";
-import { useSourceDataStore } from "./SourceDataStore";
-import { useCurrentUserStore } from "./CurrentUserStore";
-import { useFirebaseStore } from "./FirebaseStore";
 
 /**
  * user store

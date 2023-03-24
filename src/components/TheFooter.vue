@@ -12,7 +12,14 @@ const links = ref(["Home", "About Us", "Team", "Services", "Blog", "Contact Us"]
     <v-app>
         <v-footer color="blue" height="auto">
             <v-row justify="center" no-gutters>
-                <v-btn v-for="link in links" :key="link" color="black" variant="text" class="mx-2" rounded="xl">
+                <v-btn
+                    v-for="link in links"
+                    :key="link"
+                    color="black"
+                    variant="text"
+                    class="mx-2"
+                    rounded="xl"
+                >
                     {{ link }}
                 </v-btn>
                 <v-col class="text-center mt-4" cols="12">

@@ -4,7 +4,6 @@
 import { computed, ref } from "vue";
 import router from "@/router";
 import ThreadEditor from "@/components/ThreadEditorComponent.vue";
-import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import type Forum from "@/types/Forum";
@@ -13,7 +12,7 @@ import { useAsyncState } from "@vueuse/core";
 import { onBeforeRouteLeave } from "vue-router";
 
 //emits
-const emits = defineEmits(["ready"])
+const emits = defineEmits(["ready"]);
 
 //prop
 const props = defineProps({
@@ -28,7 +27,7 @@ let forumStore = useForumsStore();
 let threadStore = useThreadsStore();
 
 //refs
-const formIsDirty = ref<boolean>(false)
+const formIsDirty = ref<boolean>(false);
 
 //computed data
 const forum = computed<Forum>(() => {
@@ -51,11 +50,9 @@ const cancel = () => {
  */
 onBeforeRouteLeave((to, from) => {
     if (formIsDirty.value) {
-        const answer = window.confirm(
-            'Do you really want to leave? you have unsaved changes!'
-        )
+        const answer = window.confirm("Do you really want to leave? you have unsaved changes!");
         // cancel the navigation and stay on the same page
-        if (!answer) return false
+        if (!answer) return false;
     }
 });
 
@@ -63,8 +60,8 @@ const { isReady } = useAsyncState(async () => {
     if (forum.value === undefined) {
         await forumStore.fetchForum(props.forumId);
     }
-    document.title = "Start a new thread"
-    emits("ready")
+    document.title = "Start a new thread";
+    emits("ready");
 }, undefined);
 </script>
 
@@ -74,7 +71,12 @@ const { isReady } = useAsyncState(async () => {
             Create new thread in <i>{{ forum?.name }}</i>
         </h1>
         <!--TODO: Figure out this error-->
-        <ThreadEditor @save="save" @cancel="cancel" @dirty="formIsDirty = true" @clean="formIsDirty = false">
+        <ThreadEditor
+            @save="save"
+            @cancel="cancel"
+            @dirty="formIsDirty = true"
+            @clean="formIsDirty = false"
+        >
         </ThreadEditor>
     </div>
 </template>

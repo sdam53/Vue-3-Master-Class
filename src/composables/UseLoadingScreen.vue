@@ -2,11 +2,11 @@
 //loading screen composable
 
 import { ref } from "vue";
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/css/index.css';
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/css/index.css";
 
-const isLoading = ref(false)
-const fullPage = ref(false)
+const isLoading = ref(false);
+const fullPage = ref(false);
 
 isLoading.value = true;
 fullPage.value = true;

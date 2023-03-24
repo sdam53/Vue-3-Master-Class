@@ -5,7 +5,6 @@ import { findById } from "@/middleware/HelperFunctions";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import type Category from "@/types/Category";
 import type Forum from "@/types/Forum";
-import { stringLength } from "@firebase/util";
 import { computed, type PropType } from "vue";
 
 //props
@@ -26,7 +25,7 @@ const props = defineProps({
         type: String,
         required: true
     }
-})
+});
 
 /**
  * returns the string to use depending on how much threads a forum has
@@ -58,26 +57,33 @@ const forumThreadsCount = (forum: Forum): number => {
  */
 const getCategorySlug = computed(() => {
     if (!props.categoryId) return "";
-    let categoriesStore = useCategoriesStore()
-    let category = findById(categoriesStore.categories, props.categoryId) as Category
-    return category ? category.slug : ""
-})
+    let categoriesStore = useCategoriesStore();
+    let category = findById(categoriesStore.categories, props.categoryId) as Category;
+    return category ? category.slug : "";
+});
 </script>
 
 <template>
     <div class="col-full">
         <div class="forum-list">
             <h2 class="list-title">
-                <router-link v-if="props.categoryId" :to="{
-                    name: 'Category',
-                    params: { id: categoryId, slug: props.slug }
-                }">{{ props.title }}</router-link>
+                <router-link
+                    v-if="props.categoryId"
+                    :to="{
+                        name: 'Category',
+                        params: { id: categoryId, slug: props.slug }
+                    }"
+                    >{{ props.title }}</router-link
+                >
                 <span v-else>{{ props.title }}</span>
             </h2>
 
             <div class="forum-listing" v-for="forum in props.forums" :key="forum.id">
                 <div class="forum-details">
-                    <router-link :to="{ name: 'Forum', params: { id: forum.id, slug: forum.slug } }" class="text-xlarge">
+                    <router-link
+                        :to="{ name: 'Forum', params: { id: forum.id, slug: forum.slug } }"
+                        class="text-xlarge"
+                    >
                         {{ forum.name }}
                     </router-link>
 

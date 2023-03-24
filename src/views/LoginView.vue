@@ -1,36 +1,35 @@
-<script setup lang='ts'>
-import { computed, onMounted, ref, type Ref } from "vue";
-import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import type LoginForm from "@/types/LoginForm";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useRoute, useRouter } from "vue-router";
 import { useAsyncState } from "@vueuse/core";
 
 //store
-const currentUserStore = useCurrentUserStore()
+const currentUserStore = useCurrentUserStore();
 
 //emits
-const emits = defineEmits(["ready", "notReady"])
+const emits = defineEmits(["ready", "notReady"]);
 
 //ref
 const form = ref<LoginForm>({
     email: "",
     password: ""
-})
+});
 
 //router stuff
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 /**
  * logins in the user and sends them to the home page
  * else error message will show
  */
 async function login() {
-    emits("notReady")
+    emits("notReady");
     try {
-        await currentUserStore.signInWithEmailAndPass(form.value.email, form.value.password)
-        successRedirect()
+        await currentUserStore.signInWithEmailAndPass(form.value.email, form.value.password);
+        successRedirect();
     } catch (error) {
         alert((error as Error).message);
         emits("ready");
@@ -42,7 +41,7 @@ async function login() {
  */
 async function loginWithGoogle() {
     await currentUserStore.signInWithGoogle();
-    successRedirect()
+    successRedirect();
 }
 
 /**
@@ -51,18 +50,14 @@ async function loginWithGoogle() {
  */
 async function successRedirect() {
     //await router.isReady();
-    const redirectTo = route.query.redirectTo || { name: "Home" }
-    router.push(redirectTo as string)
+    const redirectTo = route.query.redirectTo || { name: "Home" };
+    router.push(redirectTo as string);
 }
 
-
-
 const { isReady } = useAsyncState(async () => {
-    document.title = "Login"
-    emits("ready")
+    document.title = "Login";
+    emits("ready");
 }, undefined);
-
-
 </script>
 
 <template>
@@ -73,11 +68,16 @@ const { isReady } = useAsyncState(async () => {
                     <h1 class="text-center">Login</h1>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input v-model="form.email" id="email" type="text" class="form-input">
+                        <input v-model="form.email" id="email" type="text" class="form-input" />
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input v-model="form.password" id="password" type="password" class="form-input">
+                        <input
+                            v-model="form.password"
+                            id="password"
+                            type="password"
+                            class="form-input"
+                        />
                     </div>
 
                     <div class="push-top">
@@ -90,12 +90,13 @@ const { isReady } = useAsyncState(async () => {
                 </form>
 
                 <div class="push-top text-center">
-                    <button @click.prevent="loginWithGoogle" class="btn-red btn-xsmall"><i
-                            class="fa fa-google fa-btn"></i>Sign in with Google</button>
+                    <button @click.prevent="loginWithGoogle" class="btn-red btn-xsmall">
+                        <i class="fa fa-google fa-btn"></i>Sign in with Google
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<style scoped lang='css'></style>
+<style scoped lang="css"></style>

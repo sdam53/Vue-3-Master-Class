@@ -16,7 +16,6 @@ import Category from "@/views/CategoryView.vue";
 import Profile from "@/views/ProfileView.vue";
 import { useFirebaseStore } from "@/stores/FirebaseStore";
 import Logout from "@/views/LogoutView.vue";
-import { useUsersStore } from "@/stores/UsersStore";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { findById } from "@/middleware/HelperFunctions";

@@ -4,7 +4,7 @@
 const emits = defineEmits(["ready"]);
 
 document.title = "404 Not Found";
-emits("ready")
+emits("ready");
 </script>
 
 <template>

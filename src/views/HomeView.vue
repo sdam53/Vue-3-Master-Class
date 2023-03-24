@@ -6,7 +6,7 @@ import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useAsyncState } from "@vueuse/core";
 import type Category from "@/types/Category";
-import { computed, ref, } from "vue";
+import { computed } from "vue";
 //store
 const categoriesStore = useCategoriesStore();
 const forumsStore = useForumsStore();
@@ -14,7 +14,7 @@ const forumsStore = useForumsStore();
 //ref
 
 //emits
-const emits = defineEmits(["ready"])
+const emits = defineEmits(["ready"]);
 
 //computed props
 const categories = computed<Category[]>(() => categoriesStore.categories);
@@ -24,7 +24,7 @@ const { isReady } = useAsyncState(async () => {
     const categories: Category[] = await categoriesStore.fetchAllCategories();
     const forumIds = categories.map((category) => category.forums).flat();
     await forumsStore.fetchForums(forumIds);
-    emits("ready")
+    emits("ready");
 }, undefined);
 
 document.title = "Home";

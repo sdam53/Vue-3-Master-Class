@@ -35,7 +35,7 @@ const thread = computed<Thread>(() => {
     return findById(threadStore.threads, props.id) as Thread;
 });
 const text = computed<string>(() => {
-    let post: Post = findById(postStore.posts, thread.value?.posts[0]) as Post
+    let post: Post = findById(postStore.posts, thread.value?.posts[0]) as Post;
     return post ? post.text : "";
 });
 
@@ -64,14 +64,11 @@ const { isReady } = useAsyncState(async () => {
  */
 onBeforeRouteLeave((to, from) => {
     if (formIsDirty.value) {
-        const answer = window.confirm(
-            'Do you really want to leave? you have unsaved changes!'
-        )
+        const answer = window.confirm("Do you really want to leave? you have unsaved changes!");
         // cancel the navigation and stay on the same page
-        if (!answer) return false
+        if (!answer) return false;
     }
 });
-
 </script>
 
 <template>
@@ -79,8 +76,14 @@ onBeforeRouteLeave((to, from) => {
         <h1>
             Editing <i>{{ thread?.title }}</i>
         </h1>
-        <ThreadEditor :title="thread?.title || ''" :text="text" @save="save" @cancel="cancel" @dirty="formIsDirty = true"
-            @clean="formIsDirty = false">
+        <ThreadEditor
+            :title="thread?.title || ''"
+            :text="text"
+            @save="save"
+            @cancel="cancel"
+            @dirty="formIsDirty = true"
+            @clean="formIsDirty = false"
+        >
         </ThreadEditor>
     </div>
 </template>

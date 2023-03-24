@@ -8,7 +8,7 @@ import type User from "@/types/User";
 import { usePostsStore } from "./PostsStore";
 import { useThreadsStore } from "./ThreadsStore";
 import { useUsersStore } from "./UsersStore";
-import { findById, upsert } from "@/middleware/HelperFunctions";
+import { findById } from "@/middleware/HelperFunctions";
 import {
     getAuth,
     GoogleAuthProvider,
@@ -16,7 +16,7 @@ import {
     signInWithPopup,
     signOut
 } from "@firebase/auth";
-import { collection, doc, getDoc, getFirestore, serverTimestamp } from "@firebase/firestore";
+import { doc, getDoc, getFirestore } from "@firebase/firestore";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 
 /**

@@ -33,15 +33,15 @@ const menuItems = ref([
 const signedInItems = ref([
     {
         title: "Profile",
-        path: "/me",
+        path: "/me"
         //icon: "mdi-forum"
     },
     {
         title: "Sign Out",
-        path: "/logout",
+        path: "/logout"
         //icon: "mdi-forum"
     }
-])
+]);
 </script>
 
 <template>
@@ -62,10 +62,14 @@ const signedInItems = ref([
                     {{ item.title }}
                 </v-btn>
 
-
                 <v-menu open-on-hover v-if="currentUser.isSignedIn">
                     <template v-slot:activator="{ props }">
-                        <v-btn :to="{ name: 'Profile' }" style="cursor: pointer" color="primary" v-bind="props">
+                        <v-btn
+                            :to="{ name: 'Profile' }"
+                            style="cursor: pointer"
+                            color="primary"
+                            v-bind="props"
+                        >
                             {{ currentUser.authUser?.name }}
                         </v-btn>
                     </template>

@@ -3,7 +3,6 @@
 import type Category from "@/types/Category";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
-import { useSourceDataStore } from "./SourceDataStore";
 import { collection, onSnapshot } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import { upsert } from "@/middleware/HelperFunctions";
@@ -14,7 +13,7 @@ import { fetchItem } from "@/middleware/db_helpers";
  */
 export const useCategoriesStore = defineStore("CategoriesStore", () => {
     //store
-    const sourceDataStore = useSourceDataStore();
+    //const sourceDataStore = useSourceDataStore();
 
     //ref
     //const categories = ref(sourceDataStore.categories);

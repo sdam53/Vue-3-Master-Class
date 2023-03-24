@@ -2,19 +2,16 @@
 
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
-import { useSourceDataStore } from "./SourceDataStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import { findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
+import { upsert } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
-import type Thread from "@/types/Thread";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import {
     addDoc,
     arrayUnion,
     collection,
     doc,
-    DocumentSnapshot,
     getDoc,
     getFirestore,
     increment,
@@ -28,7 +25,7 @@ import {
  */
 export const usePostsStore = defineStore("PostsStore", () => {
     //stores
-    const sourceDataStore = useSourceDataStore();
+    //const sourceDataStore = useSourceDataStore();
     const currentUser = useCurrentUserStore();
     const threadsStore = useThreadsStore();
 

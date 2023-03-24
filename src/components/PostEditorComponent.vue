@@ -11,31 +11,35 @@ const props = defineProps({
         default: { text: null },
         required: false
     }
-})
+});
 
 //emits
 const emit = defineEmits(["savePost"]);
 
 //refs
-const postCopy = ref<Post>({ ...props.post })
+const postCopy = ref<Post>({ ...props.post });
 
 /**
  * sends a event to the post to add a post to a thread
  */
 const addPost = () => {
-
     emit("savePost", { ...postCopy.value }); // access under eventData
     postCopy.value.text = "";
 };
-
 </script>
 
 <template>
     <div class="col-full">
         <form @submit.prevent="addPost">
             <div class="form-group">
-                <textarea v-model="postCopy.text" id="thread_content" class="form-input" name="content" rows="8"
-                    cols="140"></textarea>
+                <textarea
+                    v-model="postCopy.text"
+                    id="thread_content"
+                    class="form-input"
+                    name="content"
+                    rows="8"
+                    cols="140"
+                ></textarea>
             </div>
             <div class="btn-group">
                 <button class="btn btn-blue">{{ post.id ? "Update Post" : "Submit Post" }}</button>
