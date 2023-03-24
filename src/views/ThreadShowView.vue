@@ -13,11 +13,13 @@ import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import router from "@/router";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 
 //stores
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
 const usersStore = useUsersStore();
+const currentUserStore = useCurrentUserStore();
 
 //prop
 //const props = defineProps(["id", "slug"]);
@@ -46,6 +48,8 @@ const threadPosts = computed<Post[]>(() => {
     return postsStore.posts.filter((post: Post) => post.threadId === props.id);
 });
 const creator = computed<User>(() => usersStore.getUser(thread.value?.userId) as User);
+const isSignedIn = computed(() => currentUserStore.isSignedIn);
+const isCreator = computed(() => isSignedIn.value && currentUserStore.authId === creator.value.id);
 
 /**
  * function to add a post to a thread
@@ -80,15 +84,19 @@ const { isReady } = useAsyncState(async () => {
 </script>
 
 <template>
-    <UseLoadingScreen v-show="!isReady" />
     <div v-if="isReady" class="col-large push-top">
+        <!--Edit thread button-->
         <h1>
             {{ thread?.title }}
-            <!--Somehow this doesnt take params and just knows where to send you-->
-            <router-link :to="{ name: 'ThreadEdit' }" class="btn-green btn-small" tag="button"
+            <router-link
+                v-if="isCreator"
+                :to="{ name: 'ThreadEdit' }"
+                class="btn-green btn-small"
+                tag="button"
                 >Edit Thread</router-link
             >
         </h1>
+        <!--thread info-->
         <p>
             By <b>{{ creator?.name }}</b
             ><a href="#" class="link-unstyled">{{}}</a>,
@@ -98,7 +106,19 @@ const { isReady } = useAsyncState(async () => {
                 {{ thread?.contributors?.length || 0 }} contributor/s</span
             >
         </p>
+        <!--List of posts-->
         <PostListComponent :posts="threadPosts" />
-        <PostEditorComponent @savePost="addPost" />
+        <!--Post editor for adding more posts/login and register-->
+        <PostEditorComponent v-if="isSignedIn" @savePost="addPost" />
+        <div v-else class="text-center" style="margin-bottom: 50px">
+            <router-link :to="{ name: 'Login', query: { redirectTo: $route.path } }"
+                >Sign In</router-link
+            >
+            or
+            <router-link :to="{ name: 'Register', query: { redirectTo: $route.path } }"
+                >Register</router-link
+            >
+            to reply.
+        </div>
     </div>
 </template>
