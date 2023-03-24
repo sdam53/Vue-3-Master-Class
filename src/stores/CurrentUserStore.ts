@@ -25,9 +25,11 @@ import {
     query,
     updateDoc,
     where,
-    orderBy
+    orderBy,
+    limit,
+    startAfter
 } from "@firebase/firestore";
-import { fetchItem, fetchItems } from "@/middleware/db_helpers";
+import { fetchItem } from "@/middleware/db_helpers";
 
 /**
  * current user store
@@ -220,14 +222,36 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     /**
      * fetches the user posts from firestore and stores it in memory
      * does not save snapshots
+     * @options the options param obj for pagnation fetching
+     * if it is null then just get the recents
+     * if options.startAfter is not null then startAfter method is used
      */
-    async function fetchAuthUserPosts() {
+    async function fetchAuthUserPosts(options: any | null = null) {
         if (!isSignedIn.value) return;
         const db = getFirestore();
-        const postRef = collection(db, "posts");
-        const q = query(postRef, where("userId", "==", authId.value));
+        let q = null;
+        if (options.startAfter) {
+            const postRef = doc(db, "posts", options.startAfter.id);
+            const post = await getDoc(postRef);
+            q = query(
+                collection(db, "posts"),
+                where("userId", "==", authId.value),
+                orderBy("publishedAt", "desc"),
+                startAfter(post),
+                limit(10)
+            );
+        } else {
+            q = query(
+                collection(db, "posts"),
+                where("userId", "==", authId.value),
+                orderBy("publishedAt", "desc"),
+                limit(10)
+            );
+        }
         const posts = await getDocs(q);
-        posts.forEach((post) => postStore.setPost(post.data() as Post));
+        posts.forEach((post) => {
+            postStore.setPost({ ...post.data(), id: post.id } as Post);
+        });
     }
 
     /**

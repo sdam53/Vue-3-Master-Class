@@ -7,7 +7,8 @@ import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
-import { getAuth } from "@firebase/auth";
+import { computed } from "vue";
+import type Post from "@/types/Post";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -20,15 +21,26 @@ const props = defineProps({
     edit: { type: Boolean, default: false }
 });
 
+//computed
+const lastPostFetched = computed(() => {
+    if (currentUserStore.posts.length === 0) return null;
+    return currentUserStore.posts[currentUserStore.posts.length - 1];
+});
+
 //document.title = currentUserStore.username ? currentUserStore.username + "\'s Profile" : "404 User"
 document.title = "My Profile";
 
 /*
-Not logged in is being handled in router file 
+Not logged in is being handled in router file
 */
 const { isReady } = useAsyncState(async () => {
     await currentUserStore.fetchAuthUserThreads();
-    await currentUserStore.fetchAuthUserPosts();
+    await currentUserStore.fetchAuthUserPosts({ startAfter: lastPostFetched.value as Post });
+
+    setTimeout(() => {
+        currentUserStore.fetchAuthUserPosts({ startAfter: lastPostFetched.value as Post });
+    }, 2000);
+
     emits("ready");
 }, undefined);
 
