@@ -27,19 +27,6 @@ const lastPostFetched = computed(() => {
     return currentUserStore.posts[currentUserStore.posts.length - 1];
 });
 
-//document.title = currentUserStore.username ? currentUserStore.username + "\'s Profile" : "404 User"
-document.title = "My Profile";
-
-/*
-Not logged in is being handled in router file
-*/
-const { isReady } = useAsyncState(async () => {
-    await currentUserStore.fetchAuthUserThreads();
-    await currentUserStore.fetchAuthUserPosts({ startAfter: lastPostFetched.value as Post });
-
-    emits("ready");
-}, undefined);
-
 /**
  * function used for infiniteloading
  * depending on needs it will call for more posts, stop, or error.
@@ -57,7 +44,16 @@ const load = async (state: { loaded: () => void; complete: () => void; error: ()
     }
 };
 
-isReady;
+/*
+Not logged in is being handled in router file
+*/
+const { isReady } = useAsyncState(async () => {
+    await currentUserStore.fetchAuthUserThreads();
+    await currentUserStore.fetchAuthUserPosts({ startAfter: lastPostFetched.value as Post });
+    //document.title = currentUserStore.username ? currentUserStore.username + "\'s Profile" : "404 User"
+    document.title = "My Profile";
+    emits("ready");
+}, undefined);
 </script>
 
 <template>

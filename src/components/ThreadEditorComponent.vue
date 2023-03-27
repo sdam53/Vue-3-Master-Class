@@ -51,7 +51,6 @@ const cancel = () => {
 watch(
     () => _.cloneDeep(form),
     (newValue, oldValue) => {
-        console.log(newValue.value, oldValue.value);
         if (
             newValue.value.title !== oldValue.value.title ||
             newValue.value.text !== oldValue.value.text

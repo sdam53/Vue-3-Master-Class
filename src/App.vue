@@ -61,7 +61,6 @@ function notReady() {
         </div>
     </suspense>
     <!--Footer-->
-    <footer></footer>
 </template>
 
 <style lang="scss">

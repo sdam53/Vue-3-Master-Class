@@ -22,6 +22,7 @@ import {
     serverTimestamp,
     writeBatch
 } from "@firebase/firestore";
+import chunk from "lodash/chunk";
 
 /**
  * threads store
@@ -202,6 +203,28 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         return threads;
     }
 
+    /**
+     * fetches threads by page number
+     * @param threadIds the threadsids
+     * @param pageNumber the page number
+     * @param perPage how many threads per page
+     * @returns Thread[] list of the threads in that page
+     */
+    async function fetchThreadsByPage(
+        threadIds: string[],
+        pageNumber: number,
+        perPage: number = 10
+    ): Promise<Thread[]> {
+        clearThreads();
+        const threads = chunk(threadIds, perPage);
+        const limitedIds = threads[pageNumber - 1];
+        return fetchThreads(limitedIds);
+    }
+
+    function clearThreads() {
+        threads.value = [];
+    }
+
     return {
         threads,
         createThread,
@@ -211,6 +234,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         appendPostToThread,
         fetchThread,
         fetchThreads,
+        fetchThreadsByPage,
         setThread
     };
 });
