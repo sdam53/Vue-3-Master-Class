@@ -8,6 +8,7 @@ import type Post from "@/types/Post";
 import type User from "@/types/User";
 import { ref, type PropType } from "vue";
 import PostEditor from "./PostEditorComponent.vue";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 
 //props
 const props = defineProps({
@@ -20,6 +21,7 @@ const props = defineProps({
 //store
 const userStore = useUsersStore();
 const postStore = usePostsStore();
+const currentUserStore = useCurrentUserStore();
 
 //refs
 const editing = ref<string | null>(null); //id of post to be edited
@@ -77,6 +79,7 @@ const updatePost = (eventData: any) => {
                     </p>
                 </div>
                 <a
+                    v-if="currentUserStore.isSignedIn && post.userId === currentUserStore.authId"
                     @click.prevent="toggleEditMode(post.id)"
                     href="#"
                     style="margin-left: auto; padding-left: 10px"

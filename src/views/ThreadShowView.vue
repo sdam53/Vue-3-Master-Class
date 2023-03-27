@@ -165,11 +165,11 @@ const { isReady } = useAsyncState(async () => {
             class="text-center"
             style="margin-bottom: 50px; margin-top: 20px"
         >
-            <router-link :to="{ name: 'Login', query: { redirectTo: $route.path } }"
+            <router-link :to="{ name: 'Login', query: { redirectTo: $route.fullPath } }"
                 >Sign In</router-link
             >
             or
-            <router-link :to="{ name: 'Register', query: { redirectTo: $route.path } }"
+            <router-link :to="{ name: 'Register', query: { redirectTo: $route.fullPath } }"
                 >Register</router-link
             >
             to reply.
