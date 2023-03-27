@@ -12,6 +12,7 @@ import type Thread from "@/types/Thread";
 import _ from "lodash";
 import { useRoute, useRouter } from "vue-router";
 import ForumListComponent from "@/components/ForumListComponent.vue";
+import { useUAStore } from "@/stores/UAStore";
 
 //router stuff
 const route = useRoute();
@@ -24,6 +25,7 @@ const emits = defineEmits(["ready", "notReady"]);
 const threadsStore = useThreadsStore();
 const forumsStore = useForumsStore();
 const usersStore = useUsersStore();
+const UAStore = useUAStore();
 
 //props
 const props = defineProps({
@@ -49,7 +51,7 @@ const forum = computed<Forum>(() => {
 //things needed for pagination
 const pageNumber = ref<number>(route.query.page ? parseInt(route.query.page.toString()) : 1);
 const threadsPerPage = ref(5);
-const totalVisiblePageButtons = ref(7);
+const totalVisiblePageButtons = ref(UAStore.isMobile ? 1 : 5);
 const totalNumberOfThreads = computed(() => forum.value.threads.length || 0);
 const totalNumberOfPages = computed(() =>
     totalNumberOfThreads.value ? Math.ceil(totalNumberOfThreads.value / threadsPerPage.value) : 0
@@ -128,6 +130,7 @@ const { isReady } = useAsyncState(async () => {
             :modelValue="pageNumber"
             active-color="#57AD8D"
             @update:modelValue="changePage"
+            style="margin-top: 20px"
         ></v-pagination>
     </div>
 </template>

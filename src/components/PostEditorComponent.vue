@@ -39,6 +39,7 @@ const addPost = () => {
                     name="content"
                     rows="8"
                     cols="140"
+                    :spellcheck="true"
                 ></textarea>
             </div>
             <div class="btn-group">
