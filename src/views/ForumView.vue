@@ -130,7 +130,7 @@ const { isReady } = useAsyncState(async () => {
             :modelValue="pageNumber"
             active-color="#57AD8D"
             @update:modelValue="changePage"
-            style="margin-top: 20px"
+            style="margin-top: 20px; margin-bottom: 20px"
         ></v-pagination>
     </div>
 </template>

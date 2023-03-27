@@ -113,6 +113,7 @@ const { isReady } = useAsyncState(async () => {
         );
         let users = posts.map((post: Post) => post.userId);
         usersStore.fetchUsers(users);
+        usersStore.fetchUser(thread.userId);
         document.title = thread.title;
         emits("ready");
     }
@@ -157,6 +158,7 @@ const { isReady } = useAsyncState(async () => {
             :modelValue="pageNumber"
             active-color="#57AD8D"
             @update:modelValue="changePage"
+            style="margin-bottom: 20px"
         ></v-pagination>
         <!--Post editor for adding more posts/login and register-->
         <PostEditorComponent v-if="isSignedIn && isLastPage" @savePost="addPost" />
