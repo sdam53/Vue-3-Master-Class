@@ -225,11 +225,18 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * @options the options param obj for pagnation fetching
      * if it is null then just get the recents
      * if options.startAfter is not null then startAfter method is used
+     * @returns count boolean of whether there are more that 0 posts or not
+     * Is used for infinite loading
      */
     async function fetchAuthUserPosts(options: any | null = null) {
         if (!isSignedIn.value) return;
         const db = getFirestore();
         let q = null;
+        /**
+         * maybe can look into reducing this if/else
+         * the only difference is that if options.startAfter is not null
+         * then we use startAfter() too
+         */
         if (options.startAfter) {
             const postRef = doc(db, "posts", options.startAfter.id);
             const post = await getDoc(postRef);
@@ -249,9 +256,12 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
             );
         }
         const posts = await getDocs(q);
+        let count = 0;
         posts.forEach((post) => {
+            count++;
             postStore.setPost({ ...post.data(), id: post.id } as Post);
         });
+        return count > 0;
     }
 
     /**

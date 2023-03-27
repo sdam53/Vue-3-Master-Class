@@ -9,6 +9,10 @@ import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
 import type Post from "@/types/Post";
+//https://www.npmjs.com/package/v3-infinite-loading
+//https://github.com/oumoussa98/vue3-infinite-loading/tree/main/docs/api
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -37,12 +41,20 @@ const { isReady } = useAsyncState(async () => {
     await currentUserStore.fetchAuthUserThreads();
     await currentUserStore.fetchAuthUserPosts({ startAfter: lastPostFetched.value as Post });
 
-    setTimeout(() => {
-        currentUserStore.fetchAuthUserPosts({ startAfter: lastPostFetched.value as Post });
-    }, 2000);
-
     emits("ready");
 }, undefined);
+
+const load = async (state: any) => {
+    try {
+        let count = await currentUserStore.fetchAuthUserPosts({
+            startAfter: lastPostFetched.value as Post
+        });
+        if (count) state.loaded();
+        else state.complete();
+    } catch {
+        state.error();
+    }
+};
 
 isReady;
 </script>
@@ -65,6 +77,8 @@ isReady;
                 </div>
                 <hr />
                 <PostList :posts="currentUserStore.posts" />
+                <!--Infinite loading of posts-->
+                <InfiniteLoading :slots="{ complete: ' ' }" @infinite="load" />
             </div>
         </div>
     </div>
