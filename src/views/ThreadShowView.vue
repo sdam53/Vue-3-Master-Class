@@ -49,7 +49,7 @@ const threadPosts = computed<Post[]>(() => {
 });
 const creator = computed<User>(() => usersStore.getUser(thread.value?.userId) as User);
 const isSignedIn = computed(() => currentUserStore.isSignedIn);
-const isCreator = computed(() => isSignedIn.value && currentUserStore.authId === creator.value.id);
+const isCreator = computed(() => isSignedIn.value && currentUserStore.authId === creator.value?.id);
 
 /**
  * function to add a post to a thread
