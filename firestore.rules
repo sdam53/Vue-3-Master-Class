@@ -16,7 +16,7 @@ service cloud.firestore {
     }
     //function to check if user owns that item
     function resourceBelongsToUser() {
-      return request.auth == resource.data.userId;
+      return request.auth.uid == resource.data.userId;
     }
       
     //threads
