@@ -9,10 +9,6 @@ import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
 import type Post from "@/types/Post";
-//https://www.npmjs.com/package/v3-infinite-loading
-//https://github.com/oumoussa98/vue3-infinite-loading/tree/main/docs/api
-import InfiniteLoading from "v3-infinite-loading";
-import "v3-infinite-loading/lib/style.css";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -44,7 +40,12 @@ const { isReady } = useAsyncState(async () => {
     emits("ready");
 }, undefined);
 
-const load = async (state: any) => {
+/**
+ * function used for infiniteloading
+ * depending on needs it will call for more posts, stop, or error.
+ * @param state InfiniteLoad state. JSON of functions to call
+ */
+const load = async (state: { loaded: () => void; complete: () => void; error: () => void }) => {
     try {
         let count = await currentUserStore.fetchAuthUserPosts({
             startAfter: lastPostFetched.value as Post
