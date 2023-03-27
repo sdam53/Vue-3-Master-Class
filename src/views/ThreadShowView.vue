@@ -15,12 +15,14 @@ import { useAsyncState } from "@vueuse/core";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import _ from "lodash";
 import { useRoute, useRouter } from "vue-router";
+import { useUAStore } from "@/stores/UAStore";
 
 //stores
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
 const usersStore = useUsersStore();
 const currentUserStore = useCurrentUserStore();
+const UAStore = useUAStore();
 
 //router stuff
 const route = useRoute();
@@ -67,25 +69,13 @@ const addPost = (eventData: any) => {
 //pagination stuff
 const pageNumber = ref<number>(route.query.page ? parseInt(route.query.page.toString()) : 1);
 const postsPerPage = ref(10);
-const totalVisiblePageButtons = ref(7);
+const totalVisiblePageButtons = ref(UAStore.isMobile ? 1 : 5);
 const totalNumberOfPosts = computed(() => thread.value.posts.length || 0);
 const totalNumberOfPages = computed(() => Math.ceil(totalNumberOfPosts.value / postsPerPage.value));
-const firstPage = () => {
-    pageNumber.value = 1;
-};
-const lastPage = () => {
-    pageNumber.value = totalNumberOfPages.value;
-};
-const nextPage = () => {
-    pageNumber.value =
-        pageNumber.value + 1 <= totalNumberOfPages.value ? pageNumber.value + 1 : pageNumber.value;
-};
-const prevPage = () => {
-    pageNumber.value = pageNumber.value - 1 >= 1 ? pageNumber.value - 1 : pageNumber.value;
-};
 const changePage = (e: number) => {
     pageNumber.value = e >= 0 && e <= totalNumberOfPages.value ? e : pageNumber.value;
 };
+const isLastPage = computed(() => pageNumber.value === totalNumberOfPages.value);
 
 /**
  * watch for a page change to fetch more threads
@@ -166,15 +156,15 @@ const { isReady } = useAsyncState(async () => {
             :showFirstLastPage="true"
             :modelValue="pageNumber"
             active-color="#57AD8D"
-            @first="firstPage"
-            @last="lastPage"
-            @next="nextPage"
-            @prev="prevPage"
             @update:modelValue="changePage"
         ></v-pagination>
         <!--Post editor for adding more posts/login and register-->
-        <PostEditorComponent v-if="isSignedIn" @savePost="addPost" />
-        <div v-else class="text-center" style="margin-bottom: 50px">
+        <PostEditorComponent v-if="isSignedIn && isLastPage" @savePost="addPost" />
+        <div
+            v-else-if="!isSignedIn"
+            class="text-center"
+            style="margin-bottom: 50px; margin-top: 20px"
+        >
             <router-link :to="{ name: 'Login', query: { redirectTo: $route.path } }"
                 >Sign In</router-link
             >

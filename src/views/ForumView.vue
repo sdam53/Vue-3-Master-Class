@@ -54,19 +54,6 @@ const totalNumberOfThreads = computed(() => forum.value.threads.length || 0);
 const totalNumberOfPages = computed(() =>
     totalNumberOfThreads.value ? Math.ceil(totalNumberOfThreads.value / threadsPerPage.value) : 0
 );
-const firstPage = () => {
-    pageNumber.value = 1;
-};
-const lastPage = () => {
-    pageNumber.value = totalNumberOfPages.value;
-};
-const nextPage = () => {
-    pageNumber.value =
-        pageNumber.value + 1 <= totalNumberOfPages.value ? pageNumber.value + 1 : pageNumber.value;
-};
-const prevPage = () => {
-    pageNumber.value = pageNumber.value - 1 >= 1 ? pageNumber.value - 1 : pageNumber.value;
-};
 const changePage = (e: number) => {
     pageNumber.value = e >= 0 && e <= totalNumberOfPages.value ? e : pageNumber.value;
 };
@@ -140,10 +127,6 @@ const { isReady } = useAsyncState(async () => {
             :showFirstLastPage="true"
             :modelValue="pageNumber"
             active-color="#57AD8D"
-            @first="firstPage"
-            @last="lastPage"
-            @next="nextPage"
-            @prev="prevPage"
             @update:modelValue="changePage"
         ></v-pagination>
     </div>
