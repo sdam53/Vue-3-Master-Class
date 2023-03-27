@@ -62,6 +62,7 @@ const updatePost = (eventData: any) => {
                         class="avatar-large"
                         :src="(userById(post.userId) as User)!.avatar || undefined"
                         alt="User Profile Image"
+                        :title="(userById(post.userId) as User).name + '\'s avatar'"
                     />
                 </a>
                 <!--<p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p><p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>-->
