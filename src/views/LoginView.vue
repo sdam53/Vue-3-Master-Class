@@ -55,7 +55,7 @@ async function successRedirect() {
 }
 
 const { isReady } = useAsyncState(async () => {
-    document.title = "Login";
+    document.title = "Sign In";
     emits("ready");
 }, undefined);
 </script>
@@ -65,7 +65,7 @@ const { isReady } = useAsyncState(async () => {
         <div class="flex-grid justify-center">
             <div class="col-1">
                 <form @submit.prevent="login" class="card card-form">
-                    <h1 class="text-center">Login</h1>
+                    <h1 class="text-center">Sign In</h1>
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input v-model="form.email" id="email" type="text" class="form-input" />
@@ -81,7 +81,7 @@ const { isReady } = useAsyncState(async () => {
                     </div>
 
                     <div class="push-top">
-                        <button type="submit" class="btn-blue btn-block">Log in</button>
+                        <button type="submit" class="btn-blue btn-block">Sign in</button>
                     </div>
 
                     <div class="form-actions text-right">
