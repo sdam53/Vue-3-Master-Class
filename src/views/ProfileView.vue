@@ -9,6 +9,8 @@ import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
 import type Post from "@/types/Post";
+//https://www.npmjs.com/package/v3-infinite-loading
+//https://github.com/oumoussa98/vue3-infinite-loading/tree/main/docs/api
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
 
@@ -76,7 +78,7 @@ isReady;
                 <hr />
                 <PostList :posts="currentUserStore.posts" />
                 <!--Infinite loading of posts-->
-                <InfiniteLoading @infinite="load" />
+                <InfiniteLoading :slots="{ complete: ' ' }" @infinite="load" />
             </div>
         </div>
     </div>
