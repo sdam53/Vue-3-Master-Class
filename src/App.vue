@@ -6,13 +6,17 @@ import TheFooter from "./components/TheFooter.vue";
 import { useCurrentUserStore } from "./stores/CurrentUserStore";
 import { useProgress } from "@marcoschulte/vue3-progress";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
-import router from "./router";
 import { ref } from "vue";
-import { useUAStore } from "./stores/UAStore";
+import { random } from "lodash";
+import { useRoute, useRouter } from "vue-router";
 
 //fetchs the current auth user if there is one
 const currentUser = useCurrentUserStore();
 currentUser.fetchAuthUser();
+
+//router stuff
+const route = useRoute();
+const router = useRouter();
 
 //refs to keep track of where to have loading screen and progress bar
 const progressBar = ref<any>(null);
@@ -57,7 +61,7 @@ function notReady() {
     <!--:key is used to force router to update and trigger lifecycle hooks-->
     <suspense>
         <div class="container" v-show="!loadingScreen">
-            <router-view @ready="ready" @notReady="notReady" :key="$route.path"></router-view>
+            <router-view @ready="ready" @notReady="notReady" :key="route.fullPath"></router-view>
         </div>
     </suspense>
     <!--Footer-->

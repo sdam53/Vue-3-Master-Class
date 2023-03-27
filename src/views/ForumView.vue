@@ -9,8 +9,13 @@ import type Forum from "@/types/Forum";
 import { useUsersStore } from "@/stores/UsersStore";
 import { useAsyncState } from "@vueuse/core";
 import type Thread from "@/types/Thread";
-import router from "@/router";
 import _ from "lodash";
+import { useRoute, useRouter } from "vue-router";
+import ForumListComponent from "@/components/ForumListComponent.vue";
+
+//router stuff
+const route = useRoute();
+const router = useRouter();
 
 //emits
 const emits = defineEmits(["ready", "notReady"]);
@@ -42,7 +47,7 @@ const forum = computed<Forum>(() => {
 });
 
 //things needed for pagination
-const pageNumber = ref(1);
+const pageNumber = ref<number>(route.query.page ? parseInt(route.query.page.toString()) : 1);
 const threadsPerPage = ref(5);
 const totalVisiblePageButtons = ref(7);
 const totalNumberOfThreads = computed(() => forum.value.threads.length || 0);
@@ -72,19 +77,24 @@ const changePage = (e: number) => {
  * but this is more preferable
  */
 watch(pageNumber, async (newValue, oldValue) => {
-    emits("notReady");
-    await threadsStore.fetchThreadsByPage(
-        forum.value.threads,
-        pageNumber.value,
-        threadsPerPage.value
-    );
-    await usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
-    emits("ready");
+    router.push({
+        name: "Forum",
+        params: { id: forum.value.id, slug: forum.value.slug },
+        query: { page: pageNumber.value as number }
+    });
 });
 
 const { isReady } = useAsyncState(async () => {
     //fetch the forum
     let forum: Forum = await forumsStore.fetchForum(props.id);
+    //checks if user has a valid page number
+    if (
+        Number.isNaN(+pageNumber.value) ||
+        pageNumber.value <= 0 ||
+        pageNumber.value > totalNumberOfPages.value
+    )
+        router.push({ name: "Forum", params: { id: forum.id, slug: forum.slug } });
+
     //checks if the slug is there and correct, else redirect to fix the url
     if (props.slug !== forum.slug) {
         router.push({ name: "Forum", params: { id: forum.id, slug: forum.slug } });
