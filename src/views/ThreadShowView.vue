@@ -158,7 +158,7 @@ const { isReady } = useAsyncState(async () => {
             :modelValue="pageNumber"
             active-color="#57AD8D"
             @update:modelValue="changePage"
-            style="margin-bottom: 20px"
+            style="margin-bottom: 20px; margin-top: 20px"
         ></v-pagination>
         <!--Post editor for adding more posts/login and register-->
         <PostEditorComponent v-if="isSignedIn && isLastPage" @savePost="addPost" />
