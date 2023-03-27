@@ -19,6 +19,7 @@ import {
     updateDoc,
     writeBatch
 } from "@firebase/firestore";
+import chunk from "lodash/chunk";
 
 /**
  * post store
@@ -123,6 +124,27 @@ export const usePostsStore = defineStore("PostsStore", () => {
         return posts;
     }
 
+    /**
+     * fetches posts by page number
+     * @param postIds the postids
+     * @param pageNumber the page number
+     * @param perPage how many posts per page
+     * @returns Post[] list of the threads in that page
+     */
+    async function fetchPostsByPage(postIds: string[], pageNumber: number, perPage: number = 10) {
+        clearPosts();
+        const posts = chunk(postIds, perPage);
+        const limitedIds = posts[pageNumber - 1];
+        return fetchPosts(limitedIds);
+    }
+
+    /**
+     * clears all cached posts
+     */
+    function clearPosts() {
+        posts.value = [];
+    }
+
     return {
         posts,
         createPost,
@@ -131,7 +153,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
         getUserPosts,
         getUserPostCount,
         fetchPost,
-        fetchPosts
+        fetchPosts,
+        fetchPostsByPage
     };
 });
 

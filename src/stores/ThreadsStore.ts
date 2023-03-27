@@ -221,6 +221,9 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         return fetchThreads(limitedIds);
     }
 
+    /**
+     * clears all cached threads
+     */
     function clearThreads() {
         threads.value = [];
     }

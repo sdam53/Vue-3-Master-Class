@@ -59,9 +59,17 @@ export const useForumsStore = defineStore("ForumsStore", () => {
         pageNumber: number,
         perPage: number = 10
     ): Promise<Forum[]> {
+        clearForums();
         const threads = chunk(forumIds, perPage);
         const limitedIds = threads[pageNumber - 1];
         return fetchForums(limitedIds);
+    }
+
+    /**
+     * clears all cached forums
+     */
+    function clearForums() {
+        forums.value = [];
     }
 
     return { forums, setForum, fetchForum, fetchForums, fetchForumsByPage };

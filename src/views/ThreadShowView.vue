@@ -1,7 +1,7 @@
 <script async setup lang="ts">
 //page that shows a individual thread and its posts
 
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import PostListComponent from "@/components/PostListComponent.vue";
 import PostEditorComponent from "@/components/PostEditorComponent.vue";
 import { useThreadsStore } from "@/stores/ThreadsStore";
@@ -12,14 +12,19 @@ import { useUsersStore } from "@/stores/UsersStore";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
-import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import _ from "lodash";
+import { useRoute, useRouter } from "vue-router";
 
 //stores
 const threadsStore = useThreadsStore();
 const postsStore = usePostsStore();
 const usersStore = useUsersStore();
 const currentUserStore = useCurrentUserStore();
+
+//router stuff
+const route = useRoute();
+const router = useRouter();
 
 //prop
 //const props = defineProps(["id", "slug"]);
@@ -37,12 +42,7 @@ const props = defineProps({
 //emits
 const emits = defineEmits(["ready", "notReady"]);
 
-//ref
-//const creator = await usersStore.fetchUser(thread.userId);
-
 //computed
-const threads = computed<Thread[]>(() => threadsStore.threads);
-const posts = computed<Post[]>(() => postsStore.posts);
 const thread = computed<Thread>(() => findById(threadsStore.threads, props.id) as Thread);
 const threadPosts = computed<Post[]>(() => {
     return postsStore.posts.filter((post: Post) => post.threadId === props.id);
@@ -64,17 +64,63 @@ const addPost = (eventData: any) => {
     postsStore.createPost(post);
 };
 
+//pagination stuff
+const pageNumber = ref<number>(route.query.page ? parseInt(route.query.page.toString()) : 1);
+const postsPerPage = ref(10);
+const totalVisiblePageButtons = ref(7);
+const totalNumberOfPosts = computed(() => thread.value.posts.length || 0);
+const totalNumberOfPages = computed(() => Math.ceil(totalNumberOfPosts.value / postsPerPage.value));
+const firstPage = () => {
+    pageNumber.value = 1;
+};
+const lastPage = () => {
+    pageNumber.value = totalNumberOfPages.value;
+};
+const nextPage = () => {
+    pageNumber.value =
+        pageNumber.value + 1 <= totalNumberOfPages.value ? pageNumber.value + 1 : pageNumber.value;
+};
+const prevPage = () => {
+    pageNumber.value = pageNumber.value - 1 >= 1 ? pageNumber.value - 1 : pageNumber.value;
+};
+const changePage = (e: number) => {
+    pageNumber.value = e >= 0 && e <= totalNumberOfPages.value ? e : pageNumber.value;
+};
+
+/**
+ * watch for a page change to fetch more threads
+ * can also do it in @update:modelValue="changePage"
+ * but this is more preferable
+ */
+watch(pageNumber, async (newValue, oldValue) => {
+    router.push({
+        name: "ThreadShow",
+        params: { id: thread.value.id, slug: thread.value.slug },
+        query: { page: pageNumber.value as number }
+    });
+});
+
 const { isReady } = useAsyncState(async () => {
     //fetches all posts and user in a thread and saves it to memory
     let thread = await threadsStore.fetchThread(props.id);
-
+    //checks if user has a valid page number
+    if (
+        Number.isNaN(+pageNumber.value) ||
+        pageNumber.value <= 0 ||
+        pageNumber.value > totalNumberOfPages.value
+    ) {
+        router.push({ name: "ThreadShow", params: { id: thread.id, slug: thread.slug } });
+    }
     //updates the slug if the user used an incorrect one by redirecting
     if (props.slug !== thread.slug) {
         router.push({ name: "ThreadShow", params: { id: thread.id, slug: thread.slug } });
     } else {
         //continue on
-        usersStore.fetchUser(thread.userId);
-        let posts = await postsStore.fetchPosts(thread.posts);
+        const posts = await postsStore.fetchPostsByPage(
+            thread.posts,
+            pageNumber.value,
+            postsPerPage.value
+        );
         let users = posts.map((post: Post) => post.userId);
         usersStore.fetchUsers(users);
         document.title = thread.title;
@@ -108,6 +154,24 @@ const { isReady } = useAsyncState(async () => {
         </p>
         <!--List of posts-->
         <PostListComponent :posts="threadPosts" />
+        <!--pagination-->
+        <v-pagination
+            :length="totalNumberOfPages"
+            :totalVisible="totalVisiblePageButtons"
+            rounded="circle"
+            :disabled="false"
+            prev-icon="mdi-menu-left"
+            next-icon="mdi-menu-right"
+            elevation="0"
+            :showFirstLastPage="true"
+            :modelValue="pageNumber"
+            active-color="#57AD8D"
+            @first="firstPage"
+            @last="lastPage"
+            @next="nextPage"
+            @prev="prevPage"
+            @update:modelValue="changePage"
+        ></v-pagination>
         <!--Post editor for adding more posts/login and register-->
         <PostEditorComponent v-if="isSignedIn" @savePost="addPost" />
         <div v-else class="text-center" style="margin-bottom: 50px">
