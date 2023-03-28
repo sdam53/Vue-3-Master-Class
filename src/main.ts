@@ -10,6 +10,7 @@ import { firebaseConfig } from "./config/firebase";
 import { Vue3ProgressPlugin } from "@marcoschulte/vue3-progress";
 import PageScrollDirective from "./plugins/PageScrollDirective";
 import { InfiniteLoad } from "./plugins/InfiniteLoading";
+import { Toast, ToastOptions } from "./plugins/Toastification";
 
 const firebase = initializeApp(firebaseConfig);
 
@@ -33,4 +34,6 @@ app.use(theRouter);
 app.use(PageScrollDirective);
 //page infinite scrolling
 app.use(InfiniteLoad);
+//toast
+app.use(Toast, ToastOptions);
 app.mount("#app");
