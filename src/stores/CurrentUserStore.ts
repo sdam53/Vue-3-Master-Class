@@ -113,7 +113,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         if (!userId) return;
         setAuthId(userId);
         if (!authId.value) return;
-        let user = await fetchItem(userId, "users", setAuthUserUnsubscribe);
+        let user = await fetchItem(userId, "users", { handleUnsubscribe: setAuthUserUnsubscribe });
         userStore.setUser({ ...user });
     }
 

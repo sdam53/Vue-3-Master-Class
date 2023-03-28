@@ -187,8 +187,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
      * fetches the thread from firestore
      * @param threadId the thread id
      */
-    async function fetchThread(threadId: string): Promise<Thread> {
-        let thread = await fetchItem(threadId, "threads");
+    async function fetchThread(threadId: string, once: boolean = false): Promise<Thread> {
+        let thread = await fetchItem(threadId, "threads", { once: once });
         setThread({ ...thread });
         return { ...thread };
     }
