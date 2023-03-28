@@ -23,6 +23,7 @@ import {
     writeBatch
 } from "@firebase/firestore";
 import chunk from "lodash/chunk";
+import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
 
 /**
  * threads store
@@ -187,8 +188,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
      * fetches the thread from firestore
      * @param threadId the thread id
      */
-    async function fetchThread(threadId: string, once: boolean = false): Promise<Thread> {
-        let thread = await fetchItem(threadId, "threads", { once: once });
+    async function fetchThread(threadId: string, options: FetchItemOptionsType): Promise<Thread> {
+        let thread = await fetchItem(threadId, "threads", options);
         setThread({ ...thread });
         return { ...thread };
     }

@@ -16,6 +16,8 @@ import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import _ from "lodash";
 import { useRoute, useRouter } from "vue-router";
 import { useUAStore } from "@/stores/UAStore";
+import { useToast } from "vue-toastification";
+import { useFirebaseStore } from "@/stores/FirebaseStore";
 
 //stores
 const threadsStore = useThreadsStore();
@@ -27,6 +29,9 @@ const UAStore = useUAStore();
 //router stuff
 const route = useRoute();
 const router = useRouter();
+
+//toast stuff
+const toast = useToast();
 
 //prop
 //const props = defineProps(["id", "slug"]);
@@ -92,7 +97,13 @@ watch(pageNumber, async (newValue, oldValue) => {
 
 const { isReady } = useAsyncState(async () => {
     //fetches all posts and user in a thread and saves it to memory
-    let thread = await threadsStore.fetchThread(props.id);
+    let thread = await threadsStore.fetchThread(props.id, {
+        onSnapshot: () => {
+            if (!isReady.value) return;
+            else toast("Thread recently updated"); //IDK IF WORKS
+        }
+        //once: true
+    });
     //checks if user has a valid page number
     if (
         Number.isNaN(+pageNumber.value) ||

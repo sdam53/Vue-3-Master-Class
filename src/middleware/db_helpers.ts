@@ -1,15 +1,13 @@
 import { doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import { useFirebaseStore } from "@/stores/FirebaseStore";
-import { setItem } from "@/middleware/HelperFunctions";
-
-/**
- * Type declaration for fetchItem's options
- */
-type FetchItemOptionsType = {
-    handleUnsubscribe?: (fun: any) => void; //function to handle special cases. defaults to null
-    once?: boolean; //whether to have the listener keep running or remove it once item is retrieved
-};
+import { findById, setItem } from "@/middleware/HelperFunctions";
+import { useUsersStore } from "@/stores/UsersStore";
+import { usePostsStore } from "@/stores/PostsStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import { useForumsStore } from "@/stores/ForumsStore";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
 
 /**
  * return a resource from firestore based on id and resource type
@@ -33,14 +31,26 @@ async function fetchItem(
             if (options && options.once) unsubscribe();
             if (doc.exists()) {
                 let docItem: any = doc.data();
-                setItem({ ...docItem, id: doc.id }, resource);
-                resolve({ ...docItem, id: doc.id });
+                //previous item
+                let prevItem = findById(getResourceList(resource), docItem.id);
+                prevItem = prevItem ? { ...prevItem } : null;
+                //copy of item obj
+                let item = { ...docItem, id: doc.id };
+                //if onSnapshot function exists
+                if (options && options.onSnapshot && typeof options.onSnapshot === "function") {
+                    options.onSnapshot({ item: { ...item }, prevItem });
+                }
+                //setting and returning item
+                setItem(item, resource);
+                resolve(item);
             } else {
                 resolve(null);
             }
         });
+
+        //if handleUnsub function exists
         if (options && options.handleUnsubscribe) {
-            options.handleUnsubscribe(unsubscribe);
+            // options.handleUnsubscribe(unsubscribe);
         } else {
             firebaseStore.addUnsubscription(unsubscribe);
         }
@@ -53,9 +63,29 @@ async function fetchItem(
  * @param resource resource type
  * @returns Promise<any>[] these will contain null items
  */
-const fetchItems = (ids: string[], resource: string) => {
+const fetchItems = (
+    ids: string[],
+    resource: string,
+    options: FetchItemOptionsType | null = null
+) => {
     console.log(`Fetching multiple ${resource}...`);
-    return Promise.all(ids.map((id) => fetchItem(id, resource)));
+    return Promise.all(ids.map((id) => fetchItem(id, resource, options)));
+};
+
+const getResourceList = (resource: string): any[] => {
+    switch (resource) {
+        case "user" || "users":
+            return useUsersStore().users;
+        case "post" || "posts":
+            return usePostsStore().posts;
+        case "thread" || "threads":
+            return useThreadsStore().threads;
+        case "forum" || "forums":
+            return useForumsStore().forums;
+        case "category" || "categories":
+            return useCategoriesStore().categories;
+    }
+    return [];
 };
 
 /**

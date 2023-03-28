@@ -24,13 +24,14 @@ export const useFirebaseStore = defineStore("FirebaseStore", () => {
         unsubscriptions.value = [];
     };
 
-    //unsubscribe too all snapshots
+    //unsubscribe to all snapshots
     async function unsubscribeAllSnapshots() {
-        unsubscriptions.value.forEach((unsub: () => void) => unsub()); //function type expression as the type
+        await unsubscriptions.value.forEach(async (unsub: () => void) => await unsub()); //function type expression as the type
         clearAllUnsubscriptions();
     }
 
     return {
+        unsubscriptions,
         addUnsubscription,
         clearAllUnsubscriptions,
         unsubscribeAllSnapshots
