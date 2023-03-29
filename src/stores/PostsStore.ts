@@ -20,6 +20,7 @@ import {
     writeBatch
 } from "@firebase/firestore";
 import chunk from "lodash/chunk";
+import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
 
 /**
  * post store
@@ -117,8 +118,11 @@ export const usePostsStore = defineStore("PostsStore", () => {
      * handles null posts by filtering
      * @param postIds the postids
      */
-    async function fetchPosts(postIds: string[]): Promise<Post[]> {
-        let posts: Post[] = await fetchItems(postIds, "posts");
+    async function fetchPosts(
+        postIds: string[],
+        options: FetchItemOptionsType | null = null
+    ): Promise<Post[]> {
+        let posts: Post[] = await fetchItems(postIds, "posts", options);
         posts = posts.filter((post) => post);
         posts.forEach((post) => setPost(post));
         return posts;
@@ -131,11 +135,16 @@ export const usePostsStore = defineStore("PostsStore", () => {
      * @param perPage how many posts per page
      * @returns Post[] list of the threads in that page
      */
-    async function fetchPostsByPage(postIds: string[], pageNumber: number, perPage: number = 10) {
+    async function fetchPostsByPage(
+        postIds: string[],
+        pageNumber: number,
+        perPage: number = 10,
+        options: FetchItemOptionsType
+    ) {
         clearPosts();
         const posts = chunk(postIds, perPage);
         const limitedIds = posts[pageNumber - 1];
-        return fetchPosts(limitedIds);
+        return fetchPosts(limitedIds, options);
     }
 
     /**

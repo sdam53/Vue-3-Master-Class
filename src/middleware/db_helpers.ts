@@ -31,23 +31,22 @@ async function fetchItem(
             if (options && options.once) unsubscribe();
             if (doc.exists()) {
                 let docItem: any = doc.data();
-                //previous item
-                let prevItem = findById(getResourceList(resource), docItem.id);
-                prevItem = prevItem ? { ...prevItem } : null;
                 //copy of item obj
                 let item = { ...docItem, id: doc.id };
                 //if onSnapshot function exists
                 if (options && options.onSnapshot && typeof options.onSnapshot === "function") {
-                    options.onSnapshot({ item: { ...item }, prevItem });
+                    //previous item
+                    let prevItem = findById(getResourceList(resource), doc.id);
+                    prevItem = prevItem ? { ...prevItem } : null;
+                    options.onSnapshot({ item: { ...item }, prevItem: { ...prevItem } });
                 }
                 //setting and returning item
-                setItem(item, resource);
-                resolve(item);
+                setItem({ ...item }, resource);
+                resolve({ ...item });
             } else {
                 resolve(null);
             }
         });
-
         //if handleUnsub function exists
         if (options && options.handleUnsubscribe) {
             // options.handleUnsubscribe(unsubscribe);
@@ -73,18 +72,24 @@ const fetchItems = (
 };
 
 const getResourceList = (resource: string): any[] => {
+    const threadsStore = useThreadsStore();
+    const forumsStore = useForumsStore();
+    const usersStore = useUsersStore();
+    const postsStore = usePostsStore();
+    const categoriesStore = useCategoriesStore();
     switch (resource) {
-        case "user" || "users":
-            return useUsersStore().users;
-        case "post" || "posts":
-            return usePostsStore().posts;
-        case "thread" || "threads":
-            return useThreadsStore().threads;
-        case "forum" || "forums":
-            return useForumsStore().forums;
-        case "category" || "categories":
-            return useCategoriesStore().categories;
+        case "users":
+            return usersStore.users;
+        case "posts":
+            return postsStore.posts;
+        case "threads":
+            return threadsStore.threads;
+        case "forums":
+            return forumsStore.forums;
+        case "categories":
+            return categoriesStore.categories;
     }
+
     return [];
 };
 

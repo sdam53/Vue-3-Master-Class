@@ -65,7 +65,7 @@ const routes = [
         //this basically will check if this endpoint is right, and if not we get sent to notFound
         async beforeEnter(to: RouteLocationNormalized, from: RouteLocationNormalized) {
             const threadStore = useThreadsStore();
-            await threadStore.fetchThread(to.params.id as string, true);
+            await threadStore.fetchThread(to.params.id as string, { once: true });
             const threadExist = findById(threadStore.threads, to.params.id as string);
             if (!threadExist) {
                 return {

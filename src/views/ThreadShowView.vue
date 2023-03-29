@@ -13,11 +13,10 @@ import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import _ from "lodash";
+import _, { difference } from "lodash";
 import { useRoute, useRouter } from "vue-router";
 import { useUAStore } from "@/stores/UAStore";
 import { useToast } from "vue-toastification";
-import { useFirebaseStore } from "@/stores/FirebaseStore";
 
 //stores
 const threadsStore = useThreadsStore();
@@ -83,7 +82,7 @@ const changePage = (e: number) => {
 const isLastPage = computed(() => pageNumber.value === totalNumberOfPages.value);
 
 /**
- * watch for a page change to fetch more threads
+ * watch for a page change to fetch more posts
  * can also do it in @update:modelValue="changePage"
  * but this is more preferable
  */
@@ -98,12 +97,54 @@ watch(pageNumber, async (newValue, oldValue) => {
 const { isReady } = useAsyncState(async () => {
     //fetches all posts and user in a thread and saves it to memory
     let thread = await threadsStore.fetchThread(props.id, {
-        onSnapshot: () => {
-            if (!isReady.value) return;
-            else toast("Thread recently updated"); //IDK IF WORKS
+        onSnapshot: async ({ item, prevItem }) => {
+            //getting the new posts
+            const newPosts = difference(item.posts, prevItem.posts) as string[];
+            if (newPosts.length > 0) {
+                //fetching the new posts information and users
+                //let posts = await threadsStore.fetchThreads(newPosts);
+                let posts = await postsStore.fetchPosts(newPosts);
+                //not sure if i need to filter it out but i did bc i got error on it on console
+                posts = posts.filter((post) => post);
+                await usersStore.fetchUsers(posts.map((post) => post.userId));
+            } else {
+                //toast("Thread updated");
+            }
         }
         //once: true
     });
+    //webpage validating
+    isOnValidPage(thread);
+
+    //fetching posts and users
+    //adding a callback for post edits
+    //the toast will only work when the post is on the same page due to
+    //clearing out snapshots when switching pages
+    const posts = await postsStore.fetchPostsByPage(
+        thread.posts,
+        pageNumber.value,
+        postsPerPage.value,
+        {
+            onSnapshot: ({ prevItem }) => {
+                if (!isReady.value || (prevItem && prevItem.edited && !prevItem?.edited?.at))
+                    return;
+                toast("A post was recently updated");
+            }
+        }
+    );
+    let users = posts.map((post: Post) => post.userId);
+    usersStore.fetchUsers(users);
+    usersStore.fetchUser(thread.userId);
+    document.title = thread.title;
+    emits("ready");
+}, undefined);
+
+/**
+ * Validates that the thread has valid data ie page number and slug
+ * if not then it redirects to a correct version
+ * @param thread
+ */
+const isOnValidPage = (thread: Thread) => {
     //checks if user has a valid page number
     if (
         Number.isNaN(+pageNumber.value) ||
@@ -115,20 +156,8 @@ const { isReady } = useAsyncState(async () => {
     //updates the slug if the user used an incorrect one by redirecting
     if (props.slug !== thread.slug) {
         router.push({ name: "ThreadShow", params: { id: thread.id, slug: thread.slug } });
-    } else {
-        //continue on
-        const posts = await postsStore.fetchPostsByPage(
-            thread.posts,
-            pageNumber.value,
-            postsPerPage.value
-        );
-        let users = posts.map((post: Post) => post.userId);
-        usersStore.fetchUsers(users);
-        usersStore.fetchUser(thread.userId);
-        document.title = thread.title;
-        emits("ready");
     }
-}, undefined);
+};
 </script>
 
 <template>
