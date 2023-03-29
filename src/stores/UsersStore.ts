@@ -75,7 +75,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
         let id = res.user.uid;
         //if the new user added an image
         //save it to db and set the url for it
-        user = await uploadAvatar(id, user);
+        user.avatar = await uploadAvatar(id, user.avatar as File | null);
         //adding to db
         let newUser = await registerUser(user, id);
         //i want the user to sign in when registering
@@ -85,28 +85,31 @@ export const useUsersStore = defineStore("UsersStore", () => {
     }
 
     /**
-     * uploads user avatar to db storage
-     *
+     * uploads the users profile image and returns the image url
+     * There are three main returns
+     * 1. no avatar, thus user will recieve the default pic
+     * 2. valid image file, thus user will get the valid image url
+     * 3. invalid file/everything user will get null
      * @param id user id
-     * @param user user object with user.avatar as a File object
-     * @returns the user object with user.avatar as a string url
+     * @param avatar avatar File
+     * @returns string or null of the image url
      */
-    async function uploadAvatar(id: string, user: User): Promise<User> {
-        if (!user.avatar) return user;
+    async function uploadAvatar(id: string, avatar: File | null): Promise<string | null> {
+        if (!avatar)
+            return `https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png`;
         try {
             const storageBucket = getStorage();
             const bucketRef = fireRef(
                 storageBucket,
-                `uploads/${id}/images/${Date.now()}-${(user.avatar as File).name}`
+                `uploads/${id}/images/${Date.now()}-${avatar.name}`
             );
-            const snapshot = await uploadBytes(bucketRef, user.avatar as unknown as Blob);
-            user.avatar = await getDownloadURL(snapshot.ref);
+            const snapshot = await uploadBytes(bucketRef, avatar as unknown as Blob);
+            return await getDownloadURL(snapshot.ref);
         } catch (error) {
             Toast.error("Invalid File", { timeout: 5000 });
         }
-        return user;
+        return null;
     }
-
     /**
      * registers a new user to the db
      * @param user user info
@@ -121,9 +124,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
         //setting up the new user
         let registeredAt = serverTimestamp();
         let theUser: User = {
-            avatar:
-                user.avatar ||
-                `https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png`,
+            avatar: user.avatar,
             email: user.email.toLowerCase(),
             lastVisitAt: registeredAt,
             name: user.name,

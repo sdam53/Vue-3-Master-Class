@@ -8,10 +8,14 @@ import type RegistrationForm from "@/types/RegisterForm";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { ref } from "vue";
+import { useToast } from "vue-toastification";
 
 //stores
 const usersStore = useUsersStore();
 const currentUserStore = useCurrentUserStore();
+
+//toast
+const Toast = useToast();
 
 //emits
 const emits = defineEmits(["ready"]);
@@ -25,6 +29,7 @@ const form = ref<RegistrationForm>({
     avatar: ""
 });
 const avatarPreview = ref();
+const fileInputKey = ref(0); //this is a key to force file input to reset
 
 /**
  * function to register the user
@@ -52,11 +57,30 @@ async function registerWithGoogle() {
     router.push({ name: "Home" });
 }
 
+/**
+ * handles when profile pic file gets changed
+ * @param e event
+ */
 const handleImageUpload = (e: Event) => {
-    form.value.avatar = e?.target?.files[0];
-    const reader = new FileReader();
-    reader.onload = (event) => (avatarPreview.value = event?.target?.result);
-    reader.readAsDataURL(form.value.avatar as unknown as Blob);
+    try {
+        form.value.avatar = e?.target?.files[0];
+        const reader = new FileReader();
+        reader.onload = (event) => (avatarPreview.value = event?.target?.result);
+        reader.readAsDataURL(form.value.avatar as unknown as Blob);
+    } catch (error) {
+        handleInvalidImageUpload();
+    }
+};
+
+/**
+ * gets called when use has send invalid file as profile image
+ * @param e event
+ */
+const handleInvalidImageUpload = (e: Event | null = null) => {
+    Toast.error("Invalid File");
+    form.value.avatar = "";
+    avatarPreview.value = null;
+    fileInputKey.value++;
 };
 
 const { isReady } = useAsyncState(async () => {
@@ -100,7 +124,11 @@ const { isReady } = useAsyncState(async () => {
                     <label for="avatar">
                         Avatar (Optional)
                         <div v-if="avatarPreview">
-                            <img :src="avatarPreview" class="avatar-xlarge" />
+                            <img
+                                :src="avatarPreview"
+                                class="avatar-xlarge"
+                                @error="handleInvalidImageUpload"
+                            />
                         </div>
                     </label>
                     <input
@@ -110,6 +138,7 @@ const { isReady } = useAsyncState(async () => {
                         class="form-input"
                         @change="handleImageUpload"
                         accept="image/*"
+                        :key="fileInputKey"
                     />
                 </div>
 
