@@ -33,10 +33,13 @@ const usersStore = useUsersStore();
 const handleAvatarUpload = async (e: Event) => {
     uploadingImage.value = true;
     const file = e?.target?.files[0];
-    activeUser.value = await usersStore.uploadAvatar(currentUserStore.authId as string, {
+    const newUser = await usersStore.uploadAvatar(currentUserStore.authId as string, {
         ...activeUser.value,
         avatar: file
     });
+    //this handles when user uploads an invalid file
+    //might be a better way to handle it
+    if (typeof newUser.avatar === "string") activeUser.value = newUser;
     uploadingImage.value = false;
 };
 

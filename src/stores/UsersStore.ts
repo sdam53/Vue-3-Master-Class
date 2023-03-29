@@ -8,11 +8,15 @@ import { doc, getFirestore, serverTimestamp, writeBatch } from "firebase/firesto
 import { getDownloadURL, getStorage, ref as fireRef, uploadBytes } from "firebase/storage";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
+import { useToast } from "vue-toastification";
 
 /**
  * user store
  */
 export const useUsersStore = defineStore("UsersStore", () => {
+    //toast
+    const Toast = useToast();
+
     //ref
     const users = ref<User[]>([]);
 
@@ -82,19 +86,24 @@ export const useUsersStore = defineStore("UsersStore", () => {
 
     /**
      * uploads user avatar to db storage
+     *
      * @param id user id
-     * @param user user object
-     * @returns the user object with the new avatar url
+     * @param user user object with user.avatar as a File object
+     * @returns the user object with user.avatar as a string url
      */
     async function uploadAvatar(id: string, user: User): Promise<User> {
         if (!user.avatar) return user;
-        const storageBucket = getStorage();
-        const bucketRef = fireRef(
-            storageBucket,
-            `uploads/${id}/images/${Date.now()}-${(user.avatar as File).name}`
-        );
-        const snapshot = await uploadBytes(bucketRef, user.avatar as unknown as Blob);
-        user.avatar = await getDownloadURL(snapshot.ref);
+        try {
+            const storageBucket = getStorage();
+            const bucketRef = fireRef(
+                storageBucket,
+                `uploads/${id}/images/${Date.now()}-${(user.avatar as File).name}`
+            );
+            const snapshot = await uploadBytes(bucketRef, user.avatar as unknown as Blob);
+            user.avatar = await getDownloadURL(snapshot.ref);
+        } catch (error) {
+            Toast.error("Invalid File", { timeout: 5000 });
+        }
         return user;
     }
 
