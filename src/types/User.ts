@@ -4,7 +4,7 @@ import type { FieldValue } from "@firebase/firestore";
  * user type
  */
 export default interface User {
-    avatar?: string | null;
+    avatar?: string | null | File;
     bio?: string;
     email: string;
     lastVisitAt: number | FieldValue;

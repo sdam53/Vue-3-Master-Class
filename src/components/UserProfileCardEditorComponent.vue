@@ -3,6 +3,7 @@
 
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import { useUsersStore } from "@/stores/UsersStore";
 import type User from "@/types/User";
 import type { PropType } from "vue";
 import { ref } from "vue";
@@ -21,6 +22,16 @@ const activeUser = ref<User>({ ...props.user } as User);
 
 //store
 const currentUserStore = useCurrentUserStore();
+const usersStore = useUsersStore();
+
+const handleAvatarUpload = async (e: Event) => {
+    const file = e?.target?.files[0];
+    activeUser.value.avatar = file;
+    activeUser.value = await usersStore.uploadAvatar(
+        currentUserStore.authId as string,
+        activeUser.value
+    );
+};
 
 /**
  * saves the edited information
@@ -42,11 +53,20 @@ const cancel = () => {
     <div class="profile-card">
         <form @submit.prevent="save">
             <p class="text-center">
-                <img
-                    :src="activeUser.avatar as undefined | string"
-                    :alt="`${user.name} profile picture`"
-                    class="avatar-xlarge img-update"
-                />
+                <label for="avatar">
+                    <img
+                        :src="activeUser.avatar as undefined | string"
+                        :alt="`${user.name} profile picture`"
+                        class="avatar-xlarge img-update"
+                    />
+                    <input
+                        v-show="false"
+                        type="file"
+                        id="avatar"
+                        accept="image/*"
+                        @change="handleAvatarUpload"
+                    />
+                </label>
             </p>
 
             <div class="form-group">

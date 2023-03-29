@@ -71,21 +71,31 @@ export const useUsersStore = defineStore("UsersStore", () => {
         let id = res.user.uid;
         //if the new user added an image
         //save it to db and set the url for it
-        if (user.avatar) {
-            const storageBucket = getStorage();
-            const bucketRef = fireRef(
-                storageBucket,
-                `uploads/${res.user.uid}/images/${Date.now()}-${user.avatar}`
-            );
-            const snapshot = await uploadBytes(bucketRef, user.avatar as unknown as Blob);
-            user.avatar = await getDownloadURL(snapshot.ref);
-        }
+        user = await uploadAvatar(id, user);
         //adding to db
         let newUser = await registerUser(user, id);
         //i want the user to sign in when registering
         //let currentUserStore = useCurrentUserStore();
         //await currentUserStore.fetchAuthUser();
         return newUser;
+    }
+
+    /**
+     * uploads user avatar to db storage
+     * @param id user id
+     * @param user user object
+     * @returns the user object with the new avatar url
+     */
+    async function uploadAvatar(id: string, user: User): Promise<User> {
+        if (!user.avatar) return user;
+        const storageBucket = getStorage();
+        const bucketRef = fireRef(
+            storageBucket,
+            `uploads/${id}/images/${Date.now()}-${(user.avatar as File).name}`
+        );
+        const snapshot = await uploadBytes(bucketRef, user.avatar as unknown as Blob);
+        user.avatar = await getDownloadURL(snapshot.ref);
+        return user;
     }
 
     /**
@@ -130,7 +140,8 @@ export const useUsersStore = defineStore("UsersStore", () => {
         fetchUsers,
         setUser,
         registerUserWithEmailPassword,
-        registerUser
+        registerUser,
+        uploadAvatar
     };
 });
 
