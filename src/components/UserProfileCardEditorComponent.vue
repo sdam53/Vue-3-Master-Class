@@ -1,6 +1,7 @@
 <script setup lang="ts">
 //editor component to update user info
 
+import LoadingScreen from "@/composables/UseLoadingScreen.vue";
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -19,18 +20,24 @@ const props = defineProps({
 
 //ref
 const activeUser = ref<User>({ ...props.user } as User);
+const uploadingImage = ref(false);
 
 //store
 const currentUserStore = useCurrentUserStore();
 const usersStore = useUsersStore();
 
+/**
+ * uploads the new profile image
+ * @param e Event obj for change event
+ */
 const handleAvatarUpload = async (e: Event) => {
+    uploadingImage.value = true;
     const file = e?.target?.files[0];
-    activeUser.value.avatar = file;
-    activeUser.value = await usersStore.uploadAvatar(
-        currentUserStore.authId as string,
-        activeUser.value
-    );
+    activeUser.value = await usersStore.uploadAvatar(currentUserStore.authId as string, {
+        ...activeUser.value,
+        avatar: file
+    });
+    uploadingImage.value = false;
 };
 
 /**
@@ -51,14 +58,18 @@ const cancel = () => {
 
 <template>
     <div class="profile-card">
+        <LoadingScreen v-if="uploadingImage"></LoadingScreen>
         <form @submit.prevent="save">
-            <p class="text-center">
+            <p class="text-center avatar-edit">
                 <label for="avatar">
                     <img
                         :src="activeUser.avatar as undefined | string"
                         :alt="`${user.name} profile picture`"
                         class="avatar-xlarge img-update"
                     />
+                    <div class="avatar-upload-overlay">
+                        <fa icon="camera" size="3x" :style="{ color: 'white', opacity: '8' }" />
+                    </div>
                     <input
                         v-show="false"
                         type="file"
