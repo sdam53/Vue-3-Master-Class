@@ -24,6 +24,7 @@ const form = ref<RegistrationForm>({
     password: "",
     avatar: ""
 });
+const avatarPreview = ref();
 
 /**
  * function to register the user
@@ -50,6 +51,13 @@ async function registerWithGoogle() {
     await currentUserStore.signInWithGoogle();
     router.push({ name: "Home" });
 }
+
+const handleImageUpload = (e: Event) => {
+    form.value.avatar = e?.target?.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => (avatarPreview.value = event?.target?.result);
+    reader.readAsDataURL(form.value.avatar as unknown as Blob);
+};
 
 const { isReady } = useAsyncState(async () => {
     document.title = "Register";
@@ -89,8 +97,20 @@ const { isReady } = useAsyncState(async () => {
                 </div>
 
                 <div class="form-group">
-                    <label for="avatar">Avatar (Optional)</label>
-                    <input v-model="form.avatar" id="avatar" type="text" class="form-input" />
+                    <label for="avatar">
+                        Avatar (Optional)
+                        <div v-if="avatarPreview">
+                            <img :src="avatarPreview" class="avatar-xlarge" />
+                        </div>
+                    </label>
+                    <input
+                        v-show="!avatarPreview"
+                        id="avatar"
+                        type="file"
+                        class="form-input"
+                        @change="handleImageUpload"
+                        accept="image/*"
+                    />
                 </div>
 
                 <div class="form-actions">

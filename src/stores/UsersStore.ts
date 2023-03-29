@@ -5,6 +5,7 @@ import { findById, upsert } from "@/middleware/HelperFunctions";
 import type User from "@/types/User";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { doc, getFirestore, serverTimestamp, writeBatch } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref as fireRef, uploadBytes } from "firebase/storage";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 
@@ -68,6 +69,17 @@ export const useUsersStore = defineStore("UsersStore", () => {
         let auth = getAuth();
         let res = await createUserWithEmailAndPassword(auth, user.email, password);
         let id = res.user.uid;
+        //if the new user added an image
+        //save it to db and set the url for it
+        if (user.avatar) {
+            const storageBucket = getStorage();
+            const bucketRef = fireRef(
+                storageBucket,
+                `uploads/${res.user.uid}/images/${Date.now()}-${user.avatar}`
+            );
+            const snapshot = await uploadBytes(bucketRef, user.avatar as unknown as Blob);
+            user.avatar = await getDownloadURL(snapshot.ref);
+        }
         //adding to db
         let newUser = await registerUser(user, id);
         //i want the user to sign in when registering
