@@ -105,8 +105,9 @@ const { isReady } = useAsyncState(async () => {
                 //let posts = await threadsStore.fetchThreads(newPosts);
                 let posts = await postsStore.fetchPosts(newPosts);
                 await usersStore.fetchUsers(posts.map((post) => post.userId));
-            } else {
-                //toast("Thread updated");
+                //if user didnt make a new post then have the user get a notification
+                const containsUser = posts.find((post) => post.userId === currentUserStore.authId);
+                if (!containsUser) toast("Thread updated");
             }
         }
         //once: true
@@ -126,7 +127,9 @@ const { isReady } = useAsyncState(async () => {
             onSnapshot: ({ prevItem }) => {
                 if (!isReady.value || (prevItem && prevItem.edited && !prevItem?.edited?.at))
                     return;
-                toast("A post was recently updated");
+                //if the user didnt update a post then get a notification
+                if (prevItem.userId !== currentUserStore.authId)
+                    toast("A post was recently updated");
             }
         }
     );
