@@ -104,8 +104,6 @@ const { isReady } = useAsyncState(async () => {
                 //fetching the new posts information and users
                 //let posts = await threadsStore.fetchThreads(newPosts);
                 let posts = await postsStore.fetchPosts(newPosts);
-                //not sure if i need to filter it out but i did bc i got error on it on console
-                posts = posts.filter((post) => post);
                 await usersStore.fetchUsers(posts.map((post) => post.userId));
             } else {
                 //toast("Thread updated");
