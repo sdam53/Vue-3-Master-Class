@@ -1,14 +1,14 @@
 <script setup lang="ts">
 //component to display a list of threads
 
-import { reactive } from "vue";
-import { useUsersStore } from "@/stores/UsersStore";
-import { usePostsStore } from "@/stores/PostsStore";
 import { findById } from "@/middleware/HelperFunctions";
-import type { PropType } from "vue"; //used to set props with objects
+import { usePostsStore } from "@/stores/PostsStore";
+import { useUsersStore } from "@/stores/UsersStore";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
+import type { PropType } from "vue"; //used to set props with objects
+import { reactive } from "vue";
 
 //props
 //being used regardless of it saying no
@@ -28,16 +28,9 @@ const posts = reactive<Post[]>(postsStore.posts);
 const users = reactive<User[]>(usersStore.users);
 
 /**
- * gets a post based on id
- * @param postId the postid
- */
-function postById(postId: string) {
-    return findById(posts, postId) as Post;
-}
-
-/**
  * gets a user based on id
  * @param userId userid
+ * @returns the user
  */
 function userById(userId: string) {
     return findById(users, userId) as User;

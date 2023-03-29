@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type LoginForm from "@/types/LoginForm";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import { useRoute, useRouter } from "vue-router";
+import type LoginForm from "@/types/LoginForm";
 import { useAsyncState } from "@vueuse/core";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 //store
 const currentUserStore = useCurrentUserStore();

@@ -1,14 +1,10 @@
 //pinia store to keep track of the current user
 
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { fetchItem } from "@/middleware/db_helpers";
+import { findById } from "@/middleware/HelperFunctions";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
-import { usePostsStore } from "./PostsStore";
-import { useThreadsStore } from "./ThreadsStore";
-import { useUsersStore } from "./UsersStore";
-import { findById } from "@/middleware/HelperFunctions";
 import {
     getAuth,
     GoogleAuthProvider,
@@ -22,14 +18,18 @@ import {
     getDoc,
     getDocs,
     getFirestore,
-    query,
-    updateDoc,
-    where,
-    orderBy,
     limit,
-    startAfter
+    orderBy,
+    query,
+    startAfter,
+    updateDoc,
+    where
 } from "@firebase/firestore";
-import { fetchItem } from "@/middleware/db_helpers";
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { computed, ref } from "vue";
+import { usePostsStore } from "./PostsStore";
+import { useThreadsStore } from "./ThreadsStore";
+import { useUsersStore } from "./UsersStore";
 
 /**
  * current user store
@@ -41,8 +41,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     const userStore = useUsersStore();
 
     //ref
-    //const authId = ref("VXjpr2WHa8Ux4Bnggym8QFLdv5C3");3b2x1vGujmAe79ngvktc;HiPWtTRCQUGo377B18MS
-    //const authId = ref<string | null>("HiPWtTRCQUGo377B18MS");
     const authId = ref<string | null>(null);
     const authUserUnsubscribe = ref<(() => void) | null>(null);
     const authObserverUnsubscribe = ref<(() => void) | null>(null);
@@ -80,7 +78,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      */
     const updateUser = async (user: User) => {
         if (!isSignedIn.value) return;
-        const updates = {
+        const updated = {
             avatar: user.avatar || null,
             username: user.username || null,
             name: user.name || null,
@@ -89,12 +87,11 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
             email: user.email || null,
             location: user.location || null
         };
-        userStore.setUser(updates as User);
-
+        userStore.setUser(updated as User);
         const db = getFirestore();
         //TODO: Errors but this works and should be the correct way to do it
         let userRef = doc(db, "users", authId.value);
-        await updateDoc(userRef, updates);
+        await updateDoc(userRef, updated);
     };
 
     /**
@@ -179,6 +176,10 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         authUserUnsubscribe.value = unsubscribe;
     };
 
+    /**
+     * setting the unsub funtion
+     * @param unsubscribe the unsub function
+     */
     const setAuthObserverUnsubscribe = (unsubscribe: (() => void) | null) => {
         authObserverUnsubscribe.value = unsubscribe;
     };
@@ -197,7 +198,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * initiates the user authentification observer
      */
     async function initAuthentication(): Promise<User | null> {
-        //TODO: Pinia in console doesnt have this ref for some reason
         //subs the user auth
         if (authObserverUnsubscribe.value) {
             authObserverUnsubscribe.value();
@@ -292,7 +292,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         postsCount,
         threads,
         threadsCount,
-        //setUser,
         updateUser,
         fetchAuthUser,
         signInWithEmailAndPass,

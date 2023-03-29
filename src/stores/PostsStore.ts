@@ -1,14 +1,12 @@
 //pinia store to keep track of posts
 
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { ref } from "vue";
-import { useThreadsStore } from "@/stores/ThreadsStore";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import { upsert } from "@/middleware/HelperFunctions";
-import type Post from "@/types/Post";
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
+import { upsert } from "@/middleware/HelperFunctions";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
+import type Post from "@/types/Post";
 import {
-    addDoc,
     arrayUnion,
     collection,
     doc,
@@ -20,22 +18,24 @@ import {
     writeBatch
 } from "@firebase/firestore";
 import chunk from "lodash/chunk";
-import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { ref } from "vue";
 
 /**
  * post store
  */
 export const usePostsStore = defineStore("PostsStore", () => {
     //stores
-    //const sourceDataStore = useSourceDataStore();
     const currentUser = useCurrentUserStore();
     const threadsStore = useThreadsStore();
 
     //ref
-    //const posts = ref(sourceDataStore.posts);
     const posts = ref<Post[]>([]);
 
-    //function to create a new post to a thread
+    /**
+     * adds a new post to a thread
+     * @param post the new post
+     */
     async function createPost(post: Post) {
         //user not signed in so no posting allowed
         if (!currentUser.authId) return;
@@ -72,6 +72,10 @@ export const usePostsStore = defineStore("PostsStore", () => {
         threadsStore.appendUserToThread(newPost.data()?.userId, newPost.data()?.threadId);
     }
 
+    /**
+     * updates a post
+     * @param post updated post
+     */
     async function updatePost(post: Post) {
         let updatedPost: any = {
             text: post.text,
@@ -88,17 +92,30 @@ export const usePostsStore = defineStore("PostsStore", () => {
         setPost({ ...updatedPost });
     }
 
-    //function to set a post
+    /**
+     * caches a post into memory
+     * @param post the post
+     */
     const setPost = (post: Post) => {
         upsert(posts.value, { ...post });
     };
 
-    //function to get a specific user's posts count
+    /**
+     * returns a list of posts by a user
+     * only retrieves posts in memory
+     * @param userId user id
+     * @returns list of posts of a user
+     */
     const getUserPosts = (userId: string): Post[] => {
         return posts.value.filter((post) => post.userId === userId);
     };
 
-    //function to get a specific user's posts count
+    /**
+     * returns a users post count
+     * only posts in memory
+     * @param userId user id
+     * @returns number of posts
+     */
     const getUserPostCount = (userId: string): number => {
         return posts.value.filter((post) => post.userId === userId).length;
     };
@@ -106,6 +123,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
     /**
      * fetches a post from firestorm
      * @param postId the postid
+     * @returns post obj
      */
     async function fetchPost(postId: string): Promise<Post> {
         let post = await fetchItem(postId, "posts");
@@ -117,6 +135,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
      * fetchs multiple posts from firestorm
      * handles null posts by filtering
      * @param postIds the postids
+     * @return list of post obj
      */
     async function fetchPosts(
         postIds: string[],

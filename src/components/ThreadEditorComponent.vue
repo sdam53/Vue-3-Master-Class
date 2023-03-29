@@ -1,8 +1,8 @@
 <script setup lang="ts">
 //component for thread editing
 
-import { ref, computed, watch } from "vue";
 import _ from "lodash";
+import { computed, ref, watch } from "vue";
 
 //props
 const props = defineProps({

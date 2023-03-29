@@ -1,21 +1,21 @@
 <script async setup lang="ts">
 //page that shows a individual thread and its posts
 
-import { computed, ref, watch } from "vue";
-import PostListComponent from "@/components/PostListComponent.vue";
 import PostEditorComponent from "@/components/PostEditorComponent.vue";
-import { useThreadsStore } from "@/stores/ThreadsStore";
+import PostListComponent from "@/components/PostListComponent.vue";
+import { diffForHumans, findById } from "@/middleware/HelperFunctions";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { usePostsStore } from "@/stores/PostsStore";
-import type Post from "@/types/Post";
-import { findById, diffForHumans } from "@/middleware/HelperFunctions";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import { useUAStore } from "@/stores/UAStore";
 import { useUsersStore } from "@/stores/UsersStore";
+import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import _, { difference } from "lodash";
+import { difference } from "lodash";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useUAStore } from "@/stores/UAStore";
 import { useToast } from "vue-toastification";
 
 //stores

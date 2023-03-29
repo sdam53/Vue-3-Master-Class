@@ -4,8 +4,8 @@
 import CategoryListComponent from "@/components/CategoryListComponent.vue";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
-import { useAsyncState } from "@vueuse/core";
 import type Category from "@/types/Category";
+import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
 //store
 const categoriesStore = useCategoriesStore();
@@ -19,15 +19,13 @@ const emits = defineEmits(["ready"]);
 //computed props
 const categories = computed<Category[]>(() => categoriesStore.categories);
 
-//
 const { isReady } = useAsyncState(async () => {
     const categories: Category[] = await categoriesStore.fetchAllCategories();
     const forumIds = categories.map((category) => category.forums).flat();
     await forumsStore.fetchForums(forumIds);
+    document.title = "Home";
     emits("ready");
 }, undefined);
-
-document.title = "Home";
 </script>
 
 <template>

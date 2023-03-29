@@ -1,15 +1,15 @@
 <script setup lang="ts">
 //page to edit a thread
 
-import { computed, ref } from "vue";
-import router from "@/router";
 import ThreadEditor from "@/components/ThreadEditorComponent.vue";
-import { useThreadsStore } from "@/stores/ThreadsStore";
-import { usePostsStore } from "@/stores/PostsStore";
-import type Thread from "@/types/Thread";
 import { findById } from "@/middleware/HelperFunctions";
-import { useAsyncState } from "@vueuse/core";
+import router from "@/router";
+import { usePostsStore } from "@/stores/PostsStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
 import type Post from "@/types/Post";
+import type Thread from "@/types/Thread";
+import { useAsyncState } from "@vueuse/core";
+import { computed, ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 //emits

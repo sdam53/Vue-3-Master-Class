@@ -2,13 +2,13 @@
 //component to display a list of posts in a thread
 
 import { findById } from "@/middleware/HelperFunctions";
-import { useUsersStore } from "@/stores/UsersStore";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import { useUsersStore } from "@/stores/UsersStore";
 import type Post from "@/types/Post";
 import type User from "@/types/User";
 import { ref, type PropType } from "vue";
 import PostEditor from "./PostEditorComponent.vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 
 //props
 const props = defineProps({
@@ -35,18 +35,17 @@ const userById = (userId: string) => {
 };
 
 /**
- * makes the userstore make a request to get user, which then gets saved
- * @param userId userid
+ * toggle the editing option
+ * @param id post id
  */
-async function getUser(userId: string) {
-    let user = await userStore.fetchUser(userId);
-    return user as User;
-}
-
 const toggleEditMode = (id: string) => {
     editing.value = id === editing.value ? null : id;
 };
 
+/**
+ * updates a post using event data
+ * @param eventData event data
+ */
 const updatePost = (eventData: any) => {
     //postStore.updatePost(eventData.id, eventData.text)
     postStore.updatePost(eventData as Post);

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 //page to create a new thread in a forum
 
-import { computed, ref } from "vue";
-import router from "@/router";
 import ThreadEditor from "@/components/ThreadEditorComponent.vue";
+import { findById } from "@/middleware/HelperFunctions";
+import router from "@/router";
 import { useForumsStore } from "@/stores/ForumsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import type Forum from "@/types/Forum";
-import { findById } from "@/middleware/HelperFunctions";
 import { useAsyncState } from "@vueuse/core";
+import { computed, ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 //emits

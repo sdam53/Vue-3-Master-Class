@@ -1,14 +1,14 @@
 <script setup lang="ts">
 //page to show different categories of forums.
 //navigate by clicking on a category
-import { computed, defineProps, nextTick } from "vue";
 import ForumListComponent from "@/components/ForumListComponent.vue";
+import { findById } from "@/middleware/HelperFunctions";
+import router from "@/router";
 import { useCategoriesStore } from "@/stores/CategoriesStore.js";
 import { useForumsStore } from "@/stores/ForumsStore.js";
 import type Category from "@/types/Category";
-import { findById } from "@/middleware/HelperFunctions";
 import { useAsyncState } from "@vueuse/core";
-import router from "@/router";
+import { computed, defineProps } from "vue";
 
 //stores
 const categoriesStore = useCategoriesStore();
@@ -40,21 +40,23 @@ const getForumsForCategory = (category: Category) => {
 };
 
 const { isReady } = useAsyncState(async () => {
-    if (category.value === undefined) {
-        let category: Category = (await categoriesStore.fetchCategory(props.id)) as Category;
-        await forumsStore.fetchForums(category.forums);
-    }
+    isOnValidPage();
+    document.title = category.value.name;
+    emits("ready");
+}, undefined);
+
+/**
+ * checks if user is on a valid url in terms of the slug.
+ */
+const isOnValidPage = () => {
     //checks if the slug is there and correct, else redirect to fix the url
     if (props.slug !== category.value.slug) {
         router.push({
             name: "Category",
             params: { id: category.value.id, slug: category.value.slug }
         });
-    } else {
-        document.title = category.value.name;
-        emits("ready");
     }
-}, undefined);
+};
 </script>
 
 <template>

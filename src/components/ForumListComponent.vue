@@ -1,11 +1,8 @@
 <script setup lang="ts">
 //component to display forums and their respected threads
 
-import { findById } from "@/middleware/HelperFunctions";
-import { useCategoriesStore } from "@/stores/CategoriesStore";
-import type Category from "@/types/Category";
 import type Forum from "@/types/Forum";
-import { computed, type PropType } from "vue";
+import type { PropType } from "vue";
 
 //props
 const props = defineProps({
@@ -30,6 +27,7 @@ const props = defineProps({
 /**
  * returns the string to use depending on how much threads a forum has
  * @param forum the forum
+ * @returns thread word to account for singualr or plural
  */
 const forumThreadsWord = (forum: Forum): string => {
     if (forum.threads?.length) {
@@ -42,6 +40,7 @@ const forumThreadsWord = (forum: Forum): string => {
 /**
  * returns the amount of threads a forum has
  * @param forum the forum
+ * @return thread count or 0
  */
 const forumThreadsCount = (forum: Forum): number => {
     if (forum.threads?.length) {
@@ -50,17 +49,6 @@ const forumThreadsCount = (forum: Forum): number => {
         return 0;
     }
 };
-
-/**
- * gets the slug of a category
- * @param id the category id
- */
-const getCategorySlug = computed(() => {
-    if (!props.categoryId) return "";
-    let categoriesStore = useCategoriesStore();
-    let category = findById(categoriesStore.categories, props.categoryId) as Category;
-    return category ? category.slug : "";
-});
 </script>
 
 <template>

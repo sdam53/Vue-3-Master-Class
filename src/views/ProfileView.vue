@@ -2,13 +2,13 @@
 //page to view user profile
 
 import PostList from "@/components/PostListComponent.vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import type Post from "@/types/Post";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
-import type Post from "@/types/Post";
 
 //store
 const currentUserStore = useCurrentUserStore();

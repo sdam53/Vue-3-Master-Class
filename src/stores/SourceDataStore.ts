@@ -1,8 +1,6 @@
 //pinia store to contain all data
 //every other store will retrieve from this store to initialize
 
-import { defineStore, acceptHMRUpdate } from "pinia";
-import { reactive } from "vue";
 import sourceData from "@/data.json";
 import type Category from "@/types/Category";
 import type Forum from "@/types/Forum";
@@ -10,6 +8,8 @@ import type Post from "@/types/Post";
 import type Stats from "@/types/Stats";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { reactive } from "vue";
 
 /**
  * source data store

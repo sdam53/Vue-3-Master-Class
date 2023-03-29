@@ -1,11 +1,11 @@
 <script setup lang="ts">
 //editor component to update user info
 
-import { ref } from "vue";
-import type { PropType } from "vue";
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import type User from "@/types/User";
+import type { PropType } from "vue";
+import { ref } from "vue";
 
 //prop
 //const props = defineProps(["user"]);

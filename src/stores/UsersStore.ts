@@ -3,8 +3,8 @@
 import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { findById, upsert } from "@/middleware/HelperFunctions";
 import type User from "@/types/User";
-import { getFirestore, doc, serverTimestamp, writeBatch } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { doc, getFirestore, serverTimestamp, writeBatch } from "firebase/firestore";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
 
@@ -13,15 +13,22 @@ import { ref } from "vue";
  */
 export const useUsersStore = defineStore("UsersStore", () => {
     //ref
-    //const users = ref(sourceDataStore.users);
     const users = ref<User[]>([]);
 
     //function to get specific user
+    /**
+     * returns a user
+     * @param userId user id
+     * @returns the user
+     */
     const getUser = (userId: string | null): User | null => {
         return userId ? (findById(users.value, userId) as User) : null;
     };
 
-    //function to set the user
+    /**
+     * saves a user into memory
+     * @param user the user
+     */
     const setUser = (user: User) => {
         //const userIndex = userStore.users.findIndex((user: User) => user.id === userId);
         //userStore.users[userIndex] = { ...user };
@@ -29,8 +36,9 @@ export const useUsersStore = defineStore("UsersStore", () => {
     };
 
     /**
-     * fetches a user from firestorm
+     * fetches a user from firestorm and saves into memory
      * @param userId the userid
+     * @returns the user
      */
     async function fetchUser(userId: string): Promise<User> {
         let user = await fetchItem(userId, "users");
@@ -41,6 +49,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
     /**
      * fetches multiple users from firestorm
      * @param userIds list ofuserids
+     * @returns list of users
      */
     async function fetchUsers(userIds: string[]): Promise<User[]> {
         let users: User[] = await fetchItems(userIds, "users");
@@ -52,7 +61,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
      * registers a user into google auth and return their id
      * @param email user email
      * @param password user password
-     * @returns id the id of the registered user
+     * @returns the new registered user
      */
     async function registerUserWithEmailPassword(user: User, password: string): Promise<User> {
         //adding user into auth and getting the id

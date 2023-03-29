@@ -1,17 +1,12 @@
 //pinia store to keep track of threads
 
-import { ref } from "vue";
-import { acceptHMRUpdate, defineStore } from "pinia";
-import { useCurrentUserStore } from "./CurrentUserStore";
-import { useForumsStore } from "./ForumsStore";
-import { usePostsStore } from "./PostsStore";
-import { useUsersStore } from "./UsersStore";
+import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { docToResource, findById, stringToSlug, upsert } from "@/middleware/HelperFunctions";
+import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
+import type Forum from "@/types/Forum";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
-import type Forum from "@/types/Forum";
-import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import {
     arrayUnion,
     collection,
@@ -23,36 +18,33 @@ import {
     writeBatch
 } from "@firebase/firestore";
 import chunk from "lodash/chunk";
-import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { ref } from "vue";
+import { useCurrentUserStore } from "./CurrentUserStore";
+import { useForumsStore } from "./ForumsStore";
+import { usePostsStore } from "./PostsStore";
+import { useUsersStore } from "./UsersStore";
 
 /**
  * threads store
  */
 export const useThreadsStore = defineStore("ThreadsStore", () => {
-    //store
-    //const sourceDataStore = useSourceDataStore();
+    //stores
     const currentUserStore = useCurrentUserStore();
     const postStore = usePostsStore();
     const forumStore = useForumsStore();
     const usersStore = useUsersStore();
 
     //ref
-    //const threads = ref(sourceDataStore.threads);
     const threads = ref<Thread[]>([]);
 
-    //computed data
-    const threadInfo = (threadId: string) => {
-        const thread: Thread = findById(threads.value, threadId) as Thread;
-        if (!thread) return {};
-        return {
-            ...thread,
-            author: findById(usersStore.users, thread.userId),
-            repliesCount: thread.posts.length,
-            contributorsCount: thread.contributors.length
-        };
-    };
-
-    //function to create a new thread
+    /**
+     * creates a new thread to a forum
+     * @param title thread title
+     * @param text thread text
+     * @param forumId forum id to attach the thread to
+     * @returns the new thread created
+     */
     async function createThread(
         title: string,
         text: string,
@@ -113,12 +105,19 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         return findById(threads.value, threadRef.id) as Thread;
     }
 
-    //sets a thread into memory
+    /**
+     * sets a thread into memory
+     * @param thread the thread
+     */
     const setThread = (thread: Thread) => {
         upsert(threads.value, { ...thread });
     };
 
-    //adds a thread to a forum
+    /**
+     * adds a thread to a forum
+     * @param forumId forum id
+     * @param threadId thread id
+     */
     const appendThreadToForum = (forumId: string, threadId: string) => {
         const forum: Forum = findById(forumStore.forums, forumId) as Forum;
         forum?.threads.push(threadId);
@@ -149,12 +148,23 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         thread.contributors.push(userId);
     };
 
+    /**
+     * appends postid to a thread
+     * @param postId post id
+     * @param threadId thread id
+     */
     const appendPostToThread = (postId: string, threadId: string) => {
         const thread: Thread = findById(threads.value, threadId) as Thread;
         upsert(thread.posts, postId);
     };
 
-    //updates a thread's title and text
+    /**
+     * update a thread's title and text
+     * @param title new thread title
+     * @param text new thead text
+     * @param id thread id
+     * @returns the new thread
+     */
     async function updateThread(title: string, text: string, id: string) {
         const thread: Thread = findById(threads.value, id) as Thread;
         const post: Post = findById(postStore.posts, thread.posts[0]) as Post;
@@ -185,10 +195,15 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     }
 
     /**
-     * fetches the thread from firestore
-     * @param threadId the thread id
+     * fetchs a thread from firestore and stores it into memory and returns it
+     * @param threadId thread id
+     * @param options options obj for fetching
+     * @returns the thread obj
      */
-    async function fetchThread(threadId: string, options: FetchItemOptionsType): Promise<Thread> {
+    async function fetchThread(
+        threadId: string,
+        options: FetchItemOptionsType | null = null
+    ): Promise<Thread> {
         let thread = await fetchItem(threadId, "threads", options);
         setThread({ ...thread });
         return { ...thread };
@@ -197,6 +212,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     /**
      * fetches threads from firestore
      * @param threadIds list of thread ids
+     * @returns list of threads
      */
     async function fetchThreads(threadIds: string[]): Promise<Thread[]> {
         let threads: Thread[] = await fetchItems(threadIds, "threads");

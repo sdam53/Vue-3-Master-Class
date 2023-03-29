@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import router from "@/router";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import { ref } from "vue";
 
 //store
 const currentUserStore = useCurrentUserStore();

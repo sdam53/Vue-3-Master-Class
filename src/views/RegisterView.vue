@@ -1,13 +1,13 @@
 <script setup lang="ts">
 //page to register a user
 
+import router from "@/router";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useUsersStore } from "@/stores/UsersStore";
 import type RegistrationForm from "@/types/RegisterForm";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
-import router from "@/router";
 import { ref } from "vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 
 //stores
 const usersStore = useUsersStore();
@@ -43,6 +43,9 @@ async function register() {
     isReady.value = false;
 }
 
+/**
+ * function to register with google
+ */
 async function registerWithGoogle() {
     await currentUserStore.signInWithGoogle();
     router.push({ name: "Home" });

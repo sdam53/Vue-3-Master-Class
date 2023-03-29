@@ -1,11 +1,9 @@
-//pinia store to contain all data
-//every other store will retrieve from this store to initialize
+//pinia store to contain user agent data
 
-import { defineStore, acceptHMRUpdate } from "pinia";
-
-import { computed, ref } from "vue";
-import UAParser from "ua-parser-js";
 import { useWindowSize } from "@vueuse/core";
+import { acceptHMRUpdate, defineStore } from "pinia";
+import UAParser from "ua-parser-js";
+import { computed, ref } from "vue";
 const { width, height } = useWindowSize();
 
 /**
@@ -26,7 +24,8 @@ export const useUAStore = defineStore("UAStore", () => {
             mobileDeviceTypes.includes(parser.value.getDevice().type as string) || width.value < 960
     );
     const isDesktop = computed<boolean>(() => !isMobile.value);
-    return { parser, isMobile, isDesktop };
+
+    return { isMobile, isDesktop };
 });
 
 if (import.meta.hot) {

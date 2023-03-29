@@ -1,12 +1,11 @@
 //pinia store to keep track of categories
 
+import { fetchItem } from "@/middleware/db_helpers";
+import { upsert } from "@/middleware/HelperFunctions";
 import type Category from "@/types/Category";
+import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
-import { collection, onSnapshot } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
-import { upsert } from "@/middleware/HelperFunctions";
-import { fetchItem } from "@/middleware/db_helpers";
 
 /**
  * category store

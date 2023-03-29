@@ -1,18 +1,16 @@
 <script setup lang="ts">
 //page to show list of threads in a forum. Basically child of category and parent of threads
 import ThreadList from "@/components/ThreadListComponent.vue";
-import { defineProps, computed, ref, watch } from "vue";
-import { useThreadsStore } from "@/stores/ThreadsStore";
-import { useForumsStore } from "@/stores/ForumsStore";
 import { findById } from "@/middleware/HelperFunctions";
-import type Forum from "@/types/Forum";
-import { useUsersStore } from "@/stores/UsersStore";
-import { useAsyncState } from "@vueuse/core";
-import type Thread from "@/types/Thread";
-import _ from "lodash";
-import { useRoute, useRouter } from "vue-router";
-import ForumListComponent from "@/components/ForumListComponent.vue";
+import { useForumsStore } from "@/stores/ForumsStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUAStore } from "@/stores/UAStore";
+import { useUsersStore } from "@/stores/UsersStore";
+import type Forum from "@/types/Forum";
+import type Thread from "@/types/Thread";
+import { useAsyncState } from "@vueuse/core";
+import { computed, defineProps, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 //router stuff
 const route = useRoute();
@@ -76,6 +74,19 @@ watch(pageNumber, async (newValue, oldValue) => {
 const { isReady } = useAsyncState(async () => {
     //fetch the forum
     let forum: Forum = await forumsStore.fetchForum(props.id);
+    //url check
+    isOnValidPage(forum);
+    await threadsStore.fetchThreadsByPage(forum.threads, pageNumber.value, threadsPerPage.value);
+    usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
+    document.title = forum.name;
+    emits("ready");
+}, undefined);
+
+/**
+ * checks if the url is valid in terms of page number and slug
+ * @param forum the forum
+ */
+const isOnValidPage = (forum: Forum) => {
     //checks if user has a valid page number
     if (
         Number.isNaN(+pageNumber.value) ||
@@ -87,17 +98,8 @@ const { isReady } = useAsyncState(async () => {
     //checks if the slug is there and correct, else redirect to fix the url
     if (props.slug !== forum.slug) {
         router.push({ name: "Forum", params: { id: forum.id, slug: forum.slug } });
-    } else {
-        await threadsStore.fetchThreadsByPage(
-            forum.threads,
-            pageNumber.value,
-            threadsPerPage.value
-        );
-        usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
-        document.title = forum.name;
-        emits("ready");
     }
-}, undefined);
+};
 </script>
 
 <template>

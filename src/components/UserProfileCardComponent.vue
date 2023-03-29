@@ -1,9 +1,9 @@
 <script setup lang="ts">
 //profile card component for user info
 
-import type { PropType } from "vue";
-import type User from "@/types/User";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import type User from "@/types/User";
+import type { PropType } from "vue";
 
 //store
 const currentUserStore = useCurrentUserStore();

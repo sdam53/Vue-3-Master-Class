@@ -1,9 +1,9 @@
 <script setup lang="ts">
 //component for the navigation bar
 
-import { computed, ref } from "vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
 import { useUAStore } from "@/stores/UAStore";
+import { computed, ref } from "vue";
 
 //store
 const currentUser = useCurrentUserStore();
@@ -75,7 +75,7 @@ function closeDrawer() {
         <v-toolbar> </v-toolbar>
         <!--The actual nav bar-->
         <v-layout>
-            <!--Desktop layout-->
+            <!--Desktop layout--------------------------------------------------------------------------------------------------------->
             <v-app-bar v-if="isDesktop">
                 <!--Title-->
                 <v-app-bar-title>
@@ -118,7 +118,7 @@ function closeDrawer() {
                     {{ signIn.title }}
                 </v-btn>
             </v-app-bar>
-            <!--Mobile layout-->
+            <!--Mobile layout---------------------------------------------------------------------------------------------------------->
             <v-app-bar v-else>
                 <!--Title-->
                 <v-app-bar-title>

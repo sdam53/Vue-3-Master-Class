@@ -1,19 +1,16 @@
 //pinia store to keep track of the forums
 
+import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { upsert } from "@/middleware/HelperFunctions";
 import type Forum from "@/types/Forum";
+import chunk from "lodash/chunk";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
-import { fetchItem, fetchItems } from "@/middleware/db_helpers";
-import chunk from "lodash/chunk";
 
 /**
  * forums store
  */
 export const useForumsStore = defineStore("ForumsStore", () => {
-    //store
-    //const sourceDataStore = useSourceDataStore();
-
     //ref
     //const forums = ref(sourceDataStore.forums);
     const forums = ref<Forum[]>([]);
@@ -27,8 +24,9 @@ export const useForumsStore = defineStore("ForumsStore", () => {
     };
 
     /**
-     * fetches a forum form firestorm
+     * fetches a forum from firestorm
      * @param forumId the forum id
+     * @returns forum obj
      */
     async function fetchForum(forumId: string): Promise<Forum> {
         let forum = await fetchItem(forumId, "forums");
@@ -39,6 +37,7 @@ export const useForumsStore = defineStore("ForumsStore", () => {
     /**
      * fetches forums from firestore
      * @param forumIds list of forum ids
+     * @returns list of forums
      */
     async function fetchForums(forumIds: string[]): Promise<Forum[]> {
         let forums: Forum[] = await fetchItems(forumIds, "forums");
@@ -51,7 +50,7 @@ export const useForumsStore = defineStore("ForumsStore", () => {
      * Another way to do it is to have firestore deal with pagination instead of using lodash
      * @param forumIds the threadsids
      * @param pageNumber the page number
-     * @param perPage how many forums per page
+     * @param perPage how many forums per page default 10
      * @returns Thread[] list of the threads in that page
      */
     async function fetchForumsByPage(

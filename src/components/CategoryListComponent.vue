@@ -21,6 +21,7 @@ const forumsStore = useForumsStore();
 /**
  * returns the forums in a specific category
  * @param category specific category
+ * @returns list of forums in that category
  */
 const getForumsForCategory = (category: Category) => {
     return forumsStore.forums.filter((forum) => forum.categoryId === category.id);
