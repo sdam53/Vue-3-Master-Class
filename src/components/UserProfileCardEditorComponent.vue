@@ -2,6 +2,7 @@
 //editor component to update user info
 
 import LoadingScreen from "@/composables/UseLoadingScreen.vue";
+import { convertImageURLToBlob } from "@/middleware/HelperFunctions";
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -46,13 +47,35 @@ const handleAvatarUpload = async (e: any) => {
  * sets the image after the user clicks for a random image
  * @param e event payload item but is pretty much a string
  */
-const handleRandomImage = (e: Event) => {
+const handleRandomAvatar = (e: Event) => {
     activeUser.value.avatar = e as unknown as string;
 };
+
+/**
+ * when user submits avatar update using Pixabay,
+ * we need to download and store the image and update the url
+ */
+const handleRandomAvatarUpload = async () => {
+    if (
+        typeof activeUser?.value?.avatar === "string" &&
+        activeUser?.value?.avatar?.startsWith("https://pixabay")
+    ) {
+        let imageBlob = await convertImageURLToBlob(activeUser.value.avatar);
+        const fileName = activeUser.value.avatar.substring(
+            activeUser.value.avatar.indexOf("get/") + 4
+        );
+        const imageType = fileName.substring(fileName.indexOf(".") + 1);
+        var newFile = new File([imageBlob], fileName, { type: `image/${imageType}` });
+        const avatar = await usersStore.uploadAvatar(currentUserStore.authId as string, newFile);
+        if (avatar) activeUser.value.avatar = avatar;
+    }
+};
+
 /**
  * saves the edited information
  */
 const save = () => {
+    handleRandomAvatarUpload();
     currentUserStore.updateUser(activeUser.value);
     cancel();
 };
@@ -89,7 +112,7 @@ const cancel = () => {
                 </label>
             </p>
             <UserProfileCardEditorRandomAvatar
-                @sendImage="handleRandomImage"
+                @sendImage="handleRandomAvatar"
             ></UserProfileCardEditorRandomAvatar>
 
             <div class="form-group">

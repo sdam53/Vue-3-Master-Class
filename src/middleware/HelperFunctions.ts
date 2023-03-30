@@ -128,6 +128,16 @@ const getRandomItemInArray = (arr: any[]): any => {
     return _.sample(arr);
 };
 
+/**
+ * returns a blob object from a url request
+ * @param url the url
+ * @returns Promise of the blob
+ */
+const convertImageURLToBlob = async (url: string): Promise<Blob> => {
+    const image = await fetch(url);
+    return await image.blob();
+};
+
 export {
     findById,
     stringToSlug,
@@ -136,5 +146,6 @@ export {
     upsert,
     docToResource,
     setItem,
-    getRandomItemInArray
+    getRandomItemInArray,
+    convertImageURLToBlob
 };
