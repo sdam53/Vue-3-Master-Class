@@ -67,15 +67,17 @@ const handleRandomAvatarUpload = async () => {
         const imageType = fileName.substring(fileName.indexOf(".") + 1);
         var newFile = new File([imageBlob], fileName, { type: `image/${imageType}` });
         const avatar = await usersStore.uploadAvatar(currentUserStore.authId as string, newFile);
-        if (avatar) activeUser.value.avatar = avatar;
+        if (avatar) {
+            activeUser.value.avatar = avatar;
+        }
     }
 };
 
 /**
  * saves the edited information
  */
-const save = () => {
-    handleRandomAvatarUpload();
+const save = async () => {
+    await handleRandomAvatarUpload();
     currentUserStore.updateUser(activeUser.value);
     cancel();
 };
