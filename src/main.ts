@@ -1,16 +1,16 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import { createPinia } from "pinia";
-import router from "./router/index";
 import AppDate from "@/components/AppDate.vue";
 import { FontAwesome } from "@/plugins/FontAwesome";
 import { vuetify } from "@/plugins/Vuetify";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "./config/firebase";
 import { Vue3ProgressPlugin } from "@marcoschulte/vue3-progress";
-import PageScrollDirective from "./plugins/PageScrollDirective";
+import { initializeApp } from "firebase/app";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
+import App from "./App.vue";
+import { firebaseConfig } from "./config/firebase";
 import { InfiniteLoad } from "./plugins/InfiniteLoading";
+import PageScrollDirective from "./plugins/PageScrollDirective";
 import { Toast, ToastOptions } from "./plugins/Toastification";
+import router from "./router/index";
 
 const firebase = initializeApp(firebaseConfig);
 

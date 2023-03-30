@@ -22,12 +22,12 @@ const firebaseConfig = {
 };
 */
 const firebaseConfig = {
-    apiKey: "AIzaSyD_xLu-bgWtlvtcs6pEkkxilc-gFJY7tvo",
-    authDomain: "vue-3-mastery-forum.firebaseapp.com",
-    projectId: "vue-3-mastery-forum",
-    storageBucket: "vue-3-mastery-forum.appspot.com",
-    messagingSenderId: "526820541888",
-    appId: "1:526820541888:web:8c6cf1fd02288f9212b425"
+    apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_APP_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_FIREBASE_APP_ID
 };
 
 export { firebaseConfig };
