@@ -85,11 +85,11 @@ const cancel = () => {
                         accept="image/*"
                         @change="handleAvatarUpload"
                     />
-                    <UserProfileCardEditorRandomAvatar
-                        @sendImage="handleRandomImage"
-                    ></UserProfileCardEditorRandomAvatar>
                 </label>
             </p>
+            <UserProfileCardEditorRandomAvatar
+                @sendImage="handleRandomImage"
+            ></UserProfileCardEditorRandomAvatar>
 
             <div class="form-group">
                 <input

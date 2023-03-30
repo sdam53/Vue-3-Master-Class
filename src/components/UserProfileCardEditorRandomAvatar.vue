@@ -49,10 +49,16 @@ const getRandomImage = async () => {
 </script>
 
 <template>
-    <div class="text-center" style="margin-bottom: 15px"></div>
-    <button class="btn-green btn-small" @click.prevent="getRandomImage">Random Avatar</button>
-    <br />
-    <small style="opacity: 0.5">Powered by <a href="https://pixabay.com">Pixabay</a></small>
+    <div class="text-center" style="margin-bottom: 15px">
+        <br />
+        <label for="avatar">
+            <button class="btn-green btn-small" @click.prevent="getRandomImage">
+                Random Avatar
+            </button>
+            <br />
+            <small style="opacity: 0.5">Powered by <a href="https://pixabay.com">Pixabay</a></small>
+        </label>
+    </div>
 </template>
 
 <style scoped lang="css"></style>
