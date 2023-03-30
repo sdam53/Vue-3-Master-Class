@@ -40,7 +40,7 @@ const searchTerms = ref([
 const getRandomImage = async () => {
     const url = `https://pixabay.com/api/?key=${
         import.meta.env.VITE_APP_PIXABAY_API_KEY
-    }&q=${getRandomItemInArray(searchTerms.value)}&orientation=vertical`;
+    }&q=${getRandomItemInArray(searchTerms.value)}`;
     const res = await fetch(url);
     const data = await res.json();
     const randomImage = getRandomItemInArray(data.hits);

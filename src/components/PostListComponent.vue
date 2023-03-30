@@ -8,6 +8,7 @@ import { useUsersStore } from "@/stores/UsersStore";
 import type Post from "@/types/Post";
 import type User from "@/types/User";
 import { ref, type PropType } from "vue";
+import AppAvatar from "./AppAvatar.vue";
 import PostEditor from "./PostEditorComponent.vue";
 
 //props
@@ -59,9 +60,9 @@ const updatePost = (eventData: any) => {
             <div v-if="userById(post.userId)" class="user-info">
                 <a href="#" class="user-name">{{ (userById(post.userId) as User)!.name }}</a>
                 <a href="#">
-                    <img
+                    <AppAvatar
                         class="avatar-large"
-                        :src="(userById(post.userId) as User)!.avatar || undefined"
+                        :src="(userById(post.userId) as User)!.avatar as string"
                         alt="User Profile Image"
                         :title="(userById(post.userId) as User).name + '\'s avatar'"
                     />

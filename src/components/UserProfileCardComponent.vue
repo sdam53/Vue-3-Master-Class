@@ -4,6 +4,7 @@
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import type User from "@/types/User";
 import type { PropType } from "vue";
+import AppAvatar from "./AppAvatar.vue";
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -20,11 +21,12 @@ const props = defineProps({
 <template>
     <div class="profile-card">
         <p class="text-center">
-            <img
-                :src="currentUserStore.avatar as undefined | string"
-                :alt="`${currentUserStore.name} profile picture`"
+            <AppAvatar
+                :src="currentUserStore.avatar as string"
+                :alt="`${currentUserStore.name}'s profile picture`"
                 class="avatar-xlarge"
-            />
+            >
+            </AppAvatar>
         </p>
 
         <h1 class="title">{{ currentUserStore.username }}</h1>

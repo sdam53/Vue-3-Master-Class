@@ -8,6 +8,7 @@ import { useUsersStore } from "@/stores/UsersStore";
 import type User from "@/types/User";
 import type { PropType } from "vue";
 import { ref } from "vue";
+import AppAvatar from "./AppAvatar.vue";
 import UserProfileCardEditorRandomAvatar from "./UserProfileCardEditorRandomAvatar.vue";
 
 //prop
@@ -31,7 +32,7 @@ const usersStore = useUsersStore();
  * uploads the new profile image
  * @param e Event obj for change event
  */
-const handleAvatarUpload = async (e: Event) => {
+const handleAvatarUpload = async (e: any) => {
     uploadingImage.value = true;
     const file = e?.target?.files[0];
     const avatar = await usersStore.uploadAvatar(currentUserStore.authId as string, file);
@@ -70,9 +71,9 @@ const cancel = () => {
         <form @submit.prevent="save">
             <p class="text-center avatar-edit">
                 <label for="avatar">
-                    <img
-                        :src="activeUser.avatar as undefined | string"
-                        :alt="`${user.name} profile picture`"
+                    <AppAvatar
+                        :src="activeUser.avatar as string"
+                        :alt="`${user.name}'s profile picture`"
                         class="avatar-xlarge img-update"
                     />
                     <div class="avatar-upload-overlay">
@@ -158,3 +159,9 @@ const cancel = () => {
         </form>
     </div>
 </template>
+
+<style scoped>
+img {
+    object-fit: cover;
+}
+</style>
