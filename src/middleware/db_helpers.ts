@@ -1,13 +1,20 @@
-import { doc, onSnapshot, serverTimestamp } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
-import { useFirebaseStore } from "@/stores/FirebaseStore";
 import { findById, setItem } from "@/middleware/HelperFunctions";
-import { useUsersStore } from "@/stores/UsersStore";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { useFirebaseStore } from "@/stores/FirebaseStore";
+import { useForumsStore } from "@/stores/ForumsStore";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
-import { useForumsStore } from "@/stores/ForumsStore";
-import { useCategoriesStore } from "@/stores/CategoriesStore";
+import { useUsersStore } from "@/stores/UsersStore";
 import type FetchItemOptionsType from "@/types/FetchItemOptionsType";
+import {
+    collection,
+    doc,
+    getDocs,
+    getFirestore,
+    onSnapshot,
+    query,
+    where
+} from "firebase/firestore";
 
 /**
  * return a resource from firestore based on id and resource type
@@ -94,6 +101,30 @@ const getResourceList = (resource: string): any[] => {
 };
 
 /**
+ * checks if a email already exists
+ * @param email the email to check
+ * @returns boolean whether email already exists
+ */
+const emailExist = async (email: string): Promise<Boolean> => {
+    const db = getFirestore();
+    const q = query(collection(db, "users"), where("email", "==", email));
+    const data = await getDocs(q);
+    return data.size > 0;
+};
+
+/**
+ * checks if a username already exists
+ * @param username the username to check
+ * @returns boolean whether username already exists
+ */
+const userNameExist = async (username: string): Promise<Boolean> => {
+    const db = getFirestore();
+    const q = query(collection(db, "users"), where("username", "==", username));
+    const data = await getDocs(q);
+    return data.size > 0;
+};
+
+/**
  * course makes these functions, but im chosing not to
  * section 16-1
  * TODO: TBH I dont really get why its done that way and how to make that work for me
@@ -107,4 +138,4 @@ const makeFetchItemAction = (resource) => {
 const makeFetchItemsAction = (resources) => {};
 */
 
-export { fetchItem, fetchItems };
+export { fetchItem, fetchItems, emailExist, userNameExist };
