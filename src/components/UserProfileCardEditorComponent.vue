@@ -8,6 +8,7 @@ import { useUsersStore } from "@/stores/UsersStore";
 import type User from "@/types/User";
 import type { PropType } from "vue";
 import { ref } from "vue";
+import UserProfileCardEditorRandomAvatar from "./UserProfileCardEditorRandomAvatar.vue";
 
 //prop
 //const props = defineProps(["user"]);
@@ -40,6 +41,13 @@ const handleAvatarUpload = async (e: Event) => {
     uploadingImage.value = false;
 };
 
+/**
+ * sets the image after the user clicks for a random image
+ * @param e event payload item but is pretty much a string
+ */
+const handleRandomImage = (e: Event) => {
+    activeUser.value.avatar = e as unknown as string;
+};
 /**
  * saves the edited information
  */
@@ -77,6 +85,9 @@ const cancel = () => {
                         accept="image/*"
                         @change="handleAvatarUpload"
                     />
+                    <UserProfileCardEditorRandomAvatar
+                        @sendImage="handleRandomImage"
+                    ></UserProfileCardEditorRandomAvatar>
                 </label>
             </p>
 

@@ -5,15 +5,16 @@ import type Forum from "@/types/Forum";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import localizedDate from "dayjs/plugin/localizedFormat";
 import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useForumsStore } from "@/stores/ForumsStore";
-import { useThreadsStore } from "@/stores/ThreadsStore";
 import { usePostsStore } from "@/stores/PostsStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
 import { useUsersStore } from "@/stores/UsersStore";
 import type Post from "@/types/Post";
+import dayjs from "dayjs";
+import localizedDate from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
+import _ from "lodash";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedDate);
@@ -118,4 +119,22 @@ const setItem = (item: any, resource: any) => {
     }
 };
 
-export { findById, stringToSlug, diffForHumans, humanFriendlyDate, upsert, docToResource, setItem };
+/**
+ * returns a random item from an array
+ * @param arr the array to get the random item
+ * @returns a random item from the array
+ */
+const getRandomItemInArray = (arr: any[]): any => {
+    return _.sample(arr);
+};
+
+export {
+    findById,
+    stringToSlug,
+    diffForHumans,
+    humanFriendlyDate,
+    upsert,
+    docToResource,
+    setItem,
+    getRandomItemInArray
+};

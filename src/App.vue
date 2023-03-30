@@ -1,14 +1,12 @@
 <script setup lang="ts">
 //this is the entry point file.
 //the router view basically handles our paging. and since we defined "/" we get send to it automatically
-import TheNavbar from "./components/TheNavbar.vue";
-import TheFooter from "./components/TheFooter.vue";
-import { useCurrentUserStore } from "./stores/CurrentUserStore";
-import { useProgress } from "@marcoschulte/vue3-progress";
 import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
+import { useProgress } from "@marcoschulte/vue3-progress";
 import { ref } from "vue";
-import { random } from "lodash";
 import { useRoute, useRouter } from "vue-router";
+import TheNavbar from "./components/TheNavbar.vue";
+import { useCurrentUserStore } from "./stores/CurrentUserStore";
 
 //fetchs the current auth user if there is one
 const currentUser = useCurrentUserStore();
@@ -56,6 +54,7 @@ function notReady() {
     <header>
         <TheNavbar />
     </header>
+
     <!--the actual page contents which is handled by the router-->
     <!--3/24/23 suspense is an experiental feature but is needed for async-->
     <!--:key is used to force router to update and trigger lifecycle hooks-->
