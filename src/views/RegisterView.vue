@@ -4,11 +4,12 @@
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useUsersStore } from "@/stores/UsersStore";
-import type RegistrationForm from "@/types/RegisterForm";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
+import * as Yup from "yup";
 
 //stores
 const usersStore = useUsersStore();
@@ -18,35 +19,56 @@ const currentUserStore = useCurrentUserStore();
 const Toast = useToast();
 
 //emits
-const emits = defineEmits(["ready"]);
+const emits = defineEmits(["ready", "notReady"]);
 
 //refs
-const form = ref<RegistrationForm>({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-    avatar: ""
-});
+const avatar = ref(null);
 const avatarPreview = ref();
 const fileInputKey = ref(0); //this is a key to force file input to reset
+
+//vee validate and yup rule schema
+const schema = Yup.object({
+    name: Yup.string().min(1, "You need a name!").required("This is required!"),
+    username: Yup.string().min(1, "You need a username!").required("This is required!"),
+    email: Yup.string().email("This isnt a valid email!").required("This is required!"),
+    password: Yup.string()
+        .min(5, "This needs to be at least 5 characters long!")
+        .required("This is required!"),
+    verifyPassword: Yup.string()
+        .oneOf([Yup.ref("password")], "Passwords must match!")
+        .required("This is required!")
+        .label("Password confirmation")
+});
 
 /**
  * function to register the user
  */
-async function register() {
+async function register(values: {
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+    passwordVerify: string;
+}) {
     //do a loading
-    await usersStore.registerUserWithEmailPassword(
-        {
-            name: form.value.name,
-            username: form.value.username,
-            email: form.value.email,
-            avatar: form.value.avatar
-        } as User,
-        form.value.password
-    );
-    router.push({ name: "Home" });
-    isReady.value = false;
+    emits("notReady");
+    try {
+        await usersStore.registerUserWithEmailPassword(
+            {
+                name: values.name,
+                username: values.username,
+                email: values.email,
+                avatar: avatar.value
+            } as User,
+            values.password
+        );
+        router.push({ name: "Home" });
+    } catch (error) {
+        if ((error as string).toString().includes("auth/email-already-in-use"))
+            Toast.error("That email is already taken...", { timeout: 2000 });
+        else Toast.error("Something went wrong... " + error, { timeout: 2000 });
+        emits("ready");
+    }
 }
 
 /**
@@ -63,10 +85,10 @@ async function registerWithGoogle() {
  */
 const handleImageUpload = (e: Event) => {
     try {
-        form.value.avatar = e?.target?.files[0];
+        avatar.value = e?.target?.files[0];
         const reader = new FileReader();
         reader.onload = (event) => (avatarPreview.value = event?.target?.result);
-        reader.readAsDataURL(form.value.avatar as unknown as Blob);
+        reader.readAsDataURL(avatar.value as unknown as Blob);
     } catch (error) {
         handleInvalidImageUpload();
     }
@@ -78,7 +100,7 @@ const handleImageUpload = (e: Event) => {
  */
 const handleInvalidImageUpload = (e: Event | null = null) => {
     Toast.error("Invalid File");
-    form.value.avatar = "";
+    avatar.value = null;
     avatarPreview.value = null;
     fileInputKey.value++;
 };
@@ -92,32 +114,37 @@ const { isReady } = useAsyncState(async () => {
 <template>
     <div class="flex-grid justify-center push-top">
         <div class="col-2">
-            <form @submit.prevent="register" class="">
+            <VeeForm @submit="register" class="card card-form" :validation-schema="schema">
                 <h1 class="text-center">Register</h1>
 
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input v-model="form.name" id="name" type="text" class="form-input" />
+                    <VeeField type="text" class="form-input" name="name" />
+                    <VeeErrorMessage name="name" class="form-error"></VeeErrorMessage>
                 </div>
 
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input v-model="form.username" id="username" type="text" class="form-input" />
+                    <VeeField type="text" class="form-input" name="username" />
+                    <VeeErrorMessage name="username" class="form-error"></VeeErrorMessage>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input v-model="form.email" id="email" type="email" class="form-input" />
+                    <VeeField type="email" class="form-input" name="email" />
+                    <VeeErrorMessage name="email" class="form-error"></VeeErrorMessage>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input
-                        v-model="form.password"
-                        id="password"
-                        type="password"
-                        class="form-input"
-                    />
+                    <VeeField type="password" class="form-input" name="password" />
+                    <VeeErrorMessage name="password" class="form-error"></VeeErrorMessage>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Verify Password</label>
+                    <VeeField type="password" class="form-input" name="verifyPassword" />
+                    <VeeErrorMessage name="verifyPassword" class="form-error"></VeeErrorMessage>
                 </div>
 
                 <div class="form-group">
@@ -145,7 +172,7 @@ const { isReady } = useAsyncState(async () => {
                 <div class="form-actions">
                     <button type="submit" class="btn-blue btn-block">Register</button>
                 </div>
-            </form>
+            </VeeForm>
             <div class="text-center push-top">
                 <button @click.prevent="registerWithGoogle" class="btn-red btn-xsmall">
                     <i class="fa fa-google fa-btn"></i>Sign up with Google

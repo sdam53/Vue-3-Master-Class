@@ -6,5 +6,6 @@ export default interface RegistrationForm {
     username: string;
     email: string;
     password: string;
+    passwordVerify: string;
     avatar: string;
 }

@@ -2,8 +2,14 @@
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import type LoginForm from "@/types/LoginForm";
 import { useAsyncState } from "@vueuse/core";
+import { Field as VeeField, Form as VeeForm } from "vee-validate";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+import * as Yup from "yup";
+
+//toast
+const Toast = useToast();
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -16,6 +22,26 @@ const form = ref<LoginForm>({
     email: "",
     password: ""
 });
+
+const loginSchema = {
+    email: {
+        //label: "Your Name",
+        name: "email",
+        as: "input",
+        rules: Yup.string().email("Must be a valid email").required("Required!")
+    },
+    password: {
+        //label: "Your Name",
+        name: "name",
+        as: "input",
+        type: "password",
+        rules: Yup.string()
+            .test((val) => {
+                console.log(val);
+            })
+            .required("Required!")
+    }
+};
 
 //router stuff
 const route = useRoute();
@@ -31,7 +57,7 @@ async function login() {
         await currentUserStore.signInWithEmailAndPass(form.value.email, form.value.password);
         successRedirect();
     } catch (error) {
-        alert((error as Error).message);
+        Toast.error("Invalid email or password");
         emits("ready");
     }
 }
@@ -64,19 +90,31 @@ const { isReady } = useAsyncState(async () => {
     <div class="container">
         <div class="flex-grid justify-center">
             <div class="col-1">
-                <form @submit.prevent="login" class="card card-form">
+                <VeeForm @submit="login" class="card card-form">
                     <h1 class="text-center">Sign In</h1>
+                    <!--Email field-->
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input v-model="form.email" id="email" type="text" class="form-input" />
+                        <label for="email">Email </label>
+
+                        <VeeField
+                            v-model="form.email"
+                            id="email"
+                            type="text"
+                            class="form-input"
+                            :name="loginSchema.email.name"
+                            :rules="loginSchema.email.rules"
+                        />
                     </div>
+                    <!--Password field-->
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input
+                        <VeeField
                             v-model="form.password"
                             id="password"
-                            type="password"
+                            :type="loginSchema.password.type"
                             class="form-input"
+                            :name="loginSchema.password.name"
+                            :rules="loginSchema.password.rules"
                         />
                     </div>
 
@@ -87,7 +125,7 @@ const { isReady } = useAsyncState(async () => {
                     <div class="form-actions text-right">
                         <router-link :to="{ name: 'Register' }">Create an account?</router-link>
                     </div>
-                </form>
+                </VeeForm>
 
                 <div class="push-top text-center">
                     <button @click.prevent="loginWithGoogle" class="btn-red btn-xsmall">

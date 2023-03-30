@@ -69,19 +69,23 @@ export const useUsersStore = defineStore("UsersStore", () => {
      * @returns the new registered user
      */
     async function registerUserWithEmailPassword(user: User, password: string): Promise<User> {
-        //adding user into auth and getting the id
-        let auth = getAuth();
-        let res = await createUserWithEmailAndPassword(auth, user.email, password);
-        let id = res.user.uid;
-        //if the new user added an image
-        //save it to db and set the url for it
-        user.avatar = await uploadAvatar(id, user.avatar as File | null);
-        //adding to db
-        let newUser = await registerUser(user, id);
-        //i want the user to sign in when registering
-        //let currentUserStore = useCurrentUserStore();
-        //await currentUserStore.fetchAuthUser();
-        return newUser;
+        try {
+            //adding user into auth and getting the id
+            let auth = getAuth();
+            let res = await createUserWithEmailAndPassword(auth, user.email, password);
+            let id = res.user.uid;
+            //if the new user added an image
+            //save it to db and set the url for it
+            user.avatar = await uploadAvatar(id, user.avatar as File | null);
+            //adding to db
+            let newUser = await registerUser(user, id);
+            //i want the user to sign in when registering
+            //let currentUserStore = useCurrentUserStore();
+            //await currentUserStore.fetchAuthUser();
+            return newUser;
+        } catch (error) {
+            throw error;
+        }
     }
 
     /**
