@@ -49,6 +49,35 @@ const schema = Yup.object({
         .label("Password confirmation")
 });
 
+//schema for the form
+const formSchema = [
+    {
+        label: "Full Name",
+        name: "name",
+        type: "text"
+    },
+    {
+        label: "Username",
+        name: "username",
+        type: "text"
+    },
+    {
+        label: "Email",
+        name: "email",
+        type: "email"
+    },
+    {
+        label: "Password",
+        name: "password",
+        type: "password"
+    },
+    {
+        label: "Verify Password",
+        name: "verifyPassword",
+        type: "password"
+    }
+];
+
 /**
  * function to register the user
  */
@@ -124,36 +153,14 @@ const { isReady } = useAsyncState(async () => {
             <VeeForm @submit="register" class="card card-form" :validation-schema="schema">
                 <h1 class="text-center">Register</h1>
 
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <VeeField type="text" class="form-input" name="name" />
-                    <VeeErrorMessage name="name" class="form-error"></VeeErrorMessage>
+                <!--Registation items-->
+                <div class="form-group" v-for="item in formSchema">
+                    <label :for="item.name">{{ item.label }}</label>
+                    <VeeField :type="item.type" class="form-input" :name="item.name" />
+                    <VeeErrorMessage :name="item.name" class="form-error"></VeeErrorMessage>
                 </div>
 
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <VeeField type="text" class="form-input" name="username" />
-                    <VeeErrorMessage name="username" class="form-error"></VeeErrorMessage>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <VeeField type="email" class="form-input" name="email" />
-                    <VeeErrorMessage name="email" class="form-error"></VeeErrorMessage>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <VeeField type="password" class="form-input" name="password" />
-                    <VeeErrorMessage name="password" class="form-error"></VeeErrorMessage>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Verify Password</label>
-                    <VeeField type="password" class="form-input" name="verifyPassword" />
-                    <VeeErrorMessage name="verifyPassword" class="form-error"></VeeErrorMessage>
-                </div>
-
+                <!--Avatar items. Seperate sinces its alittle special-->
                 <div class="form-group">
                     <label for="avatar">
                         Avatar (Optional)
