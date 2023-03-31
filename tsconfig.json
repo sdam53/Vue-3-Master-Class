@@ -1,13 +1,15 @@
 {
     "extends": "@vue/tsconfig/tsconfig.web.json",
     "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+    "exclude": ["types"],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"]
         },
         "target": "ES6",
-        "lib": ["es2019", "dom"]
+        "lib": ["es2019", "dom"],
+        "typeRoots": ["./types", "./node_modules/@types"]
     },
 
     "references": [

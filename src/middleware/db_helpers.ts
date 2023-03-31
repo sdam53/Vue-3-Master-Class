@@ -118,6 +118,7 @@ const emailExist = async (email: string): Promise<Boolean> => {
  * @returns boolean whether username already exists
  */
 const userNameExist = async (username: string): Promise<Boolean> => {
+    if (!username || username === "") return false;
     const db = getFirestore();
     const q = query(collection(db, "users"), where("username", "==", username));
     const data = await getDocs(q);

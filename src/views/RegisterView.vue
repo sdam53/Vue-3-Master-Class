@@ -1,6 +1,7 @@
 <script setup lang="ts">
 //page to register a user
 
+import { Yup } from "@/plugins/Yup";
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useUsersStore } from "@/stores/UsersStore";
@@ -9,7 +10,6 @@ import { useAsyncState } from "@vueuse/core";
 import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
-import * as Yup from "yup";
 
 //stores
 const usersStore = useUsersStore();
@@ -29,10 +29,19 @@ const fileInputKey = ref(0); //this is a key to force file input to reset
 //vee validate and yup rule schema
 const schema = Yup.object({
     name: Yup.string().min(1, "You need a name!").required("This is required!"),
-    username: Yup.string().min(1, "You need a username!").required("This is required!"),
-    email: Yup.string().email("This isnt a valid email!").required("This is required!"),
+    username: Yup.string()
+        .min(1, "You need a username!")
+        .uniqueUsername("This username is already taken!")
+        .required("This is required!"),
+    email: Yup.string()
+        .email("This isnt a valid email!")
+        .uniqueEmail("This email is already registered!")
+        .required("This is required!"),
     password: Yup.string()
         .min(5, "This needs to be at least 5 characters long!")
+        .hasDigits("Password needs at least 1 digit!")
+        .hasUppercase("Password needs at least 1 uppercase letter!")
+        .hasSymbols("Password needs at least 1 special symbol!")
         .required("This is required!"),
     verifyPassword: Yup.string()
         .oneOf([Yup.ref("password")], "Passwords must match!")
