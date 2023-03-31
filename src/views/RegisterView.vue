@@ -154,7 +154,7 @@ const { isReady } = useAsyncState(async () => {
                 <h1 class="text-center">Register</h1>
 
                 <!--Registation items-->
-                <div class="form-group" v-for="item in formSchema">
+                <div class="form-group" v-for="item in formSchema" :key="item.name">
                     <label :for="item.name">{{ item.label }}</label>
                     <VeeField :type="item.type" class="form-input" :name="item.name" />
                     <VeeErrorMessage :name="item.name" class="form-error"></VeeErrorMessage>
