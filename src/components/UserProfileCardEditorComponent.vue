@@ -24,6 +24,7 @@ const props = defineProps({
 //ref
 const activeUser = ref<User>({ ...props.user } as User);
 const uploadingImage = ref(false);
+const locationsOptions = ref([]);
 
 //store
 const currentUserStore = useCurrentUserStore();
@@ -71,6 +72,15 @@ const handleRandomAvatarUpload = async () => {
             activeUser.value.avatar = avatar;
         }
     }
+};
+
+/**
+ * gets all locations when user hovers over the location editor
+ */
+const loadLocationOptions = async () => {
+    if (locationsOptions.value.length > 0) return;
+    const res = await fetch("https://restcountries.com/v3.1/all");
+    locationsOptions.value = await res.json();
 };
 
 /**
@@ -174,8 +184,17 @@ const cancel = () => {
                     autocomplete="off"
                     class="form-input"
                     id="user_location"
+                    list="locations"
+                    @mouseenter="loadLocationOptions"
                 />
             </div>
+            <datalist id="locations">
+                <option
+                    v-for="location in locationsOptions"
+                    :value="location.name.common"
+                    :key="location.name.common"
+                ></option>
+            </datalist>
 
             <div class="btn-group space-between">
                 <button class="btn-ghost" @click.prevent="cancel">Cancel</button>
