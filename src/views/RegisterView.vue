@@ -73,9 +73,7 @@ async function register(values: {
         );
         router.push({ name: "Home" });
     } catch (error) {
-        if ((error as string).toString().includes("auth/email-already-in-use"))
-            Toast.error("That email is already taken...", { timeout: 2000 });
-        else Toast.error("Something went wrong... " + error, { timeout: 2000 });
+        Toast.error("Something went wrong... " + error, { timeout: 2000 });
         emits("ready");
     }
 }
