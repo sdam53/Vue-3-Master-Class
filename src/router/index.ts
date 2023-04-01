@@ -2,23 +2,24 @@
  * Router to handle page routing
  */
 
-import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
 import Home from "@/views/HomeView.vue";
+import Login from "@/views/LoginView.vue";
 import NotFound from "@/views/NotFoundView.vue";
-import Thread from "@/views/ThreadShowView.vue";
+import ProfileUsers from "@/views/ProfileUsersView.vue";
+import Register from "@/views/RegisterView.vue";
 import ThreadCreate from "@/views/ThreadCreateView.vue";
 import ThreadEdit from "@/views/ThreadEditView.vue";
-import Register from "@/views/RegisterView.vue";
-import Login from "@/views/LoginView.vue";
+import Thread from "@/views/ThreadShowView.vue";
+import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
 
-import Forum from "@/views/ForumView.vue";
-import Category from "@/views/CategoryView.vue";
-import Profile from "@/views/ProfileView.vue";
-import { useFirebaseStore } from "@/stores/FirebaseStore";
-import Logout from "@/views/LogoutView.vue";
-import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import { useThreadsStore } from "@/stores/ThreadsStore";
 import { findById } from "@/middleware/HelperFunctions";
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import { useFirebaseStore } from "@/stores/FirebaseStore";
+import { useThreadsStore } from "@/stores/ThreadsStore";
+import Category from "@/views/CategoryView.vue";
+import Forum from "@/views/ForumView.vue";
+import Logout from "@/views/LogoutView.vue";
+import Profile from "@/views/ProfileView.vue";
 
 //import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
@@ -94,6 +95,12 @@ const routes = [
         component: Profile,
         meta: { toTop: true, smoothScroll: true, requiresAuth: true },
         props: { edit: true }
+    },
+    {
+        path: "/user/:id/:username?",
+        name: "ProfileUsers",
+        component: ProfileUsers,
+        props: true
     },
     {
         path: "/login",
