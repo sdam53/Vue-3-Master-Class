@@ -61,7 +61,7 @@ const { isReady } = useAsyncState(async () => {
         <div class="flex-grid">
             <!--Profile card and editor-->
             <div class="col-3 push-top">
-                <UserProfileCard v-if="!props.edit" :user="currentUserStore.authUser as User" />
+                <UserProfileCard v-if="!props.edit" :id="currentUserStore.authId as string" />
                 <UserProfileCardEditor v-else :user="currentUserStore.authUser as User" />
             </div>
             <!--Shows user posts-->

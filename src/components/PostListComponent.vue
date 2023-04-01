@@ -58,15 +58,17 @@ const updatePost = (eventData: any) => {
     <div class="post-list">
         <div class="post" v-for="post in props.posts" :key="post.id">
             <div v-if="userById(post.userId)" class="user-info">
-                <a href="#" class="user-name">{{ (userById(post.userId) as User)!.name }}</a>
-                <a href="#">
+                <router-link
+                    :to="{ name: 'ProfileUsers', params: { id: userById(post.userId)?.id } }"
+                >
+                    <p class="user-name">{{ (userById(post.userId) as User)!.name }}</p>
                     <AppAvatar
                         class="avatar-large"
                         :src="(userById(post.userId) as User)!.avatar as string"
                         alt="User Profile Image"
                         :title="(userById(post.userId) as User).name + '\'s avatar'"
                     />
-                </a>
+                </router-link>
                 <!--<p class="desktop-only text-small">{{ getUser(post.userId).threadsCount }} threads</p><p class="desktop-only text-small">{{ getUser(post.userId).postsCount }} posts</p>-->
             </div>
             <div class="post-content">
