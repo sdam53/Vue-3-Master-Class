@@ -4,7 +4,7 @@ import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { findById, upsert } from "@/middleware/HelperFunctions";
 import type User from "@/types/User";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { doc, getFirestore, serverTimestamp, writeBatch } from "firebase/firestore";
+import { doc, getDoc, getFirestore, serverTimestamp, writeBatch } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref as fireRef, uploadBytes } from "firebase/storage";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
@@ -147,6 +147,18 @@ export const useUsersStore = defineStore("UsersStore", () => {
         return newUser as User;
     }
 
+    /**
+     * returns whether user exists
+     * @param userId the user id
+     * @returns boolean whether user exists
+     */
+    async function userExist(userId: string): Promise<Boolean> {
+        if (!userId || userId === "") return false;
+        const db = getFirestore();
+        const userRef = doc(db, "users", userId);
+        return (await getDoc(userRef)).exists();
+    }
+
     return {
         users,
         getUser,
@@ -155,7 +167,8 @@ export const useUsersStore = defineStore("UsersStore", () => {
         setUser,
         registerUserWithEmailPassword,
         registerUser,
-        uploadAvatar
+        uploadAvatar,
+        userExist
     };
 });
 
