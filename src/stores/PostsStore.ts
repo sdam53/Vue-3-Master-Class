@@ -17,9 +17,11 @@ import {
     updateDoc,
     writeBatch
 } from "@firebase/firestore";
+import { getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
 import chunk from "lodash/chunk";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
+import { useUsersStore } from "./UsersStore";
 
 /**
  * post store
@@ -27,6 +29,7 @@ import { ref } from "vue";
 export const usePostsStore = defineStore("PostsStore", () => {
     //stores
     const currentUser = useCurrentUserStore();
+    const usersStore = useUsersStore();
     const threadsStore = useThreadsStore();
 
     //ref
@@ -149,6 +152,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
 
     /**
      * fetches posts by page number
+     * this gets used for pages
      * @param postIds the postids
      * @param pageNumber the page number
      * @param perPage how many posts per page
@@ -167,6 +171,48 @@ export const usePostsStore = defineStore("PostsStore", () => {
     }
 
     /**
+     * fetches the user posts from firestore and stores it in memory
+     * does not save snapshots
+     * this gets used for infinite load
+     * @userId the user id
+     * @options the options param obj for pagnation fetching
+     * if it is null then just get the recents
+     * if options.startAfter is not null then startAfter method is used
+     * @returns count boolean of whether there are more that 0 posts or not
+     * Is used for infinite loading
+     */
+    async function fetchUserPosts(userId: string, options: any | null = null) {
+        if (!usersStore.userExist(userId)) return false;
+        const db = getFirestore();
+        let q = null;
+        if (options && options.startAfter) {
+            const postRef = doc(db, "posts", options.startAfter.id);
+            const post = await getDoc(postRef);
+            q = query(
+                collection(db, "posts"),
+                where("userId", "==", userId),
+                orderBy("publishedAt", "desc"),
+                startAfter(post),
+                limit(10)
+            );
+        } else {
+            q = query(
+                collection(db, "posts"),
+                where("userId", "==", userId),
+                orderBy("publishedAt", "desc"),
+                limit(10)
+            );
+        }
+        const posts = await getDocs(q);
+        let count = 0;
+        posts.forEach((post) => {
+            count++;
+            setPost({ ...post.data(), id: post.id } as Post);
+        });
+        return count > 0;
+    }
+
+    /**
      * clears all cached posts
      */
     function clearPosts() {
@@ -182,7 +228,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
         getUserPostCount,
         fetchPost,
         fetchPosts,
-        fetchPostsByPage
+        fetchPostsByPage,
+        fetchUserPosts
     };
 });
 

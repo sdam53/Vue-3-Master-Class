@@ -62,21 +62,25 @@ function userById(userId: string) {
 
                 <div class="activity">
                     <p class="replies-count">{{ thread.posts.length }} replies</p>
+                    <router-link
+                        v-if="userById(thread.userId)?.id"
+                        :to="{ name: 'ProfileUsers', params: { id: userById(thread.userId)?.id } }"
+                    >
+                        <AppAvatar
+                            class="avatar-medium"
+                            :src="userById(thread.userId)?.avatar as string"
+                            alt=""
+                        />
 
-                    <AppAvatar
-                        class="avatar-medium"
-                        :src="userById(thread.userId)?.avatar as string"
-                        alt=""
-                    />
-
-                    <div>
-                        <p class="text-xsmall">
-                            <a href="#">{{ userById(thread.userId)?.name }}</a>
-                        </p>
-                        <p class="text-xsmall text-faded">
-                            <AppDate :timestamp="thread.publishedAt" />
-                        </p>
-                    </div>
+                        <div>
+                            <p class="text-xsmall">
+                                <a href="#">{{ userById(thread.userId)?.name }}</a>
+                            </p>
+                            <p class="text-xsmall text-faded">
+                                <AppDate :timestamp="thread.publishedAt" />
+                            </p>
+                        </div>
+                    </router-link>
                 </div>
             </div>
         </div>

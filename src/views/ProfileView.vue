@@ -1,10 +1,11 @@
 <script setup lang="ts">
-//page to view user profile
+//page to view signed in users profile
 
 import PostList from "@/components/PostListComponent.vue";
 import UserProfileCard from "@/components/UserProfileCardComponent.vue";
 import UserProfileCardEditor from "@/components/UserProfileCardEditorComponent.vue";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
+import { usePostsStore } from "@/stores/PostsStore";
 import type Post from "@/types/Post";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
@@ -12,6 +13,7 @@ import { computed } from "vue";
 
 //store
 const currentUserStore = useCurrentUserStore();
+const postsStore = usePostsStore();
 
 //emits
 const emits = defineEmits(["ready"]);
@@ -34,7 +36,7 @@ const lastPostFetched = computed(() => {
  */
 const load = async (state: { loaded: () => void; complete: () => void; error: () => void }) => {
     try {
-        let count = await currentUserStore.fetchAuthUserPosts({
+        let count = await postsStore.fetchUserPosts(currentUserStore.authId as string, {
             startAfter: lastPostFetched.value as Post
         });
         if (count) state.loaded();
@@ -49,7 +51,9 @@ Not logged in is being handled in router file
 */
 const { isReady } = useAsyncState(async () => {
     await currentUserStore.fetchAuthUserThreads();
-    await currentUserStore.fetchAuthUserPosts({ startAfter: lastPostFetched.value as Post });
+    await postsStore.fetchUserPosts(currentUserStore.authId as string, {
+        startAfter: lastPostFetched.value as Post
+    });
     //document.title = currentUserStore.username ? currentUserStore.username + "\'s Profile" : "404 User"
     document.title = "My Profile";
     emits("ready");

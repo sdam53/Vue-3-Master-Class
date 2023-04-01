@@ -18,10 +18,7 @@ import {
     getDoc,
     getDocs,
     getFirestore,
-    limit,
-    orderBy,
     query,
-    startAfter,
     updateDoc,
     where
 } from "@firebase/firestore";
@@ -220,51 +217,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     }
 
     /**
-     * fetches the user posts from firestore and stores it in memory
-     * does not save snapshots
-     * @options the options param obj for pagnation fetching
-     * if it is null then just get the recents
-     * if options.startAfter is not null then startAfter method is used
-     * @returns count boolean of whether there are more that 0 posts or not
-     * Is used for infinite loading
-     */
-    async function fetchAuthUserPosts(options: any | null = null) {
-        if (!isSignedIn.value) return;
-        const db = getFirestore();
-        let q = null;
-        /**
-         * maybe can look into reducing this if/else
-         * the only difference is that if options.startAfter is not null
-         * then we use startAfter() too
-         */
-        if (options.startAfter) {
-            const postRef = doc(db, "posts", options.startAfter.id);
-            const post = await getDoc(postRef);
-            q = query(
-                collection(db, "posts"),
-                where("userId", "==", authId.value),
-                orderBy("publishedAt", "desc"),
-                startAfter(post),
-                limit(10)
-            );
-        } else {
-            q = query(
-                collection(db, "posts"),
-                where("userId", "==", authId.value),
-                orderBy("publishedAt", "desc"),
-                limit(10)
-            );
-        }
-        const posts = await getDocs(q);
-        let count = 0;
-        posts.forEach((post) => {
-            count++;
-            postStore.setPost({ ...post.data(), id: post.id } as Post);
-        });
-        return count > 0;
-    }
-
-    /**
      * fetches the user threads from firestore and stores it in memory
      * does not save snapshots
      */
@@ -278,8 +230,10 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
     }
 
     return {
+        //ref
         authId,
         authUserUnsubscribe,
+        //computed
         authUser,
         isSignedIn,
         email,
@@ -292,6 +246,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         postsCount,
         threads,
         threadsCount,
+        //functions
         updateUser,
         fetchAuthUser,
         signInWithEmailAndPass,
@@ -301,7 +256,6 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         setAuthUserUnsubscribe,
         unsubscribeAuthUserSnapshot,
         initAuthentication,
-        fetchAuthUserPosts,
         fetchAuthUserThreads
     };
 });
