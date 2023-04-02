@@ -1,6 +1,6 @@
 <script setup lang="ts">
-//page to show different categories of forums.
-//navigate by clicking on a category
+//page to show forums of a category.
+
 import ForumListComponent from "@/components/ForumListComponent.vue";
 import { findById } from "@/middleware/HelperFunctions";
 import router from "@/router";
@@ -40,8 +40,10 @@ const getForumsForCategory = (category: Category) => {
 };
 
 const { isReady } = useAsyncState(async () => {
+    const cat = await categoriesStore.fetchCategory(props.id);
+    await forumsStore.fetchForums(cat.forums);
     isOnValidPage();
-    document.title = category.value.name;
+    //document.title = category.value.name;
     emits("ready");
 }, undefined);
 
