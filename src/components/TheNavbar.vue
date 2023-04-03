@@ -26,14 +26,22 @@ const menuItems = ref([
         name: "Home",
         icon: "mdi-home"
     },
+    /* //TODO: implement these pages
     {
         title: "Category",
-        name: "Logout",
+        name: "ThreadsAll",
         icon: "mdi-shape"
     },
+    
     {
-        title: "Forum",
-        name: "Profile",
+        title: "Forums",
+        name: "ForumsAll",
+        icon: "mdi-forum"
+    },
+    */
+    {
+        title: "Threads",
+        name: "ThreadsAll",
         icon: "mdi-forum"
     }
 ]);

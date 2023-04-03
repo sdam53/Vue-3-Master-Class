@@ -24,17 +24,13 @@ const props = defineProps({
 const usersStore = useUsersStore();
 const postsStore = usePostsStore();
 
-//refs
-const posts = reactive<Post[]>(postsStore.posts);
-const users = reactive<User[]>(usersStore.users);
-
 /**
  * gets a user based on id
  * @param userId userid
  * @returns the user
  */
 function userById(userId: string) {
-    return findById(users, userId) as User;
+    return findById(usersStore.users, userId) as User;
 }
 </script>
 
@@ -42,7 +38,6 @@ function userById(userId: string) {
     <div class="col-full">
         <div class="thread-list">
             <h2 class="list-title">Threads</h2>
-
             <div v-for="thread in threads" :key="thread.id" class="thread">
                 <div>
                     <p>
@@ -61,7 +56,7 @@ function userById(userId: string) {
                 </div>
 
                 <div class="activity">
-                    <p class="replies-count">{{ thread.posts.length }} replies</p>
+                    <p class="replies-count">{{ thread.posts?.length }} replies</p>
                     <router-link
                         v-if="userById(thread.userId)?.id"
                         :to="{ name: 'ProfileUsers', params: { id: userById(thread.userId)?.id } }"

@@ -20,6 +20,7 @@ import Category from "@/views/CategoryView.vue";
 import Forum from "@/views/ForumView.vue";
 import Logout from "@/views/LogoutView.vue";
 import Profile from "@/views/ProfileView.vue";
+import ThreadsAll from "@/views/ThreadsAllView.vue";
 
 //import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
@@ -82,6 +83,11 @@ const routes = [
                 return true;
             }
         }
+    },
+    {
+        path: "/threads/all",
+        name: "ThreadsAll",
+        component: ThreadsAll
     },
     {
         path: "/me",
