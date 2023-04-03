@@ -1,7 +1,7 @@
 <script setup lang="ts">
 //page to show different categories of forums.
 //navigate by clicking on a category
-import ForumListComponent from "@/components/ForumListComponent.vue";
+import ForumList from "@/components/ForumListComponent.vue";
 import { findById } from "@/middleware/HelperFunctions";
 import router from "@/router";
 import { useCategoriesStore } from "@/stores/CategoriesStore.js";
@@ -30,18 +30,25 @@ const props = defineProps({
 const emits = defineEmits(["ready"]);
 
 //computed data
-const category = computed(() => {
+const category = computed<Category>(() => {
     return findById(categoriesStore.categories, props.id) as Category;
 });
 
 //function to get forums for a certain category
+//this is needed anymore as any forum should already be in that category
+//since we clear everything at each router change
 const getForumsForCategory = (category: Category) => {
     return forumsStore.forums.filter((forum) => forum.categoryId === category.id);
 };
 
 const { isReady } = useAsyncState(async () => {
+    const category = await categoriesStore.fetchCategory(props.id)
+    await forumsStore.fetchForums(category.forums)
+    
     isOnValidPage();
     document.title = category.value.name;
+    console.log(props);
+    
     emits("ready");
 }, undefined);
 
@@ -60,9 +67,9 @@ const isOnValidPage = () => {
 </script>
 
 <template>
-    <div v-if="isReady" class="container push-top">
+    <div v-if="isReady" class="col-full push-top">
         <h1>{{ category?.name }}</h1>
-        <ForumListComponent
+        <ForumList
             :forums="getForumsForCategory(category)"
             :title="'Forums'"
             :slug="category.slug"
