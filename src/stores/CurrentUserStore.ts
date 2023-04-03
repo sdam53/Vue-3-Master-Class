@@ -67,7 +67,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
             ? threadStore.threads.filter((thread: Thread) => thread.userId === authId.value)
             : [];
     });
-    const threadsCount = computed(() => (isSignedIn.value ? threads.value.length || 0 : 0));
+    const threadIds = computed(() => authUser.value?.threads || []);
+    const threadsCount = computed(() => (isSignedIn.value ? threadIds.value?.length || 0 : 0));
 
     /**
      * Updates the user to firesotre
@@ -245,6 +246,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         posts,
         postsCount,
         threads,
+        threadIds,
         threadsCount,
         //functions
         updateUser,

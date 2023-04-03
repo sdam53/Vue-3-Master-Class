@@ -48,7 +48,7 @@ const user = computed(() => usersStore.getUser(userId.value));
 
         <div class="stats">
             <span>{{ user?.postsCount || 0 }} posts</span>
-            <span>{{ user?.threadsCount || 0 }} threads</span>
+            <span>{{ user?.threads?.length || 0 }} threads</span>
         </div>
 
         <hr />
