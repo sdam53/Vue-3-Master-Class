@@ -13,11 +13,8 @@ import Thread from "@/views/ThreadShowView.vue";
 import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
 
 import { findById } from "@/middleware/HelperFunctions";
-import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useFirebaseStore } from "@/stores/FirebaseStore";
-import { useForumsStore } from "@/stores/ForumsStore";
-import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import Category from "@/views/CategoryView.vue";
 import Forum from "@/views/ForumView.vue";
@@ -160,14 +157,19 @@ const router = createRouter({
 });
 
 router.afterEach(() => {
+    /*
+    //something is not making it working right
     const postsStore = usePostsStore();
     const forumsStore = useForumsStore();
     const threadsStore = useThreadsStore();
     const categoriesStore = useCategoriesStore();
+    const firebaseStore = useFirebaseStore();
     postsStore.clearPosts();
     forumsStore.clearForums();
     threadsStore.clearThreads();
     categoriesStore.clearCategories();
+    firebaseStore.unsubscribeAllSnapshots();
+    */
 });
 
 router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
