@@ -2,6 +2,7 @@
 //page to show different categories of forums.
 //navigate by clicking on a category
 import ForumList from "@/components/ForumListComponent.vue";
+
 import { findById } from "@/middleware/HelperFunctions";
 import router from "@/router";
 import { useCategoriesStore } from "@/stores/CategoriesStore.js";
