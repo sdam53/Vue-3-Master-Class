@@ -43,13 +43,13 @@ const getForumsForCategory = (category: Category) => {
 };
 
 const { isReady } = useAsyncState(async () => {
-    const category = await categoriesStore.fetchCategory(props.id)
-    await forumsStore.fetchForums(category.forums)
-    
+    const category = await categoriesStore.fetchCategory(props.id);
+    await forumsStore.fetchForums(category.forums);
+
     isOnValidPage();
-    document.title = category.value.name;
-    console.log(props);
-    
+    document.title = category.name;
+    console.log("asdasd");
+
     emits("ready");
 }, undefined);
 
