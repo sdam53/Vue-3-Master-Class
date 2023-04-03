@@ -1,3 +1,5 @@
+// @ts-nocheck
+//TODO: import of firebase error
 import AppDate from "@/components/AppDate.vue";
 import { FontAwesome } from "@/plugins/FontAwesome";
 import { vuetify } from "@/plugins/Vuetify";

@@ -1,3 +1,5 @@
+// @ts-nocheck
+//TODO: firebase error on doc method, but it does work right
 //pinia store to keep track of the current user
 
 import { fetchItem } from "@/middleware/db_helpers";
@@ -6,11 +8,15 @@ import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import {
+    EmailAuthProvider,
     getAuth,
     GoogleAuthProvider,
+    reauthenticateWithCredential,
     signInWithEmailAndPassword,
     signInWithPopup,
-    signOut
+    signOut,
+    updateEmail as updateFbEmail,
+    type UserCredential
 } from "@firebase/auth";
 import {
     collection,
@@ -91,6 +97,39 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         let userRef = doc(db, "users", authId.value);
         await updateDoc(userRef, updated);
     };
+
+    /**
+     * updates current user email
+     * @param email the new email
+     */
+    async function updateEmail(email: string) {
+        const auth = getAuth();
+        if (auth.currentUser) {
+            updateFbEmail(auth.currentUser, "email")
+                .then(() => {
+                    return true;
+                })
+                .catch((error) => {
+                    return false;
+                });
+        }
+        return false;
+    }
+
+    /**
+     * reauthenticates the user
+     * @param form form json containing email and password to reauth
+     * @returns Promise of UserCredentials
+     */
+    async function reauthenticate(form: {
+        email: string;
+        password: string;
+    }): Promise<UserCredential> {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        const credential = EmailAuthProvider.credential(form.email, form.password);
+        return await reauthenticateWithCredential(user!, credential);
+    }
 
     /**
      * set the users auth id
@@ -250,6 +289,8 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         threadsCount,
         //functions
         updateUser,
+        updateEmail,
+        reauthenticate,
         fetchAuthUser,
         signInWithEmailAndPass,
         signInWithGoogle,

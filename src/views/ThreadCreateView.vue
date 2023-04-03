@@ -70,12 +70,13 @@ const { isReady } = useAsyncState(async () => {
         <h1>
             Create new thread in <i>{{ forum?.name }}</i>
         </h1>
-        <!--TODO: Figure out this error-->
         <ThreadEditor
             @save="save"
             @cancel="cancel"
             @dirty="formIsDirty = true"
             @clean="formIsDirty = false"
+            :title="''"
+            :text="''"
         >
         </ThreadEditor>
     </div>

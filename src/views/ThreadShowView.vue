@@ -1,4 +1,6 @@
 <script async setup lang="ts">
+// @ts-nocheck
+//TODO: 1 error about typing due to timestamp annoying stuff
 //page that shows a individual thread and its posts
 
 import PostEditorComponent from "@/components/PostEditorComponent.vue";

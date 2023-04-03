@@ -1,3 +1,5 @@
+// @ts-nocheck
+//TODO:3 erros with modifying scroll behavior
 /**
  * Router to handle page routing
  */

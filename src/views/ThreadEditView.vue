@@ -53,7 +53,7 @@ const cancel = () => {
 const { isReady } = useAsyncState(async () => {
     if (thread.value === undefined) {
         await threadStore.fetchThread(props.id);
-        await postStore.fetchPost(thread.value?.posts[0]);
+        await postStore.fetchPost((thread.value as Thread).posts[0]);
     }
     document.title = `Editing '${thread.value.title}'`;
     emits("ready");
