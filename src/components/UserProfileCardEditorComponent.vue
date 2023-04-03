@@ -206,6 +206,7 @@ const cancel = () => {
             <div class="form-group">
                 <label class="form-label" for="user_email">Email</label>
                 <VeeField
+                    disabled
                     v-model="activeUser.email"
                     autocomplete="off"
                     class="form-input"
