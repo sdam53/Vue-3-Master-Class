@@ -78,126 +78,122 @@ function closeDrawer() {
 
 <template>
     <!--TODO:This may cause an issue later when we need to scroll through the app drawer itself-->
-    <header v-page-scroll="closeDrawer">
-        <!--Using this to force the height of the content divs-->
-        <v-toolbar> </v-toolbar>
-        <!--The actual nav bar-->
-        <v-layout>
-            <!--Desktop layout--------------------------------------------------------------------------------------------------------->
-            <v-app-bar v-if="isDesktop">
-                <!--Title-->
-                <v-app-bar-title>
-                    <router-link to="/" tag="span" style="cursor: pointer">
-                        {{ appTitle }}
-                    </router-link>
-                </v-app-bar-title>
-                <!--Nav bar items-->
-                <v-btn flat v-for="item in menuItems" :key="item.title" :to="{ name: item.name }">
-                    <v-icon left dark>{{ item.icon }}</v-icon>
+    <!--Using this to force the height of the content divs-->
+    <!--The actual nav bar-->
+    <!--Desktop layout--------------------------------------------------------------------------------------------------------->
+    <v-app-bar v-if="isDesktop">
+        <!--Title-->
+        <v-app-bar-title>
+            <router-link to="/" tag="span" style="cursor: pointer">
+                {{ appTitle }}
+            </router-link>
+        </v-app-bar-title>
+        <!--Nav bar items-->
+        <v-btn flat v-for="item in menuItems" :key="item.title" :to="{ name: item.name }">
+            <v-icon left dark>{{ item.icon }}</v-icon>
+            {{ item.title }}
+        </v-btn>
+        <!--User logged-in items-->
+        <v-menu open-on-hover v-if="currentUser.isSignedIn">
+            <!--User profile name-->
+            <template v-slot:activator="{ props }">
+                <v-btn
+                    :to="{ name: 'Profile' }"
+                    style="cursor: pointer"
+                    color="primary"
+                    v-bind="props"
+                >
+                    {{ currentUser.authUser?.name }}
+                </v-btn>
+            </template>
+            <!--Drop down items-->
+            <v-list>
+                <v-list-item
+                    v-for="(item, index) in signedInItems"
+                    :key="index"
+                    :to="{ name: item.name }"
+                >
                     {{ item.title }}
-                </v-btn>
-                <!--User logged-in items-->
-                <v-menu open-on-hover v-if="currentUser.isSignedIn">
-                    <!--User profile name-->
-                    <template v-slot:activator="{ props }">
-                        <v-btn
-                            :to="{ name: 'Profile' }"
-                            style="cursor: pointer"
-                            color="primary"
-                            v-bind="props"
-                        >
-                            {{ currentUser.authUser?.name }}
-                        </v-btn>
-                    </template>
-                    <!--Drop down items-->
-                    <v-list>
-                        <v-list-item
-                            v-for="(item, index) in signedInItems"
-                            :key="index"
-                            :to="{ name: item.name }"
-                        >
-                            {{ item.title }}
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-                <!--User not signed in-->
-                <v-btn v-else flat :to="{ name: signIn.name }" style="cursor: pointer">
-                    <v-icon left dark>{{ signIn.icon }}</v-icon>
-                    {{ signIn.title }}
-                </v-btn>
-            </v-app-bar>
-            <!--Mobile layout---------------------------------------------------------------------------------------------------------->
-            <v-app-bar v-else>
-                <!--Title-->
-                <v-app-bar-title>
-                    <router-link to="/" tag="span" style="cursor: pointer">
-                        {{ appTitle }}
-                    </router-link>
-                </v-app-bar-title>
-                <!--Hambuger will contain everything when mobile-->
-                <!--the button icon to get the drawer-->
-                <template v-slot:append class="hidden-xs-only">
-                    <v-app-bar-nav-icon @click="() => (drawer = !drawer)"></v-app-bar-nav-icon>
+                </v-list-item>
+            </v-list>
+        </v-menu>
+        <!--User not signed in-->
+        <v-btn v-else flat :to="{ name: signIn.name }" style="cursor: pointer">
+            <v-icon left dark>{{ signIn.icon }}</v-icon>
+            {{ signIn.title }}
+        </v-btn>
+    </v-app-bar>
+    <!--Mobile layout---------------------------------------------------------------------------------------------------------->
+    <v-app-bar v-else>
+        <!--Title-->
+        <v-app-bar-title>
+            <router-link to="/" tag="span" style="cursor: pointer">
+                {{ appTitle }}
+            </router-link>
+        </v-app-bar-title>
+        <!--Hambuger will contain everything when mobile-->
+        <!--the button icon to get the drawer-->
+        <template v-slot:append class="hidden-xs-only">
+            <v-app-bar-nav-icon @click="() => (drawer = !drawer)"></v-app-bar-nav-icon>
+        </template>
+    </v-app-bar>
+    <!--Items in the nav drawer-->
+    <v-navigation-drawer v-model="drawer" height="100px" location="right" :temporary="true">
+        <!--signed in-->
+        <v-list v-if="currentUser.isSignedIn">
+            <v-list-item
+                :prepend-avatar="currentUser.avatar as string"
+                :title="currentUser.name + ', (' + currentUser.username + ')'"
+                :subtitle="currentUser.email"
+                :to="{ name: 'Profile' }"
+            >
+                <template v-slot:append>
+                    <v-btn size="small" variant="text" icon="mdi-menu-down"></v-btn>
                 </template>
-            </v-app-bar>
-            <!--Items in the nav drawer-->
-            <v-navigation-drawer v-model="drawer" height="100px" location="right" :temporary="true">
-                <!--signed in-->
-                <v-list v-if="currentUser.isSignedIn">
-                    <v-list-item
-                        :prepend-avatar="currentUser.avatar as string"
-                        :title="currentUser.name + ', (' + currentUser.username + ')'"
-                        :subtitle="currentUser.email"
-                        :to="{ name: 'Profile' }"
-                    >
-                        <template v-slot:append>
-                            <v-btn size="small" variant="text" icon="mdi-menu-down"></v-btn>
-                        </template>
-                    </v-list-item>
-                </v-list>
-                <!--Not signed in-->
-                <v-list-item v-else>
-                    <v-list-item
-                        :title="signIn.title"
-                        :to="{ name: signIn.name }"
-                        :prepend-icon="signIn.icon"
-                    >
-                    </v-list-item>
-                    <v-list-item
-                        :title="register.title"
-                        :to="{ name: register.name }"
-                        :prepend-icon="register.icon"
-                    >
-                    </v-list-item>
-                </v-list-item>
-                <v-divider></v-divider>
-                <!--Nav items-->
-                <v-list-item>
-                    <v-list-item
-                        v-for="item in menuItems"
-                        :key="item.title"
-                        :title="item.title"
-                        :to="{ name: item.name }"
-                        :prepend-icon="item.icon"
-                    >
-                    </v-list-item>
-                </v-list-item>
-                <!--logged in items-->
-                <!--TODO:I want to have these inside the profile button drop down-->
-                <v-list-item v-if="currentUser.isSignedIn">
-                    <v-divider></v-divider>
-                    <v-list-item
-                        v-for="item in signedInItems"
-                        :key="item.title"
-                        :title="item.title"
-                        :to="{ name: item.name }"
-                        :prepend-icon="item.icon"
-                    >
-                    </v-list-item>
-                </v-list-item>
-            </v-navigation-drawer>
-        </v-layout>
-    </header>
+            </v-list-item>
+        </v-list>
+        <!--Not signed in-->
+        <v-list-item v-else>
+            <v-list-item
+                :title="signIn.title"
+                :to="{ name: signIn.name }"
+                :prepend-icon="signIn.icon"
+            >
+            </v-list-item>
+            <v-list-item
+                :title="register.title"
+                :to="{ name: register.name }"
+                :prepend-icon="register.icon"
+            >
+            </v-list-item>
+        </v-list-item>
+        <v-divider></v-divider>
+        <!--Nav items-->
+        <v-list-item>
+            <v-list-item
+                v-for="item in menuItems"
+                :key="item.title"
+                :title="item.title"
+                :to="{ name: item.name }"
+                :prepend-icon="item.icon"
+            >
+            </v-list-item>
+        </v-list-item>
+        <!--logged in items-->
+        <!--TODO:I want to have these inside the profile button drop down-->
+        <v-list-item v-if="currentUser.isSignedIn">
+            <v-divider></v-divider>
+            <v-list-item
+                v-for="item in signedInItems"
+                :key="item.title"
+                :title="item.title"
+                :to="{ name: item.name }"
+                :prepend-icon="item.icon"
+            >
+            </v-list-item>
+        </v-list-item>
+    </v-navigation-drawer>
+
     <!-- OLD WAY KEPT IN CASE
             <v-toolbar>
                 <v-toolbar-title>

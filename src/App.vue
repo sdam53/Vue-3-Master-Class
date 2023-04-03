@@ -5,9 +5,9 @@ import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useProgress } from "@marcoschulte/vue3-progress";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import TheFooter from "./components/TheFooter.vue";
 import TheNavbar from "./components/TheNavbar.vue";
 import { useCurrentUserStore } from "./stores/CurrentUserStore";
-
 //fetchs the current auth user if there is one
 const currentUser = useCurrentUserStore();
 currentUser.fetchAuthUser();
@@ -47,23 +47,27 @@ function notReady() {
 </script>
 
 <template>
-    <!--Loading annimations-->
-    <vue3-progress-bar></vue3-progress-bar>
-    <UseLoadingScreen v-show="loadingScreen" />
-    <!--the navigation bar-->
-    <header>
-        <TheNavbar />
-    </header>
-
-    <!--the actual page contents which is handled by the router-->
-    <!--3/24/23 suspense is an experiental feature but is needed for async-->
-    <!--:key is used to force router to update and trigger lifecycle hooks-->
-    <suspense>
-        <div class="container" v-show="!loadingScreen">
-            <router-view @ready="ready" @notReady="notReady" :key="route.fullPath"></router-view>
-        </div>
-    </suspense>
-    <!--Footer-->
+    <v-app>
+        <!--the navigation bar-->
+        <TheNavbar> </TheNavbar>
+        <!--Loading annimations-->
+        <vue3-progress-bar></vue3-progress-bar>
+        <UseLoadingScreen v-show="loadingScreen" />
+        <!--the actual page contents which is handled by the router-->
+        <!--3/24/23 suspense is an experiental feature but is needed for async-->
+        <!--:key is used to force router to update and trigger lifecycle hooks-->
+        <suspense>
+            <v-container class="container" v-show="!loadingScreen" style="padding-top: 70px">
+                <router-view
+                    @ready="ready"
+                    @notReady="notReady"
+                    :key="route.fullPath"
+                ></router-view>
+            </v-container>
+        </suspense>
+        <!--Footer-->
+        <TheFooter> </TheFooter>
+    </v-app>
 </template>
 
 <style lang="scss">
