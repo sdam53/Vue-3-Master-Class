@@ -61,8 +61,8 @@ const diffForHumans = (timestamp: number) => {
  * @param timestamp
  *
  */
-const humanFriendlyDate = (timestamp: number) => {
-    return dayjs.unix(timestamp).format("llll");
+const humanFriendlyDate = (timestamp: number, format: string = "llll") => {
+    return dayjs.unix(timestamp).format(format);
 };
 
 /**

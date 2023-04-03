@@ -10,7 +10,10 @@ import type Post from "@/types/Post";
 import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
+import { useToast } from "vue-toastification";
 
+//toast
+const Toast = useToast();
 //store
 const currentUserStore = useCurrentUserStore();
 const postsStore = usePostsStore();
@@ -74,7 +77,9 @@ const { isReady } = useAsyncState(async () => {
                     <span class="text-lead">
                         {{ currentUserStore.username }}'s recent activity
                     </span>
-                    <a href="#">See only started threads?</a>
+                    <a @click="Toast.error('This feature isn\'t supported :(')"
+                        >See only started threads?</a
+                    >
                 </div>
                 <hr />
                 <PostList :posts="currentUserStore.posts" />

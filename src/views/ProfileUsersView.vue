@@ -10,6 +10,10 @@ import type User from "@/types/User";
 import { useAsyncState } from "@vueuse/core";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+
+//toast
+const Toast = useToast();
 
 //route
 const router = useRouter();
@@ -92,7 +96,9 @@ const isOnValidPage = async () => {
             <div class="col-7 push-top">
                 <div class="profile-header">
                     <span class="text-lead"> {{ user?.username }}'s recent activity </span>
-                    <a href="#">See only started threads?</a>
+                    <a @click="Toast.error('This feature isn\'t supported :(')"
+                        >See only started threads?</a
+                    >
                 </div>
                 <hr />
                 <PostList :posts="posts" />

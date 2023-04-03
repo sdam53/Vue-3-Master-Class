@@ -1,6 +1,9 @@
 <script setup lang="ts">
+// @ts-nocheck
+//TODO: .seconds for both registered and lastvisitat properties. update last visited times
 //profile card component for user info
 
+import { diffForHumans, humanFriendlyDate } from "@/middleware/HelperFunctions";
 import { useUsersStore } from "@/stores/UsersStore";
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -59,7 +62,10 @@ const user = computed(() => usersStore.getUser(userId.value));
         </p>
 
         <p class="text-xsmall text-faded text-center">
-            Member since june 2003, last visited 4 hours ago
+            Member since
+            {{ humanFriendlyDate(user.registeredAt.seconds || user.registeredAt, "MMM YYYY") }},
+            last visited
+            {{ diffForHumans(user.lastVisitAt.seconds || user.lastVisitAt) }}
         </p>
 
         <div class="text-center" v-if="route.name === 'Profile'">
