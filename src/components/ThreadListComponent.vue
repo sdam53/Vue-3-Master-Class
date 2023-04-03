@@ -4,11 +4,9 @@
 import { findById } from "@/middleware/HelperFunctions";
 import { usePostsStore } from "@/stores/PostsStore";
 import { useUsersStore } from "@/stores/UsersStore";
-import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
 import type { PropType } from "vue"; //used to set props with objects
-import { reactive } from "vue";
 import AppAvatar from "./AppAvatar.vue";
 
 //props
@@ -38,46 +36,54 @@ function userById(userId: string) {
     <div class="col-full">
         <div class="thread-list">
             <h2 class="list-title">Threads</h2>
-            <div v-for="thread in threads" :key="thread.id" class="thread">
-                <div>
-                    <p>
+            <div v-if="threads.length">
+                <div v-for="thread in threads" :key="thread.id" class="thread">
+                    <div>
+                        <p>
+                            <router-link
+                                :to="{
+                                    name: 'ThreadShow',
+                                    params: { id: thread.id, slug: thread.slug }
+                                }"
+                                >{{ thread.title }}</router-link
+                            >
+                        </p>
+                        <p class="text-faded text-xsmall">
+                            By <a href="#">{{ userById(thread.userId)?.name }}</a
+                            >, <AppDate :timestamp="thread.publishedAt" />.
+                        </p>
+                    </div>
+
+                    <div class="activity">
+                        <p class="replies-count">{{ thread.posts?.length }} replies</p>
                         <router-link
+                            v-if="userById(thread.userId)?.id"
                             :to="{
-                                name: 'ThreadShow',
-                                params: { id: thread.id, slug: thread.slug }
+                                name: 'ProfileUsers',
+                                params: { id: userById(thread.userId)?.id }
                             }"
-                            >{{ thread.title }}</router-link
                         >
-                    </p>
-                    <p class="text-faded text-xsmall">
-                        By <a href="#">{{ userById(thread.userId)?.name }}</a
-                        >, <AppDate :timestamp="thread.publishedAt" />.
-                    </p>
-                </div>
+                            <AppAvatar
+                                class="avatar-medium"
+                                :src="userById(thread.userId)?.avatar as string"
+                                alt=""
+                            />
 
-                <div class="activity">
-                    <p class="replies-count">{{ thread.posts?.length }} replies</p>
-                    <router-link
-                        v-if="userById(thread.userId)?.id"
-                        :to="{ name: 'ProfileUsers', params: { id: userById(thread.userId)?.id } }"
-                    >
-                        <AppAvatar
-                            class="avatar-medium"
-                            :src="userById(thread.userId)?.avatar as string"
-                            alt=""
-                        />
-
-                        <div>
-                            <p class="text-xsmall">
-                                <a href="#">{{ userById(thread.userId)?.name }}</a>
-                            </p>
-                            <p class="text-xsmall text-faded">
-                                <AppDate :timestamp="thread.publishedAt" />
-                            </p>
-                        </div>
-                    </router-link>
+                            <div>
+                                <p class="text-xsmall">
+                                    <a href="#">{{ userById(thread.userId)?.name }}</a>
+                                </p>
+                                <p class="text-xsmall text-faded">
+                                    <AppDate :timestamp="thread.publishedAt" />
+                                </p>
+                            </div>
+                        </router-link>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div v-if="!threads.length" style="padding: 10px; text-align: center">
+            <em>No Threads Available!</em>
         </div>
     </div>
 </template>
