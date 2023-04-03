@@ -17,6 +17,7 @@ import {
     serverTimestamp,
     writeBatch
 } from "@firebase/firestore";
+import { getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
 import chunk from "lodash/chunk";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
@@ -239,6 +240,48 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     }
 
     /**
+     * fetches all the threads from firestore and stores it in memory
+     * does not save snapshots
+     * this gets used for infinite load
+     * I would prefer pagination, but it looks like theres no nice/cheap solution 
+     * for the web sdk, only server sdk
+     * orderby is commented due to a bug when reaching end of threads
+     * it will keep fetching the last thread
+     * @options the options param obj for infinite loading fetching
+     * if it is null then just get the recents
+     * if options.startAfter is not null then startAfter method is used
+     * @returns count boolean if it fetched more than 0 posts
+     * Is used for infinite loading
+     */
+     async function fetchAllThreads(options: {startAfter: Thread | null} | null = null) {
+        const db = getFirestore();
+        let q = null;
+        if (options && options.startAfter) {
+            const threadDoc = doc(db, "threads", options.startAfter.id);
+            const thread = await getDoc(threadDoc);
+            q = query(
+                collection(db, "threads"),
+                //orderBy("lastPostAt", "desc"),
+                startAfter(thread),
+                limit(10)
+            );
+        } else {
+            q = query(
+                collection(db, "threads"),
+                //orderBy("publishedAt", "desc"),
+                limit(10)
+            );
+        }
+        const threads = await getDocs(q);
+        let count = 0;
+        threads.forEach((thread) => {
+            count++;
+            setThread({ ...thread.data(), id: thread.id } as Thread);
+        });
+        return count > 0;
+    }
+
+    /**
      * clears all cached threads
      */
     function clearThreads() {
@@ -255,6 +298,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         fetchThread,
         fetchThreads,
         fetchThreadsByPage,
+        fetchAllThreads,
         setThread
     };
 });

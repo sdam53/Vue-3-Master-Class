@@ -29,6 +29,7 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
     /**
      * fetches a category from firestom
      * @param categoryId the category id
+     * @returns the category
      */
     async function fetchCategory(categoryId: string): Promise<Category> {
         let category = await fetchItem(categoryId, "categories");
@@ -38,6 +39,7 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
 
     /**
      * gets all categories
+     * @returns a list of all categories
      */
     async function fetchAllCategories(): Promise<Category[]> {
         let db = getFirestore();
