@@ -86,7 +86,7 @@ Yup.addMethod(Yup.string, "usernameRules", function (this: Yup.StringSchema, mes
 });
 
 /**
- * checks if string is an unique email
+ * checks if string is an unique email or the same email
  * this is for the current user wanting to change emails
  */
 Yup.addMethod(Yup.string, "uniqueEmailUpdate", function (this: Yup.StringSchema, message?: string) {
@@ -99,5 +99,27 @@ Yup.addMethod(Yup.string, "uniqueEmailUpdate", function (this: Yup.StringSchema,
         });
     });
 });
+
+/**
+ * checks if string is an unique username or the same username
+ * this is for the current user wanting to change usernames
+ */
+Yup.addMethod(
+    Yup.string,
+    "uniqueUsernameUpdate",
+    function (this: Yup.StringSchema, message?: string) {
+        return this.test("uniqueUsernameUpdate", message || "Needs to be unique!", (value) => {
+            return new Promise((res, rej) => {
+                userNameExist(value as string).then((result) => {
+                    const currentUserStore = useCurrentUserStore();
+                    res(
+                        !result ||
+                            (currentUserStore.isSignedIn && currentUserStore.username === value)
+                    );
+                });
+            });
+        });
+    }
+);
 
 export { Yup };

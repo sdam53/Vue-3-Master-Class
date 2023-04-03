@@ -8,5 +8,6 @@ declare module "yup" {
         uniqueEmail(): StringSchema;
         usernameRules(): StringSchema;
         uniqueEmailUpdate(): StringSchema;
+        uniqueUsernameUpdate(): StringSchema;
     }
 }

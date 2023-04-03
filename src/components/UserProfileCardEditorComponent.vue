@@ -12,8 +12,12 @@ import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } f
 import type User from "@/types/User";
 import type { PropType } from "vue";
 import { ref } from "vue";
+import { useToast } from "vue-toastification";
 import AppAvatar from "./AppAvatar.vue";
 import UserProfileCardEditorRandomAvatar from "./UserProfileCardEditorRandomAvatar.vue";
+
+//toast
+const Toast = useToast();
 
 //prop
 //const props = defineProps(["user"]);
@@ -38,7 +42,7 @@ const schema = Yup.object({
     username: Yup.string()
         .min(1, "You need a username!")
         .usernameRules()
-        .uniqueUsername("This username is already taken!")
+        .uniqueUsernameUpdate("This username is already taken!")
         .required("This is required"),
     name: Yup.string().min(1, "You need a name!").required("This is required!"),
     website: Yup.string().notRequired(),
@@ -110,13 +114,18 @@ const save = async (e: {
     website: string | undefined;
     email: string;
 }) => {
-    activeUser.value.username = e.username;
-    activeUser.value.name = e.name;
-    activeUser.value.website = e.website;
-    activeUser.value.email = e.email;
-    await handleRandomAvatarUpload();
-    currentUserStore.updateUser(activeUser.value);
-    cancel();
+    try {
+        activeUser.value.username = e.username;
+        activeUser.value.name = e.name;
+        activeUser.value.website = e.website;
+        activeUser.value.email = e.email;
+        await handleRandomAvatarUpload();
+        currentUserStore.updateUser(activeUser.value);
+        Toast.success("Successfully updated!");
+        cancel();
+    } catch (e) {
+        Toast.error("Something went wrong...");
+    }
 };
 
 /**
