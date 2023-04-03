@@ -41,6 +41,7 @@ const load = async (state: { loaded: () => void; complete: () => void; error: ()
 };
 
 const { isReady } = useAsyncState(async () => {
+    threadsStore.clearThreads(); //clear all thread cache
     await threadsStore.fetchAllThreads({ startAfter: lastThreadFetched.value });
     await usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
     document.title = "Threads";
