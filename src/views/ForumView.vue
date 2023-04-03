@@ -50,7 +50,7 @@ const forum = computed<Forum>(() => {
 const pageNumber = ref<number>(route.query.page ? parseInt(route.query.page.toString()) : 1);
 const threadsPerPage = ref(5);
 const totalVisiblePageButtons = ref(UAStore.isMobile ? 1 : 5);
-const totalNumberOfThreads = computed(() => forum.value.threads.length || 0);
+const totalNumberOfThreads = computed(() => forum.value.threads?.length || 0);
 const totalNumberOfPages = computed(() =>
     totalNumberOfThreads.value ? Math.ceil(totalNumberOfThreads.value / threadsPerPage.value) : 0
 );
@@ -76,7 +76,11 @@ const { isReady } = useAsyncState(async () => {
     let forum: Forum = await forumsStore.fetchForum(props.id);
     //url check
     isOnValidPage(forum);
-    await threadsStore.fetchThreadsByPage(forum.threads, pageNumber.value, threadsPerPage.value);
+    const threadss = await threadsStore.fetchThreadsByPage(
+        forum.threads,
+        pageNumber.value,
+        threadsPerPage.value
+    );
     usersStore.fetchUsers(threads.value.map((thread) => thread.userId));
     document.title = forum.name;
     emits("ready");

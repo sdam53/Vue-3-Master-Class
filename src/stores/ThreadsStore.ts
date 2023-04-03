@@ -17,7 +17,7 @@ import {
     serverTimestamp,
     writeBatch
 } from "@firebase/firestore";
-import { getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
+import { getDocs, limit, query, startAfter } from "firebase/firestore";
 import chunk from "lodash/chunk";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
@@ -236,14 +236,14 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         clearThreads();
         const threads = chunk(threadIds, perPage);
         const limitedIds = threads[pageNumber - 1];
-        return fetchThreads(limitedIds);
+        return limitedIds ? fetchThreads(limitedIds) : [];
     }
 
     /**
      * fetches all the threads from firestore and stores it in memory
      * does not save snapshots
      * this gets used for infinite load
-     * I would prefer pagination, but it looks like theres no nice/cheap solution 
+     * I would prefer pagination, but it looks like theres no nice/cheap solution
      * for the web sdk, only server sdk
      * orderby is commented due to a bug when reaching end of threads
      * it will keep fetching the last thread
@@ -253,7 +253,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
      * @returns count boolean if it fetched more than 0 posts
      * Is used for infinite loading
      */
-     async function fetchAllThreads(options: {startAfter: Thread | null} | null = null) {
+    async function fetchAllThreads(options: { startAfter: Thread | null } | null = null) {
         const db = getFirestore();
         let q = null;
         if (options && options.startAfter) {
