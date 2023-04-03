@@ -185,12 +185,13 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         const userDoc = await getDoc(userRef);
         //if this user isnt in the data base then we add them
         //else we just update the user, which is done by a listener
+        const badSymbolsRegex = /[&=_'-+,<>.]/g;
         if (!userDoc.exists()) {
             let newUser: User = {
                 avatar: user.photoURL,
                 email: user.email,
                 name: user.displayName,
-                username: user.email
+                username: user.email?.replace(badSymbolsRegex, "")
             } as User;
             return userStore.registerUser(newUser, user.uid);
         }
