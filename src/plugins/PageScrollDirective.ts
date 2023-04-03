@@ -5,8 +5,8 @@
  * https://vuejs.org/guide/reusability/custom-directives.html#introduction
  */
 
-import type { App } from "vue";
 import debounce from "lodash/debounce";
+import type { App } from "vue";
 
 const PageScrollDirective = {
     mounted(el: any, binding: any) {
