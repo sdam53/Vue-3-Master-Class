@@ -1,7 +1,7 @@
 <script setup lang="ts">
 //component for thread editing
 
-import _ from "lodash";
+import { cloneDeep } from "lodash";
 import { computed, ref, watch } from "vue";
 
 //props
@@ -49,7 +49,7 @@ const cancel = () => {
  * if you dont old val and new are referencing the same and will not work right
  */
 watch(
-    () => _.cloneDeep(form),
+    () => cloneDeep(form),
     (newValue, oldValue) => {
         if (
             newValue.value.title !== oldValue.value.title ||

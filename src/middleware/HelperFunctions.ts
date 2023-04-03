@@ -14,7 +14,7 @@ import type Post from "@/types/Post";
 import dayjs from "dayjs";
 import localizedDate from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
-import _ from "lodash";
+import { sample } from "lodash";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedDate);
@@ -125,7 +125,7 @@ const setItem = (item: any, resource: any) => {
  * @returns a random item from the array
  */
 const getRandomItemInArray = (arr: any[]): any => {
-    return _.sample(arr);
+    return sample(arr);
 };
 
 /**

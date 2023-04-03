@@ -4,25 +4,11 @@
  * Router to handle page routing
  */
 
-import Home from "@/views/HomeView.vue";
-import Login from "@/views/LoginView.vue";
-import NotFound from "@/views/NotFoundView.vue";
-import ProfileUsers from "@/views/ProfileUsersView.vue";
-import Register from "@/views/RegisterView.vue";
-import ThreadCreate from "@/views/ThreadCreateView.vue";
-import ThreadEdit from "@/views/ThreadEditView.vue";
-import Thread from "@/views/ThreadShowView.vue";
-import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
-
 import { findById } from "@/middleware/HelperFunctions";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useFirebaseStore } from "@/stores/FirebaseStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
-import Category from "@/views/CategoryView.vue";
-import Forum from "@/views/ForumView.vue";
-import Logout from "@/views/LogoutView.vue";
-import Profile from "@/views/ProfileView.vue";
-import ThreadsAll from "@/views/ThreadsAllView.vue";
+import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
 
 //import { useSourceDataStore } from "@/stores/SourceDataStore";
 //const sourceData = useSourceDataStore();
@@ -32,39 +18,40 @@ const routes = [
     {
         path: "/",
         name: "Home",
-        component: Home
+        component: () => import(/*webpackChunkName: "Home"*/ "@/views/HomeView.vue")
     },
     {
         path: "/forum/:id/:slug?",
         name: "Forum",
-        component: Forum,
+        component: () => import(/*webpackChunkName: "Forum"*/ "@/views/ForumView.vue"),
         props: true
     },
     {
         path: "/category/:id/:slug?",
         name: "Category",
-        component: Category,
+        component: () => import(/*webpackChunkName: "Category"*/ "@/views/CategoryView.vue"),
         props: true
     },
     {
         //https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
         path: "/forum/:forumId/thread/create",
         name: "ThreadCreate",
-        component: ThreadCreate,
+        component: () =>
+            import(/*webpackChunkName: "ThreadCreate"*/ "@/views/ThreadCreateView.vue"),
         props: true,
         meta: { requiresAuth: true }
     },
     {
         path: "/thread/:id/edit",
         name: "ThreadEdit",
-        component: ThreadEdit,
+        component: () => import(/*webpackChunkName: "ThreadEdit"*/ "@/views/ThreadEditView.vue"),
         props: true,
         meta: { requiresAuth: true }
     },
     {
         path: "/thread/:id/:slug?", //'?' makes it optional
         name: "ThreadShow",
-        component: Thread,
+        component: () => import(/*webpackChunkName: "ThreadShow"*/ "@/views/ThreadShowView.vue"),
         props: true,
         //this basically will check if this endpoint is right, and if not we get sent to notFound
         async beforeEnter(to: RouteLocationNormalized, from: RouteLocationNormalized) {
@@ -89,18 +76,18 @@ const routes = [
     {
         path: "/threads/all",
         name: "ThreadsAll",
-        component: ThreadsAll
+        component: () => import(/*webpackChunkName: "ThreadsAll"*/ "@/views/ThreadsAllView.vue")
     },
     {
         path: "/me",
         name: "Profile",
-        component: Profile,
+        component: () => import(/*webpackChunkName: "Profile"*/ "@/views/ProfileView.vue"),
         meta: { toTop: true, smoothScroll: true, requiresAuth: true }
     },
     {
         path: "/me/edit",
         name: "ProfileEdit",
-        component: Profile,
+        component: () => import(/*webpackChunkName: "ProfileEdit"*/ "@/views/ProfileView.vue"),
         meta: { toTop: true, smoothScroll: true, requiresAuth: true },
         props: { edit: true }
     },
@@ -108,19 +95,20 @@ const routes = [
         //I would like username slug too but theres some issues with current version
         path: "/user/:id",
         name: "ProfileUsers",
-        component: ProfileUsers,
+        component: () =>
+            import(/*webpackChunkName: "ProfileUsers"*/ "@/views/ProfileUsersView.vue"),
         props: true
     },
     {
         path: "/login",
         name: "Login",
-        component: Login,
+        component: () => import(/*webpackChunkName: "Login"*/ "@/views/LoginView.vue"),
         meta: { requiresGuest: true }
     },
     {
         path: "/logout",
         name: "Logout",
-        component: Logout
+        component: () => import(/*webpackChunkName: "Logout"*/ "@/views/LogoutView.vue")
     },
     /*
     {
@@ -137,13 +125,13 @@ const routes = [
     {
         path: "/register",
         name: "Register",
-        component: Register,
+        component: () => import(/*webpackChunkName: "Register"*/ "@/views/RegisterView.vue"),
         meta: { requiresGuest: true }
     },
     {
         path: "/:pathMatch(.*)*",
         name: "NotFound",
-        component: NotFound
+        component: () => import(/*webpackChunkName: "NotFound"*/ "@/views/NotFoundView.vue")
     }
 ];
 
