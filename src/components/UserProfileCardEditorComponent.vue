@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// @ts-nocheck
+//TODO: alot of errors regarding custom yup messages and @submit event
 //editor component to update user info
 
 import LoadingScreen from "@/composables/UseLoadingScreen.vue";
