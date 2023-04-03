@@ -3,9 +3,12 @@
 
 import LoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { convertImageURLToBlob } from "@/middleware/HelperFunctions";
+import { Yup } from "@/plugins/Yup";
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useUsersStore } from "@/stores/UsersStore";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
+
 import type User from "@/types/User";
 import type { PropType } from "vue";
 import { ref } from "vue";
@@ -29,6 +32,21 @@ const locationsOptions = ref([]);
 //store
 const currentUserStore = useCurrentUserStore();
 const usersStore = useUsersStore();
+
+//vee validation and yup rule schema
+const schema = Yup.object({
+    username: Yup.string()
+        .min(1, "You need a username!")
+        .usernameRules()
+        .uniqueUsername("This username is already taken!")
+        .required("This is required"),
+    name: Yup.string().min(1, "You need a name!").required("This is required!"),
+    website: Yup.string().notRequired(),
+    email: Yup.string()
+        .email("This isnt a valid email!")
+        .uniqueEmailUpdate("This email is already registered!")
+        .required("This is required!")
+});
 
 /**
  * uploads the new profile image
@@ -86,7 +104,16 @@ const loadLocationOptions = async () => {
 /**
  * saves the edited information
  */
-const save = async () => {
+const save = async (e: {
+    username: string;
+    name: string;
+    website: string | undefined;
+    email: string;
+}) => {
+    activeUser.value.username = e.username;
+    activeUser.value.name = e.name;
+    activeUser.value.website = e.website;
+    activeUser.value.email = e.email;
     await handleRandomAvatarUpload();
     currentUserStore.updateUser(activeUser.value);
     cancel();
@@ -103,7 +130,7 @@ const cancel = () => {
 <template>
     <div class="profile-card">
         <LoadingScreen v-if="uploadingImage"></LoadingScreen>
-        <form @submit.prevent="save">
+        <VeeForm @submit="save" :validation-schema="schema">
             <p class="text-center avatar-edit">
                 <label for="avatar">
                     <AppAvatar
@@ -128,21 +155,27 @@ const cancel = () => {
             ></UserProfileCardEditorRandomAvatar>
 
             <div class="form-group">
-                <input
+                <label for="user_name">Username</label>
+                <VeeField
                     v-model="activeUser.username"
                     type="text"
                     placeholder="Username"
                     class="form-input text-lead text-bold"
+                    name="username"
                 />
+                <VeeErrorMessage name="username" class="form-error"></VeeErrorMessage>
             </div>
 
             <div class="form-group">
-                <input
+                <label for="user_username">Name</label>
+                <VeeField
                     v-model="activeUser.name"
                     type="text"
                     placeholder="Full Name"
                     class="form-input text-lead"
+                    name="name"
                 />
+                <VeeErrorMessage name="name" class="form-error"></VeeErrorMessage>
             </div>
 
             <div class="form-group">
@@ -152,6 +185,7 @@ const cancel = () => {
                     class="form-input"
                     id="user_bio"
                     placeholder="Write a few words about yourself."
+                    name="bio"
                 ></textarea>
             </div>
 
@@ -159,22 +193,26 @@ const cancel = () => {
 
             <div class="form-group">
                 <label class="form-label" for="user_website">Website</label>
-                <input
+                <VeeField
                     v-model="activeUser.website"
                     autocomplete="off"
                     class="form-input"
                     id="user_website"
+                    name="website"
                 />
+                <VeeErrorMessage name="website" class="form-error"></VeeErrorMessage>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="user_email">Email</label>
-                <input
+                <VeeField
                     v-model="activeUser.email"
                     autocomplete="off"
                     class="form-input"
                     id="user_email"
+                    name="email"
                 />
+                <VeeErrorMessage name="email" class="form-error"></VeeErrorMessage>
             </div>
 
             <div class="form-group">
@@ -200,7 +238,7 @@ const cancel = () => {
                 <button class="btn-ghost" @click.prevent="cancel">Cancel</button>
                 <button type="submit" class="btn-blue">Save</button>
             </div>
-        </form>
+        </VeeForm>
     </div>
 </template>
 

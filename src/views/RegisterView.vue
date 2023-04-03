@@ -31,6 +31,7 @@ const schema = Yup.object({
     name: Yup.string().min(1, "You need a name!").required("This is required!"),
     username: Yup.string()
         .min(1, "You need a username!")
+        .usernameRules()
         .uniqueUsername("This username is already taken!")
         .required("This is required!"),
     email: Yup.string()

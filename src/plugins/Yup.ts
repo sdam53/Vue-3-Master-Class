@@ -4,6 +4,7 @@
  * https://github.com/jquense/yup/issues/312
  */
 
+import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import * as Yup from "yup";
 import { emailExist, userNameExist } from "../middleware/db_helpers";
 
@@ -47,7 +48,7 @@ Yup.addMethod(Yup.string, "hasSymbols", function (this: Yup.StringSchema, messag
 Yup.addMethod(Yup.string, "uniqueUsername", function (this: Yup.StringSchema, message?: string) {
     return this.test("uniqueUsername", message || "Needs to be unique!", (value) => {
         return new Promise((res, rej) => {
-            userNameExist(value as string).then((result: boolean) => {
+            userNameExist(value as string).then((result) => {
                 res(!result);
             });
         });
@@ -60,8 +61,40 @@ Yup.addMethod(Yup.string, "uniqueUsername", function (this: Yup.StringSchema, me
 Yup.addMethod(Yup.string, "uniqueEmail", function (this: Yup.StringSchema, message?: string) {
     return this.test("uniqueEmail", message || "Needs to be unique!", (value) => {
         return new Promise((res, rej) => {
-            emailExist(value as string).then((result: boolean) => {
+            emailExist(value as string).then((result) => {
                 res(!result);
+            });
+        });
+    });
+});
+
+/**
+ * checks if string is an unique email
+ */
+Yup.addMethod(Yup.string, "usernameRules", function (this: Yup.StringSchema, message?: string) {
+    return this.test(
+        "usernameRules",
+        message || "User name cant contain '&=_'-+,<>.' and must contain letters and/or numbers",
+        (value) => {
+            const passingRegex = /[a-zA-Z0-9]/g;
+            const failingRegex = /[&=_'-+,<>.]/g;
+            return new Promise((res, rej) => {
+                res(!failingRegex.test(value as string) && passingRegex.test(value as string));
+            });
+        }
+    );
+});
+
+/**
+ * checks if string is an unique email
+ * this is for the current user wanting to change emails
+ */
+Yup.addMethod(Yup.string, "uniqueEmailUpdate", function (this: Yup.StringSchema, message?: string) {
+    return this.test("uniqueEmailUpdate", message || "Needs to be unique!", (value) => {
+        return new Promise((res, rej) => {
+            emailExist(value as string).then((result) => {
+                const currentUserStore = useCurrentUserStore();
+                res(!result || (currentUserStore.isSignedIn && currentUserStore.email === value));
             });
         });
     });

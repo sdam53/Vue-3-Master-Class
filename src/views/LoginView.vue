@@ -35,11 +35,7 @@ const loginSchema = {
         name: "name",
         as: "input",
         type: "password",
-        rules: Yup.string()
-            .test((val) => {
-                console.log(val);
-            })
-            .required("Required!")
+        rules: Yup.string().required("Required!")
     }
 };
 

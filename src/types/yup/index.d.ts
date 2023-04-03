@@ -6,5 +6,7 @@ declare module "yup" {
         hasSymbols(): StringSchema;
         uniqueUsername(): StringSchema;
         uniqueEmail(): StringSchema;
+        usernameRules(): StringSchema;
+        uniqueEmailUpdate(): StringSchema;
     }
 }
