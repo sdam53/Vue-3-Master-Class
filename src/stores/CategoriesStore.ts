@@ -57,7 +57,14 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
         });
     }
 
-    return { categories, fetchCategory, fetchAllCategories, setCategory };
+    /**
+     * removes all categories from memory
+     */
+    function clearCategories() {
+        categories.value = [];
+    }
+
+    return { categories, fetchCategory, fetchAllCategories, setCategory, clearCategories };
 });
 
 if (import.meta.hot) {

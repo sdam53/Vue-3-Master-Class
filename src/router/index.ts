@@ -13,8 +13,11 @@ import Thread from "@/views/ThreadShowView.vue";
 import { createRouter, createWebHistory, type RouteLocationNormalized } from "vue-router";
 
 import { findById } from "@/middleware/HelperFunctions";
+import { useCategoriesStore } from "@/stores/CategoriesStore";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useFirebaseStore } from "@/stores/FirebaseStore";
+import { useForumsStore } from "@/stores/ForumsStore";
+import { usePostsStore } from "@/stores/PostsStore";
 import { useThreadsStore } from "@/stores/ThreadsStore";
 import Category from "@/views/CategoryView.vue";
 import Forum from "@/views/ForumView.vue";
@@ -154,6 +157,17 @@ const router = createRouter({
         if (to.meta.smoothScroll) scroll.behavior = "smooth";
         return scroll;
     }
+});
+
+router.afterEach(() => {
+    const postsStore = usePostsStore();
+    const forumsStore = useForumsStore();
+    const threadsStore = useThreadsStore();
+    const categoriesStore = useCategoriesStore();
+    postsStore.clearPosts();
+    forumsStore.clearForums();
+    threadsStore.clearThreads();
+    categoriesStore.clearCategories();
 });
 
 router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {

@@ -229,7 +229,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
         fetchPost,
         fetchPosts,
         fetchPostsByPage,
-        fetchUserPosts
+        fetchUserPosts,
+        clearPosts
     };
 });
 

@@ -71,7 +71,7 @@ export const useForumsStore = defineStore("ForumsStore", () => {
         forums.value = [];
     }
 
-    return { forums, setForum, fetchForum, fetchForums, fetchForumsByPage };
+    return { forums, setForum, fetchForum, fetchForums, fetchForumsByPage, clearForums };
 });
 
 if (import.meta.hot) {

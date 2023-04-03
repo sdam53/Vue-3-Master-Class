@@ -299,7 +299,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         fetchThreads,
         fetchThreadsByPage,
         fetchAllThreads,
-        setThread
+        setThread,
+        clearThreads
     };
 });
 
