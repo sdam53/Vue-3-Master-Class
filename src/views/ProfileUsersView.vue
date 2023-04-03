@@ -78,12 +78,6 @@ const isOnValidPage = async () => {
     if (!(await usersStore.userExist(props.id)) || !user.value) {
         router.push({ name: "NotFound" });
     }
-    if (!route.params.username || route.params.username !== user.value.username) {
-        router.push({
-            name: "ProfileUsers",
-            params: { id: props.id, username: user.value.username }
-        });
-    }
 };
 </script>
 

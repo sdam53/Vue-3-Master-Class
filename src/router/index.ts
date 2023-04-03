@@ -103,7 +103,8 @@ const routes = [
         props: { edit: true }
     },
     {
-        path: "/user/:id/:username?",
+        //I would like username slug too but theres some issues with current version
+        path: "/user/:id",
         name: "ProfileUsers",
         component: ProfileUsers,
         props: true
