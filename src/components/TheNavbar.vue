@@ -81,7 +81,7 @@ function closeDrawer() {
     <!--Using this to force the height of the content divs-->
     <!--The actual nav bar-->
     <!--Desktop layout--------------------------------------------------------------------------------------------------------->
-    <v-app-bar v-if="isDesktop">
+    <v-app-bar v-if="isDesktop" theme="dark">
         <!--Title-->
         <v-app-bar-title>
             <router-link to="/" tag="span" style="cursor: pointer">
