@@ -124,7 +124,7 @@ function closeDrawer() {
         </v-btn>
     </v-app-bar>
     <!--Mobile layout---------------------------------------------------------------------------------------------------------->
-    <v-app-bar v-else>
+    <v-app-bar v-else theme="dark">
         <!--Title-->
         <v-app-bar-title>
             <router-link to="/" tag="span" style="cursor: pointer">
