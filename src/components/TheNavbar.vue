@@ -4,6 +4,7 @@
 import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
 import { useUAStore } from "@/stores/UAStore";
 import { computed, ref } from "vue";
+import { useTheme } from "vuetify/lib/framework.mjs";
 
 //store
 const currentUser = useCurrentUserStore();
@@ -67,6 +68,7 @@ const signedInItems = ref([
         icon: "mdi-logout"
     }
 ]);
+console.log(useTheme().current.value);
 
 /**
  * closes the app drawer
@@ -81,7 +83,7 @@ function closeDrawer() {
     <!--Using this to force the height of the content divs-->
     <!--The actual nav bar-->
     <!--Desktop layout--------------------------------------------------------------------------------------------------------->
-    <v-app-bar v-if="isDesktop" theme="dark">
+    <v-app-bar v-if="isDesktop">
         <!--Title-->
         <v-app-bar-title>
             <router-link to="/" tag="span" style="cursor: pointer">
