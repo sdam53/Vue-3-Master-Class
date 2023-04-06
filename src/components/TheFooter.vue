@@ -9,7 +9,7 @@ const links = ref(["Home", "About Us", "Team", "Services", "Blog", "Contact Us"]
 
 <template>
     <!--TODO: v-app is making it long af for some reason-->
-    <v-footer color="blue" height="auto">
+    <v-footer color="blue" height="10px">
         <v-row justify="center" no-gutters>
             <v-btn
                 v-for="link in links"
