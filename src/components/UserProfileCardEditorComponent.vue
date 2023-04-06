@@ -5,13 +5,12 @@
 
 import LoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { convertImageURLToBlob } from "@/middleware/HelperFunctions";
-import { Yup } from "@/plugins/Yup";
+import { editProfileSchema } from "@/plugins/Yup";
 import router from "@/router";
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import { useUsersStore } from "@/stores/UsersStore";
-import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
-
 import type User from "@/types/User";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import type { PropType } from "vue";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
@@ -40,19 +39,7 @@ const currentUserStore = useCurrentUserStore();
 const usersStore = useUsersStore();
 
 //vee validation and yup rule schema
-const schema = Yup.object({
-    username: Yup.string()
-        .min(1, "You need a username!")
-        .usernameRules()
-        .uniqueUsernameUpdate("This username is already taken!")
-        .required("This is required"),
-    name: Yup.string().min(1, "You need a name!").required("This is required!"),
-    website: Yup.string().notRequired(),
-    email: Yup.string()
-        .email("This isnt a valid email!")
-        .uniqueEmailUpdate("This email is already registered!")
-        .required("This is required!")
-});
+const schema = editProfileSchema;
 
 /**
  * uploads the new profile image

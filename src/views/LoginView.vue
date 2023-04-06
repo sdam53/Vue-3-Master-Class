@@ -1,4 +1,7 @@
 <script setup lang="ts">
+//Login page
+//i ignore validation due to it making the css act up
+
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
 import type LoginForm from "@/types/LoginForm";
 import { useAsyncState } from "@vueuse/core";
@@ -6,8 +9,6 @@ import { Field as VeeField, Form as VeeForm } from "vee-validate";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import * as Yup from "yup";
-
 //toast
 const Toast = useToast();
 
@@ -27,15 +28,13 @@ const loginSchema = {
     email: {
         //label: "Your Name",
         name: "email",
-        as: "input",
-        rules: Yup.string().email("Must be a valid email").required("Required!")
+        as: "input"
     },
     password: {
         //label: "Your Name",
-        name: "name",
+        name: "password",
         as: "input",
-        type: "password",
-        rules: Yup.string().required("Required!")
+        type: "password"
     }
 };
 
@@ -91,14 +90,12 @@ const { isReady } = useAsyncState(async () => {
                     <!--Email field-->
                     <div class="form-group">
                         <label for="email">Email </label>
-
                         <VeeField
                             v-model="form.email"
                             id="email"
                             type="text"
                             class="form-input"
                             :name="loginSchema.email.name"
-                            :rules="loginSchema.email.rules"
                         />
                     </div>
                     <!--Password field-->
@@ -110,19 +107,15 @@ const { isReady } = useAsyncState(async () => {
                             :type="loginSchema.password.type"
                             class="form-input"
                             :name="loginSchema.password.name"
-                            :rules="loginSchema.password.rules"
                         />
                     </div>
-
                     <div class="push-top">
                         <button type="submit" class="btn-blue btn-block">Sign in</button>
                     </div>
-
                     <div class="form-actions text-right">
                         <router-link :to="{ name: 'Register' }">Create an account?</router-link>
                     </div>
                 </VeeForm>
-
                 <div class="push-top text-center">
                     <button @click.prevent="loginWithGoogle" class="btn-red btn-xsmall">
                         <i class="fa fa-google fa-btn"></i>Sign in with Google

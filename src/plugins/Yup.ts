@@ -3,15 +3,17 @@
  * //getting it working with TS nicely
  * https://github.com/jquense/yup/issues/312
  */
+// @ts-nocheck
+//TODO: alot of errors regarding custom yup messages and @submit event
 
 import { useCurrentUserStore } from "@/stores/CurrentUserStore";
-import * as Yup from "yup";
+import { addMethod, object, ref, string, StringSchema } from "yup";
 import { emailExist, userNameExist } from "../middleware/db_helpers";
 
 /**
  * checks whether string contains a digit
  */
-Yup.addMethod(Yup.string, "hasDigits", function (this: Yup.StringSchema, message?: string) {
+addMethod(string, "hasDigits", function (this: StringSchema, message?: string) {
     return this.test("hasDigits", message || "Needs a digit!", (value) => {
         return new Promise((res, rej) => {
             res(/\d/.test(value as string));
@@ -22,7 +24,7 @@ Yup.addMethod(Yup.string, "hasDigits", function (this: Yup.StringSchema, message
 /**
  * checks whether string contains an uppcase letter
  */
-Yup.addMethod(Yup.string, "hasUppercase", function (this: Yup.StringSchema, message?: string) {
+addMethod(string, "hasUppercase", function (this: StringSchema, message?: string) {
     return this.test("hasUppercase", message || "Needs a capital letter!", (value) => {
         return new Promise((res, rej) => {
             res(/[A-Z]/.test(value as string));
@@ -33,7 +35,7 @@ Yup.addMethod(Yup.string, "hasUppercase", function (this: Yup.StringSchema, mess
 /**
  * checks whether string contains any special symbols
  */
-Yup.addMethod(Yup.string, "hasSymbols", function (this: Yup.StringSchema, message?: string) {
+addMethod(string, "hasSymbols", function (this: StringSchema, message?: string) {
     return this.test("hasSymbols", message || "Needs a symbol!", (value) => {
         return new Promise((res, rej) => {
             const regex = /[!@#$%^&*()/?<>{}|<>,.`~:;'"-+=[\]\\\_]/g;
@@ -45,7 +47,7 @@ Yup.addMethod(Yup.string, "hasSymbols", function (this: Yup.StringSchema, messag
 /**
  * checks if string is an unique username
  */
-Yup.addMethod(Yup.string, "uniqueUsername", function (this: Yup.StringSchema, message?: string) {
+addMethod(string, "uniqueUsername", function (this: StringSchema, message?: string) {
     return this.test("uniqueUsername", message || "Needs to be unique!", (value) => {
         return new Promise((res, rej) => {
             userNameExist(value as string).then((result) => {
@@ -58,7 +60,7 @@ Yup.addMethod(Yup.string, "uniqueUsername", function (this: Yup.StringSchema, me
 /**
  * checks if string is an unique email
  */
-Yup.addMethod(Yup.string, "uniqueEmail", function (this: Yup.StringSchema, message?: string) {
+addMethod(string, "uniqueEmail", function (this: StringSchema, message?: string) {
     return this.test("uniqueEmail", message || "Needs to be unique!", (value) => {
         return new Promise((res, rej) => {
             emailExist(value as string).then((result) => {
@@ -71,7 +73,7 @@ Yup.addMethod(Yup.string, "uniqueEmail", function (this: Yup.StringSchema, messa
 /**
  * checks if string is an unique email
  */
-Yup.addMethod(Yup.string, "usernameRules", function (this: Yup.StringSchema, message?: string) {
+addMethod(string, "usernameRules", function (this: StringSchema, message?: string) {
     return this.test(
         "usernameRules",
         message || "User name cant contain '&=_'-+,<>.' and must contain letters and/or numbers",
@@ -89,7 +91,7 @@ Yup.addMethod(Yup.string, "usernameRules", function (this: Yup.StringSchema, mes
  * checks if string is an unique email or the same email
  * this is for the current user wanting to change emails
  */
-Yup.addMethod(Yup.string, "uniqueEmailUpdate", function (this: Yup.StringSchema, message?: string) {
+addMethod(string, "uniqueEmailUpdate", function (this: StringSchema, message?: string) {
     return this.test("uniqueEmailUpdate", message || "Needs to be unique!", (value) => {
         return new Promise((res, rej) => {
             emailExist(value as string).then((result) => {
@@ -104,22 +106,69 @@ Yup.addMethod(Yup.string, "uniqueEmailUpdate", function (this: Yup.StringSchema,
  * checks if string is an unique username or the same username
  * this is for the current user wanting to change usernames
  */
-Yup.addMethod(
-    Yup.string,
-    "uniqueUsernameUpdate",
-    function (this: Yup.StringSchema, message?: string) {
-        return this.test("uniqueUsernameUpdate", message || "Needs to be unique!", (value) => {
-            return new Promise((res, rej) => {
-                userNameExist(value as string).then((result) => {
-                    const currentUserStore = useCurrentUserStore();
-                    res(
-                        !result ||
-                            (currentUserStore.isSignedIn && currentUserStore.username === value)
-                    );
-                });
+addMethod(string, "uniqueUsernameUpdate", function (this: StringSchema, message?: string) {
+    return this.test("uniqueUsernameUpdate", message || "Needs to be unique!", (value) => {
+        return new Promise((res, rej) => {
+            userNameExist(value as string).then((result) => {
+                const currentUserStore = useCurrentUserStore();
+                res(
+                    !result || (currentUserStore.isSignedIn && currentUserStore.username === value)
+                );
             });
         });
-    }
-);
+    });
+});
 
-export { Yup };
+/**
+ * rule schema for registering
+ */
+const registerSchema = object({
+    name: string().min(1, "You need a name!").required("This is required!"),
+    username: string()
+        .min(1, "You need a username!")
+        .usernameRules()
+        .uniqueUsername("This username is already taken!")
+        .required("This is required!"),
+    email: string()
+        .email("This isnt a valid email!")
+        .uniqueEmail("This email is already registered!")
+        .required("This is required!"),
+    password: string()
+        .min(5, "This needs to be at least 5 characters long!")
+        .hasDigits("Password needs at least 1 digit!")
+        .hasUppercase("Password needs at least 1 uppercase letter!")
+        .hasSymbols("Password needs at least 1 special symbol!")
+        .required("This is required!"),
+    verifyPassword: string()
+        .oneOf([ref("password")], "Passwords must match!")
+        .required("This is required!")
+        .label("Password confirmation")
+});
+
+/**
+ * rule schema for login
+ * is not acutally used
+ */
+const loginSchema = object({
+    email: string().email("Must be a valid email").required("Required!"),
+    password: string().required("Required!")
+});
+
+/**
+ * rules schema for editing profile
+ */
+const editProfileSchema = object({
+    username: string()
+        .min(1, "You need a username!")
+        .usernameRules()
+        .uniqueUsernameUpdate("This username is already taken!")
+        .required("This is required"),
+    name: string().min(1, "You need a name!").required("This is required!"),
+    website: string().notRequired(),
+    email: string()
+        .email("This isnt a valid email!")
+        .uniqueEmailUpdate("This email is already registered!")
+        .required("This is required!")
+});
+
+export { registerSchema, loginSchema, editProfileSchema };
