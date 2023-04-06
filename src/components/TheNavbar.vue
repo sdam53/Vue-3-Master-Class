@@ -145,7 +145,10 @@ function closeDrawer() {
         <!--Hambuger will contain everything when mobile-->
         <!--the button icon to get the drawer-->
         <template v-slot:append class="hidden-xs-only">
-            <v-app-bar-nav-icon @click="() => (drawer = !drawer)"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon
+                aria-label="open app bar"
+                @click="() => (drawer = !drawer)"
+            ></v-app-bar-nav-icon>
         </template>
     </v-app-bar>
     <!--Items in the nav drawer-->
