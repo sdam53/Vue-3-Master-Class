@@ -14,6 +14,7 @@ import { useUsersStore } from "@/stores/UsersStore";
 import type Post from "@/types/Post";
 import type Thread from "@/types/Thread";
 import type User from "@/types/User";
+import { mdiMenuLeft, mdiMenuRight } from "@mdi/js";
 import { useAsyncState } from "@vueuse/core";
 import { difference } from "lodash";
 import { computed, ref, watch } from "vue";
@@ -194,8 +195,8 @@ const isOnValidPage = (thread: Thread) => {
             :totalVisible="totalVisiblePageButtons"
             rounded="circle"
             :disabled="false"
-            prev-icon="mdi-menu-left"
-            next-icon="mdi-menu-right"
+            :prev-icon="mdiMenuLeft"
+            :next-icon="mdiMenuRight"
             elevation="0"
             :showFirstLastPage="true"
             :modelValue="pageNumber"
