@@ -3,6 +3,15 @@
 
 import { useCurrentUserStore } from "@/stores/CurrentUserStore.js";
 import { useUAStore } from "@/stores/UAStore";
+import {
+    mdiAccountCircle,
+    mdiAccountPlusOutline,
+    mdiForum,
+    mdiHome,
+    mdiLogin,
+    mdiLogout,
+    mdiMenuDown
+} from "@mdi/js";
 import { computed, ref } from "vue";
 
 //store
@@ -24,7 +33,7 @@ const menuItems = ref([
     {
         title: "Home",
         name: "Home",
-        icon: "mdi-home"
+        icon: mdiHome
     },
     /* //TODO: implement these pages
     {
@@ -42,31 +51,33 @@ const menuItems = ref([
     {
         title: "Threads",
         name: "ThreadsAll",
-        icon: "mdi-forum"
+        icon: mdiForum
     }
 ]);
 const signIn = ref({
     title: "Sign In",
     name: "Login",
-    icon: "mdi-login"
+    icon: mdiLogin
 });
 const register = ref({
     title: "Register",
     name: "Register",
-    icon: "mdi-account-plus-outline"
+    icon: mdiAccountPlusOutline
 });
 const signedInItems = ref([
     {
         title: "Profile",
         name: "Profile",
-        icon: "mdi-account-circle"
+        icon: mdiAccountCircle
     },
     {
         title: "Sign Out",
         name: "Logout",
-        icon: "mdi-logout"
+        icon: mdiLogout
     }
 ]);
+
+const menuDownIcon = mdiMenuDown;
 
 /**
  * closes the app drawer
@@ -90,7 +101,7 @@ function closeDrawer() {
         </v-app-bar-title>
         <!--Nav bar items-->
         <v-btn flat v-for="item in menuItems" :key="item.title" :to="{ name: item.name }">
-            <v-icon left dark>{{ item.icon }}</v-icon>
+            <v-icon left dark :icon="item.icon"></v-icon>
             {{ item.title }}
         </v-btn>
         <!--User logged-in items-->
@@ -119,7 +130,7 @@ function closeDrawer() {
         </v-menu>
         <!--User not signed in-->
         <v-btn v-else flat :to="{ name: signIn.name }" style="cursor: pointer">
-            <v-icon left dark>{{ signIn.icon }}</v-icon>
+            <v-icon left dark :icon="signIn.icon"></v-icon>
             {{ signIn.title }}
         </v-btn>
     </v-app-bar>
@@ -148,7 +159,7 @@ function closeDrawer() {
                 :to="{ name: 'Profile' }"
             >
                 <template v-slot:append>
-                    <v-btn size="small" variant="text" icon="mdi-menu-down"></v-btn>
+                    <v-btn size="small" variant="text" :icon="menuDownIcon"></v-btn>
                 </template>
             </v-list-item>
         </v-list>
