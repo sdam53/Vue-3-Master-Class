@@ -32,7 +32,7 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
      * @returns the category
      */
     async function fetchCategory(categoryId: string): Promise<Category> {
-        let category = await fetchItem(categoryId, "categories");
+        const category = await fetchItem(categoryId, "categories");
         setCategory(category);
         return { ...category };
     }
@@ -42,9 +42,9 @@ export const useCategoriesStore = defineStore("CategoriesStore", () => {
      * @returns a list of all categories
      */
     async function fetchAllCategories(): Promise<Category[]> {
-        let db = getFirestore();
+        const db = getFirestore();
         return new Promise((resolve) => {
-            let colRef = collection(db, "categories");
+            const colRef = collection(db, "categories");
             let categories: any[] = [];
             onSnapshot(colRef, (querySnapshot) => {
                 categories = querySnapshot.docs.map((doc) => {

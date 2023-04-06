@@ -30,16 +30,16 @@ async function fetchItem(
     options: FetchItemOptionsType | null = null
 ): Promise<any> {
     //console.log(`Fetching ${resource}...`);
-    let firebaseStore = useFirebaseStore();
-    let db = getFirestore();
+    const firebaseStore = useFirebaseStore();
+    const db = getFirestore();
     return new Promise((resolve) => {
-        let docRef = doc(db, resource, id);
-        let unsubscribe: () => void = onSnapshot(docRef, (doc) => {
+        const docRef = doc(db, resource, id);
+        const unsubscribe: () => void = onSnapshot(docRef, (doc) => {
             if (options && options.once) unsubscribe();
             if (doc.exists()) {
-                let docItem: any = doc.data();
+                const docItem: any = doc.data();
                 //copy of item obj
-                let item = { ...docItem, id: doc.id };
+                const item = { ...docItem, id: doc.id };
                 //if onSnapshot function exists
                 if (options && options.onSnapshot && typeof options.onSnapshot === "function") {
                     //previous item

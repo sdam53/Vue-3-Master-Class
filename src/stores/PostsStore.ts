@@ -47,15 +47,15 @@ export const usePostsStore = defineStore("PostsStore", () => {
         post.publishedAt = serverTimestamp(); //Math.floor(Date.now() / 1000);
 
         //save the new post to the db
-        let db = getFirestore();
-        let colRef = collection(db, "posts");
-        let batch = writeBatch(db);
+        const db = getFirestore();
+        const colRef = collection(db, "posts");
+        const batch = writeBatch(db);
 
         //creates the new post and stores to db
         //we use a batch in case a failure occurs
         //cant use .add in batch so yea
         //https://stackoverflow.com/questions/46725357/firestore-batch-add-is-not-a-function
-        let postRef = doc(colRef);
+        const postRef = doc(colRef);
         batch.set(postRef, post);
         batch.update(doc(db, "threads", post.threadId), {
             posts: arrayUnion(postRef.id),
@@ -67,7 +67,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
         await batch.commit();
 
         //get the updated post
-        let newPost = await getDoc(postRef);
+        const newPost = await getDoc(postRef);
 
         //update locally
         setPost({ ...newPost.data(), id: newPost.id } as Post);
@@ -88,8 +88,8 @@ export const usePostsStore = defineStore("PostsStore", () => {
                 moderated: false
             }
         };
-        let db = getFirestore();
-        let postRef = doc(db, "posts", post.id);
+        const db = getFirestore();
+        const postRef = doc(db, "posts", post.id);
         await updateDoc(postRef, updatedPost);
         updatedPost = await fetchItem(postRef.id, "posts");
         setPost({ ...updatedPost });
@@ -129,7 +129,7 @@ export const usePostsStore = defineStore("PostsStore", () => {
      * @returns post obj
      */
     async function fetchPost(postId: string): Promise<Post> {
-        let post = await fetchItem(postId, "posts");
+        const post = await fetchItem(postId, "posts");
         setPost({ ...post });
         return { ...post };
     }

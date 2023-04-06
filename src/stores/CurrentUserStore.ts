@@ -94,7 +94,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         userStore.setUser(updated as User);
         const db = getFirestore();
         //TODO: Errors but this works and should be the correct way to do it
-        let userRef = doc(db, "users", authId.value);
+        const userRef = doc(db, "users", authId.value);
         await updateDoc(userRef, updated);
     };
 
@@ -143,11 +143,11 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * fetches the currently signed in user's auth id
      */
     async function fetchAuthUser() {
-        let userId = getAuth().currentUser?.uid;
+        const userId = getAuth().currentUser?.uid;
         if (!userId) return;
         setAuthId(userId);
         if (!authId.value) return;
-        let user = await fetchItem(userId, "users", { handleUnsubscribe: setAuthUserUnsubscribe });
+        const user = await fetchItem(userId, "users", { handleUnsubscribe: setAuthUserUnsubscribe });
         userStore.setUser({ ...user });
     }
 
@@ -157,7 +157,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * @param password user password
      */
     async function signInWithEmailAndPass(email: string, password: string) {
-        let auth = getAuth();
+        const auth = getAuth();
         await signInWithEmailAndPassword(auth, email, password);
         /*//actually dont need these bottom pieces since we have an observer in the main page
             .then((userCredentials) => {
@@ -174,11 +174,11 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      */
     async function signInWithGoogle() {
         //setting up google auth
-        let provider = new GoogleAuthProvider();
-        let auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth();
         //signing up using pop up
-        let res = await signInWithPopup(auth, provider);
-        let user = res.user;
+        const res = await signInWithPopup(auth, provider);
+        const user = res.user;
         //getting the user from firestore
         const db = getFirestore();
         const userRef = doc(db, "users", user.uid);
@@ -187,7 +187,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
         //else we just update the user, which is done by a listener
         const badSymbolsRegex = /[&=_'-+,<>.]/g;
         if (!userDoc.exists()) {
-            let newUser: User = {
+            const newUser: User = {
                 avatar: user.photoURL,
                 email: user.email,
                 name: user.displayName,
@@ -201,7 +201,7 @@ export const useCurrentUserStore = defineStore("CurrentUserStore", () => {
      * function to log out the user
      */
     async function logout() {
-        let auth = getAuth();
+        const auth = getAuth();
         await signOut(auth);
         setAuthId(null);
     }

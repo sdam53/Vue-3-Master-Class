@@ -166,9 +166,9 @@ router.afterEach(() => {
 router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
     const timeOutConst = 700;
 
-    let currentUserStore = useCurrentUserStore();
+    const currentUserStore = useCurrentUserStore();
     await currentUserStore.initAuthentication();
-    let firebaseStore = useFirebaseStore();
+    const firebaseStore = useFirebaseStore();
     await firebaseStore.unsubscribeAllSnapshots();
     //if the page requires auth user then they will get sent to / if they arent signed in
     if (to.meta.requiresAuth) {
