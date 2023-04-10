@@ -46,7 +46,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
      * @returns the user
      */
     async function fetchUser(userId: string): Promise<User> {
-        let user = await fetchItem(userId, "users");
+        const user = await fetchItem(userId, "users");
         setUser({ ...user });
         return { ...user };
     }
@@ -57,7 +57,7 @@ export const useUsersStore = defineStore("UsersStore", () => {
      * @returns list of users
      */
     async function fetchUsers(userIds: string[]): Promise<User[]> {
-        let users: User[] = await fetchItems(userIds, "users");
+        const users: User[] = await fetchItems(userIds, "users");
         users.forEach((user) => setUser(user));
         return users;
     }
@@ -71,14 +71,14 @@ export const useUsersStore = defineStore("UsersStore", () => {
     async function registerUserWithEmailPassword(user: User, password: string): Promise<User> {
         try {
             //adding user into auth and getting the id
-            let auth = getAuth();
-            let res = await createUserWithEmailAndPassword(auth, user.email, password);
-            let id = res.user.uid;
+            const auth = getAuth();
+            const res = await createUserWithEmailAndPassword(auth, user.email, password);
+            const id = res.user.uid;
             //if the new user added an image
             //save it to db and set the url for it
             user.avatar = await uploadAvatar(id, user.avatar as File | null);
             //adding to db
-            let newUser = await registerUser(user, id);
+            const newUser = await registerUser(user, id);
             //i want the user to sign in when registering
             //let currentUserStore = useCurrentUserStore();
             //await currentUserStore.fetchAuthUser();
@@ -123,11 +123,11 @@ export const useUsersStore = defineStore("UsersStore", () => {
     async function registerUser(user: User, id: string): Promise<User> {
         //adding user into firestore
         //getting db and new user ref
-        let db = getFirestore();
-        let userRef = doc(db, "users", id);
+        const db = getFirestore();
+        const userRef = doc(db, "users", id);
         //setting up the new user
-        let registeredAt = serverTimestamp();
-        let theUser: User = {
+        const registeredAt = serverTimestamp();
+        const theUser: User = {
             avatar: user.avatar,
             email: user.email.toLowerCase(),
             lastVisitAt: registeredAt,
@@ -138,11 +138,11 @@ export const useUsersStore = defineStore("UsersStore", () => {
             usernameLower: user.username.toLowerCase()
         };
         //adding user to firestore
-        let batch = writeBatch(db);
+        const batch = writeBatch(db);
         batch.set(userRef, theUser);
         await batch.commit();
         //getting user from firestore
-        let newUser = await fetchItem(userRef.id, "users");
+        const newUser = await fetchItem(userRef.id, "users");
         setUser(newUser as User);
         return newUser as User;
     }

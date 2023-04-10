@@ -40,7 +40,7 @@ const findById = (
  * @return string slugged string
  */
 const stringToSlug = (title: string): string => {
-    let res = title
+    const res = title
         .toLowerCase()
         .replace(/ /g, "-")
         .replace(/[^\w-]+/g, "");
@@ -71,7 +71,7 @@ const humanFriendlyDate = (timestamp: number, format: string = "llll") => {
  * @param resource json object that contains a id value
  */
 const upsert = (resources: any[], resource: any) => {
-    let index = resources.findIndex((e) => e.id === resource.id);
+    const index = resources.findIndex((e) => e.id === resource.id);
 
     if (resource.id && index !== -1) {
         resources[index] = resource;
@@ -97,23 +97,23 @@ const docToResource = (doc: any) => {
 const setItem = (item: any, resource: any) => {
     switch (resource) {
         case "categories":
-            let catStore = useCategoriesStore();
+            const catStore = useCategoriesStore();
             catStore.setCategory(item);
             break;
         case "forums":
-            let forumStore = useForumsStore();
+            const forumStore = useForumsStore();
             forumStore.setForum(item);
             break;
         case "threads":
-            let threadsStore = useThreadsStore();
+            const threadsStore = useThreadsStore();
             threadsStore.setThread(item);
             break;
         case "posts":
-            let postsStore = usePostsStore();
+            const postsStore = usePostsStore();
             postsStore.setPost(item);
             break;
         case "users":
-            let usersStore = useUsersStore();
+            const usersStore = useUsersStore();
             usersStore.setUser(item);
             break;
     }

@@ -8,6 +8,7 @@ import { useUAStore } from "@/stores/UAStore";
 import { useUsersStore } from "@/stores/UsersStore";
 import type Forum from "@/types/Forum";
 import type Thread from "@/types/Thread";
+import { mdiMenuLeft, mdiMenuRight } from "@mdi/js";
 import { useAsyncState } from "@vueuse/core";
 import { computed, defineProps, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -129,8 +130,8 @@ const isOnValidPage = (forum: Forum) => {
             :totalVisible="totalVisiblePageButtons"
             rounded="circle"
             :disabled="false"
-            prev-icon="mdi-menu-left"
-            next-icon="mdi-menu-right"
+            :prev-icon="mdiMenuLeft"
+            :next-icon="mdiMenuRight"
             elevation="0"
             :showFirstLastPage="true"
             :modelValue="pageNumber"

@@ -171,4 +171,19 @@ const editProfileSchema = object({
         .required("This is required!")
 });
 
-export { registerSchema, loginSchema, editProfileSchema };
+/**
+ * rule schema for creating and editing threads
+ */
+const threadCreateAndEditSchema = object({
+    title: string().min(1, "You need a title!").required("This is required!"),
+    text: string().min(1, "You need a post!").required("This is required!")
+});
+
+/**
+ * rule schema for creating and editing posts
+ */
+const PostSchema = object({
+    text: string().min(1, "Post needs at least 1 character!").required("This is required!")
+});
+
+export { registerSchema, loginSchema, editProfileSchema, threadCreateAndEditSchema, PostSchema };

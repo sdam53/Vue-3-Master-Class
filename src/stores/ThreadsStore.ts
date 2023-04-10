@@ -55,12 +55,12 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         if (!currentUserStore.authId) return null;
 
         //db and new thread reference
-        let db = getFirestore();
-        let threadRef = doc(collection(db, "threads"));
+        const db = getFirestore();
+        const threadRef = doc(collection(db, "threads"));
 
         //creating the thread
-        let userId: string = currentUserStore.authId;
-        let publishedAt: FieldValue = serverTimestamp();
+        const userId: string = currentUserStore.authId;
+        const publishedAt: FieldValue = serverTimestamp();
         const thread: Thread = {
             contributors: [],
             firstPostId: "", //im asuming this means the id of the post not the user
@@ -75,10 +75,10 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
             id: threadRef.id
         };
         //getting user and forum ref
-        let userRef = doc(db, "users", userId);
-        let forumRef = doc(db, "forums", forumId);
+        const userRef = doc(db, "users", userId);
+        const forumRef = doc(db, "forums", forumId);
         //batch job to add new thread and append to the user and forum
-        let batch = writeBatch(db);
+        const batch = writeBatch(db);
         batch.set(threadRef, thread);
         batch.update(userRef, {
             threads: arrayUnion(threadRef.id)
@@ -94,7 +94,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         appendThreadToUser(userId, threadRef.id); //user.threads
         appendUserToThread(userId, threadRef.id); //thread.contributors
         appendThreadToForum(forumId, threadRef.id); //forum.threads
-        let post: Post = {
+        const post: Post = {
             text: text,
             threadId: thread.id,
             //need it in type Post, it gets handled in createPost
@@ -139,8 +139,8 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
     const appendUserToThread = (userId: string, threadId: string) => {
         if (!currentUserStore.isSignedIn || currentUserStore.authId !== userId) return;
 
-        let thread: Thread = findById(threads.value, threadId) as Thread;
-        let user = findById(usersStore.users, userId);
+        const thread: Thread = findById(threads.value, threadId) as Thread;
+        const user = findById(usersStore.users, userId);
 
         if (thread.contributors != null && thread.contributors.includes(userId)) {
             return;
@@ -173,10 +173,10 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         let newPost: Post = { ...post, text }; //same but for post
 
         //getting db ref
-        let db = getFirestore();
-        let threadRef = doc(db, "threads", id);
-        let postRef = doc(db, "posts", post.id);
-        let batch = writeBatch(db);
+        const db = getFirestore();
+        const threadRef = doc(db, "threads", id);
+        const postRef = doc(db, "posts", post.id);
+        const batch = writeBatch(db);
 
         //batch updates
         batch.update(threadRef, { ...newThread });
@@ -184,9 +184,9 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         await batch.commit();
 
         //getting the new thread and post from db
-        let newThreadDoc = await getDoc(threadRef);
+        const newThreadDoc = await getDoc(threadRef);
         newThread = docToResource(newThreadDoc);
-        let newPostDoc = await getDoc(postRef);
+        const newPostDoc = await getDoc(postRef);
         newPost = docToResource(newPostDoc);
 
         //locally setting
@@ -205,7 +205,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
         threadId: string,
         options: FetchItemOptionsType | null = null
     ): Promise<Thread> {
-        let thread = await fetchItem(threadId, "threads", options);
+        const thread = await fetchItem(threadId, "threads", options);
         setThread({ ...thread });
         return { ...thread };
     }
@@ -216,7 +216,7 @@ export const useThreadsStore = defineStore("ThreadsStore", () => {
      * @returns list of threads
      */
     async function fetchThreads(threadIds: string[]): Promise<Thread[]> {
-        let threads: Thread[] = await fetchItems(threadIds, "threads");
+        const threads: Thread[] = await fetchItems(threadIds, "threads");
         threads.forEach((thread) => setThread(thread));
         return threads;
     }

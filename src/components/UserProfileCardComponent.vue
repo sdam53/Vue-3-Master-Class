@@ -58,7 +58,7 @@ const user = computed(() => usersStore.getUser(userId.value));
 
         <p v-if="user?.website" class="text-large text-center">
             <i class="fa fa-globe"></i>
-            <a :href="user?.website">{{ user?.website }}</a>
+            <a :href="user?.website" target="_blank">{{ user?.website }}</a>
         </p>
 
         <p class="text-xsmall text-faded text-center">

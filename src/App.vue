@@ -5,7 +5,6 @@ import UseLoadingScreen from "@/composables/UseLoadingScreen.vue";
 import { useProgress } from "@marcoschulte/vue3-progress";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import TheFooter from "./components/TheFooter.vue";
 import TheNavbar from "./components/TheNavbar.vue";
 import { useCurrentUserStore } from "./stores/CurrentUserStore";
 //fetchs the current auth user if there is one
@@ -66,7 +65,6 @@ function notReady() {
             </v-container>
         </suspense>
         <!--Footer-->
-        <TheFooter> </TheFooter>
     </v-app>
 </template>
 

@@ -9,5 +9,7 @@ declare module "yup" {
         usernameRules(): StringSchema;
         uniqueEmailUpdate(): StringSchema;
         uniqueUsernameUpdate(): StringSchema;
+        threadCreateAndEditSchema(): StringSchema;
+        PostSchema(): StringSchema;
     }
 }

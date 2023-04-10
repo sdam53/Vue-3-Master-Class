@@ -1,7 +1,9 @@
 <script setup lang="ts">
 //Component for editing posts ie creating
 
+import { PostSchema } from "@/plugins/Yup";
 import type Post from "@/types/Post";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { ref, type PropType } from "vue";
 
 //props
@@ -30,21 +32,23 @@ const addPost = () => {
 
 <template>
     <div class="col-full">
-        <form @submit.prevent="addPost">
+        <VeeForm @submit="addPost" :validation-schema="PostSchema">
             <div class="form-group">
-                <textarea
+                <VeeField
+                    as="textarea"
                     v-model="postCopy.text"
                     id="thread_content"
                     class="form-input"
-                    name="content"
+                    name="text"
                     rows="8"
                     cols="140"
                     :spellcheck="true"
-                ></textarea>
+                ></VeeField>
+                <VeeErrorMessage name="text" class="form-error"></VeeErrorMessage>
             </div>
             <div class="btn-group">
                 <button class="btn btn-blue">{{ post.id ? "Update Post" : "Submit Post" }}</button>
             </div>
-        </form>
+        </VeeForm>
     </div>
 </template>

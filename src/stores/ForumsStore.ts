@@ -29,7 +29,7 @@ export const useForumsStore = defineStore("ForumsStore", () => {
      * @returns forum obj
      */
     async function fetchForum(forumId: string): Promise<Forum> {
-        let forum = await fetchItem(forumId, "forums");
+        const forum = await fetchItem(forumId, "forums");
         setForum(forum);
         return { ...forum };
     }
@@ -40,7 +40,7 @@ export const useForumsStore = defineStore("ForumsStore", () => {
      * @returns list of forums
      */
     async function fetchForums(forumIds: string[]): Promise<Forum[]> {
-        let forums: Forum[] = await fetchItems(forumIds, "forums");
+        const forums: Forum[] = await fetchItems(forumIds, "forums");
         forums.forEach((forum) => setForum(forum));
         return forums;
     }
