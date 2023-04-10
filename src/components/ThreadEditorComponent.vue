@@ -1,7 +1,9 @@
 <script setup lang="ts">
 //component for thread editing
 
+import { threadCreateAndEditSchema } from "@/plugins/Yup";
 import { cloneDeep } from "lodash";
+import { ErrorMessage as VeeErrorMessage, Field as VeeField, Form as VeeForm } from "vee-validate";
 import { computed, ref, watch } from "vue";
 
 //props
@@ -64,28 +66,31 @@ watch(
 </script>
 
 <template>
-    <form @submit.prevent="save">
+    <VeeForm @submit="save" :validation-schema="threadCreateAndEditSchema">
         <div class="form-group">
             <label for="thread_title">Title:</label>
-            <input
+            <VeeField
                 v-model="form.title"
                 type="text"
                 id="thread_title"
                 class="form-input"
                 name="title"
             />
+            <VeeErrorMessage name="title" class="form-error"></VeeErrorMessage>
         </div>
 
         <div class="form-group">
             <label for="thread_content">Content:</label>
-            <textarea
+            <VeeField
+                as="textarea"
                 v-model="form.text"
                 id="thread_content"
                 class="form-input"
-                name="content"
+                name="text"
                 rows="8"
                 cols="140"
-            ></textarea>
+            ></VeeField>
+            <VeeErrorMessage name="text" class="form-error"></VeeErrorMessage>
         </div>
 
         <div class="btn-group">
@@ -94,5 +99,5 @@ watch(
                 {{ existing ? "Update" : "Publish" }}
             </button>
         </div>
-    </form>
+    </VeeForm>
 </template>
