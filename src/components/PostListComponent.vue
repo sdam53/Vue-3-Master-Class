@@ -62,7 +62,7 @@ const updatePost = (eventData: any) => {
                 <router-link
                     :to="{ name: 'ProfileUsers', params: { id: userById(post.userId)?.id } }"
                 >
-                    <p class="user-name">{{ (userById(post.userId) as User)!.name }}</p>
+                    <p class="user-name">{{ (userById(post.userId) as User)!.username }}</p>
                     <AppAvatar
                         class="avatar-large"
                         :src="(userById(post.userId) as User)!.avatar as string"
