@@ -4,7 +4,18 @@ import { fetchItem, fetchItems } from "@/middleware/db_helpers";
 import { findById, upsert } from "@/middleware/HelperFunctions";
 import type User from "@/types/User";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { doc, getDoc, getFirestore, serverTimestamp, writeBatch } from "firebase/firestore";
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    getFirestore,
+    limit,
+    query,
+    serverTimestamp,
+    where,
+    writeBatch
+} from "firebase/firestore";
 import { getDownloadURL, getStorage, ref as fireRef, uploadBytes } from "firebase/storage";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { ref } from "vue";
@@ -159,6 +170,21 @@ export const useUsersStore = defineStore("UsersStore", () => {
         return (await getDoc(userRef)).exists();
     }
 
+    async function getUserId(username: string) {
+        //we have that user saved into cache
+        let user = users.value.find((user) => user.username == username);
+        if (user) return user.id;
+        //lets go get that user
+        const db = getFirestore();
+        const q = query(collection(db, "users"), where("username", "==", username), limit(1));
+        const doc = await getDocs(q);
+        return doc.docs[0]?.id || null;
+        //let id = getDocs(q).then((docs) => {
+        //  return docs.docs[0].id || null;
+        //});
+        //return id;
+    }
+
     return {
         users,
         getUser,
@@ -168,7 +194,8 @@ export const useUsersStore = defineStore("UsersStore", () => {
         registerUserWithEmailPassword,
         registerUser,
         uploadAvatar,
-        userExist
+        userExist,
+        getUserId
     };
 });
 

@@ -10,6 +10,7 @@ import type User from "@/types/User";
 import { ref, type PropType } from "vue";
 import AppAvatar from "./AppAvatar.vue";
 import PostEditor from "./PostEditorComponent.vue";
+import PostText from "./PostTextComponent.vue";
 
 //props
 const props = defineProps({
@@ -77,7 +78,7 @@ const updatePost = (eventData: any) => {
                         >Edit Mode</PostEditor
                     >
                     <p v-else>
-                        {{ post.text }}
+                        <PostText :text="post.text"> </PostText>
                     </p>
                 </div>
                 <a

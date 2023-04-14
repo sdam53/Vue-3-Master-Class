@@ -71,15 +71,16 @@ addMethod(string, "uniqueEmail", function (this: StringSchema, message?: string)
 });
 
 /**
- * checks if string is an unique email
+ * checks if string is an unique username
+ * currently to @ a user, its in the format @username: so we limit that from username
  */
 addMethod(string, "usernameRules", function (this: StringSchema, message?: string) {
     return this.test(
         "usernameRules",
-        message || "User name cant contain '&=_'-+,<>.' and must contain letters and/or numbers",
+        message || "User name cant contain '&=_'-+,<>.:@' and must contain letters and/or numbers",
         (value) => {
             const passingRegex = /[a-zA-Z0-9]/g;
-            const failingRegex = /[&=_'-+,<>.]/g;
+            const failingRegex = /[&=_'-+,<>.:@]/g;
             return new Promise((res, rej) => {
                 res(!failingRegex.test(value as string) && passingRegex.test(value as string));
             });
